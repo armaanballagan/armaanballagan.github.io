@@ -14,16 +14,23 @@
     text-decoration: none; /* This means we do not want hyperlinks to be underlined */
   }
 
+
+
   body {
     background-color: beige;
     color: black;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
+    margin: 0;
+
 
     /* set the background color here */
     /* set the text color to black here */
     /* set the font here */
     /* set the text alignment here */
+   }
+   .username {
+     color: red;
    }
 
   footer {
@@ -63,9 +70,33 @@
     margin-top: 3rem;
   }
 
+
+  nav {
+    width:100%;
+    height: 100px;
+    background-color: #fff;
+
+  }
+
+
   /* this controls how the bullet points in the resume page looks */
   ul {
     display: table;
     margin: 0 auto;
+    padding: 0px;
     text-align: left;
+  }
+
+  ul li {
+    display: inline-block;
+    list-style: none;
+    line-height: 100px;
+  }
+
+  ul li a {
+    display: block;
+    font-size: 20px;
+    font-family: arial;
+    color: #1e1e1e;
+    padding: 0 30px;
   }
