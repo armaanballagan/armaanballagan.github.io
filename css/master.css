@@ -91,11 +91,12 @@
     display: inline-block;
     list-style: none;
     line-height: 100px;
+
   }
 
   ul li a {
     display: block;
-    font-size: 20px;
+    font-size: 22px;
     font-family: arial;
     color: #1e1e1e;
     padding: 0 30px;
