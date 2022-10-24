@@ -14,9 +14,9 @@
 
         if (atSign < 1 || ( dotSign - atSign < 2 )) {
            alert("Error in email address format!");
-           document.ordForm.emailAddr.focus() ;
+           document.getelementbyid("contact-form").email.focus();
            return false;
         }
-        alert("accepted")
+        alert("accepted");
         return( true );
       }
