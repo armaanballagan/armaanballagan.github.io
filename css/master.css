@@ -2,10 +2,25 @@
 
 /* Text inside these asterisks and slashes are comments for human */
 
+/* What To Include in a CSS Sheet?
+Body:
+  Background:
+    color or images
+    Repeat
+    Position
+    Attachment
+Text (ex. h1, h2, p):
+  Font
+  Color of text
+  Background Color
+  Alignment */
+
+
   a {
     color:blue;
     /* set the text color to blue here */
     text-decoration: none; /* This means we do not want hyperlinks to be underlined */
+    display: block
   }
 
   a:hover {
@@ -22,6 +37,10 @@
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
     margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box;
 
 
     /* set the background color here */
@@ -44,7 +63,6 @@
    }
 
   h2 {
-    color: #075AAB;
     margin-top: 2.5rem;
     margin-bottom: 2.5rem;
     /* set the text color of to #075AAB here */
@@ -58,7 +76,8 @@
 
   h4 {
     margin-bottom: 1rem;
-    margin-top: 0.5rem;
+    margin-top: 1.5rem;
+    font-size: 2.25rem;
   }
 
   h5 {
@@ -70,14 +89,111 @@
     margin-top: 3rem;
   }
 
+  /*section {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: blue;*/
+  }
 
-  nav {
-    width:100%;
-    height: 100px;
-    background-color: #fff;
+  .contact_info {
+    text-align: left;
+    font-size: 200;
+    display:inline-block;
 
   }
 
+
+
+  .email_sender {
+    width: 80%;
+    height: 100%;
+    max-width:1300;
+    background-color: red;
+    /*align: center;
+    min-height: 200px;
+    width: 70%;
+
+    font-size: 1.25rem;
+    margin-left: 10rem;
+    text-align: left;
+    padding-bottom: 30px;
+    padding-left: 10%;
+    padding-top: 0px;*/
+  }
+
+  .container {
+    width: 100%;
+    height: 100vh;
+    max-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+  }
+
+  form{
+    background: white;
+    display: flex;
+    flex-direction: column;
+    padding: 2vw 4vw;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+
+  }
+
+  form h2{
+    font-size: 1.75rem;
+    color: black;
+    font-weight: 800;
+    margin-top: 15px;
+    margin-bottom: 40px;
+  }
+
+
+  .form-control{
+    width: 600px;
+    background: transparent;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid gray;
+    color: black;
+    margin-bottom: 16px;
+  }
+
+  form .submit {
+    background: green;
+    border-color: transparent;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    height: 50px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    border-radius: 20px;
+    align: center;
+
+  }
+
+  form .submit:hover{
+    background-color: blue;
+    cursor: pointer;
+
+  }
+
+  input{
+      min-height: 45px;
+
+    }
+
+
+
+
+  }
 
   /* this controls how the bullet points in the resume page looks */
   ul {
@@ -85,18 +201,37 @@
     margin: 0 auto;
     padding: 0px;
     text-align: left;
+
   }
 
-  ul li {
+
+
+  /* navigation menu */
+  nav {
+    width:100%;
+    min-height: 100px;
+    background-color: #fff;
+
+  }
+
+  nav ul {
+    display: table;
+    margin: 0 auto;
+    padding: 0px;
+    text-align: left;
+
+  }
+
+  nav ul li {
     display: inline-block;
     list-style: none;
     line-height: 100px;
 
   }
 
-  ul li a {
+  nav ul li a {
     display: block;
-    font-size: 22px;
+    font-size: 20px;
     font-family: arial;
     color: #1e1e1e;
     padding: 0 30px;

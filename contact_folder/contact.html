@@ -1,0 +1,65 @@
+<!doctype html>
+
+<!-- this is a comment for human! -->
+
+<html lang="en">
+
+  <header>
+    <title>Armaan Ballagan's Portal</title>
+    <script type="text/javascript" src="validate.js"></script>
+    <link rel="stylesheet" href = "../css/master.css">
+    <link rel="FaviconIcon" href="favicon.ico" type-"image/x-icon"> /* potentially add a ../ to go up a level in directory to access images to fix favicon thing*/
+    <link rel="shortcut" href="favicon.ico" type-"image/x-icon">
+    <meta name="viewport" content = "width=device-width, initial-scale=1,shrink-to-fit-no">
+    <meta name="name" content = " Armaan Ballagan's Portal">
+    <meta name = "robots" content = "noindex, nofollow">
+  </header>
+
+  <body>
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../about_me.html">About me</a></li>
+        <li><a href="../resume.html">Portfolio</a></li>
+        <li><a href="../contact_folder/contact.html">Contact</a></li>
+      </ul>
+    </nav>
+
+    <h4>Contact Info</h4>
+    <div class="contact_info">
+      <p>Email: <a href = "mailto:armaanballagan@gmail.com">armaanballagan@gmail.com</a></p>
+      <p>Github: <a href="https://github.com/armaanballagan">https://github.com/armaanballagan</a></p>
+    </div>
+
+
+
+
+    <div class="container">
+      <form id = "contact-form" method = "post" action = "send-email.php" onsubmit = "return(validate());">
+
+        <h2> Send me an email</h2>
+
+        <input name= "name" type = "text" class = "form-control" placeholder = "Your Name" required><br>
+
+        <input name= "email" type = "email" class = "form-control" placeholder = "Your Email" required><br>
+
+        <input name= "subject" type = "text" class = "form-control" placeholder = "Subject" required><br>
+
+        <textarea name ="message" class = "form-control" placeholder = "Message" rows = "4" required></textarea>
+        <input type = "submit" class = "form-control submit" value = "Submit">
+      </form>
+    </div>
+
+
+
+    <h2><a href="thankyou.html">Submit</a></h2>
+
+  </body>
+
+  <footer>
+    <hr>
+    <code>Copyright (c) 2022 Armaan Ballagan</code>
+
+  </footer>
+
+</html>
