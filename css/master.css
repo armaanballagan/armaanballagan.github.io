@@ -30,7 +30,6 @@ Text (ex. h1, h2, p):
   }
 
 
-
   body {
     background-color: beige;
     color: black;
@@ -41,16 +40,12 @@ Text (ex. h1, h2, p):
     background-size: cover;
     background-position: center;
     box-sizing: border-box;
-
+    }
 
     /* set the background color here */
     /* set the text color to black here */
     /* set the font here */
     /* set the text alignment here */
-   }
-   .username {
-     color: red;
-   }
 
   footer {
     margin-top: 2rem;
@@ -89,6 +84,18 @@ Text (ex. h1, h2, p):
     margin-top: 3rem;
   }
 
+  .title-gif {
+    min-height: 100vh;
+    width: 100%;
+    background-color: black;
+    background-image;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 70%
+    color: white;
+    padding: 0, 8%;
+
+  }
   /*section {
     display: flex;
     width: 100%;
