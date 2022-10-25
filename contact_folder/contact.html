@@ -8,7 +8,7 @@
     <title>Armaan Ballagan's Portal</title>
     <script type="text/javascript" src="validate.js"></script>
     <link rel="stylesheet" href = "../css/master.css">
-    <link rel="FaviconIcon" href="favicon.ico" type-"image/x-icon"> /* potentially add a ../ to go up a level in directory to access images to fix favicon thing*/
+    <link rel="FaviconIcon" href="favicon.ico" type-"image/x-icon">
     <link rel="shortcut" href="favicon.ico" type-"image/x-icon">
     <meta name="viewport" content = "width=device-width, initial-scale=1,shrink-to-fit-no">
     <meta name="name" content = " Armaan Ballagan's Portal">
@@ -35,15 +35,13 @@
 
 
     <div class="container">
-      <form id ="contact-form" method = "post" action = "send-email.php" onsubmit="return validate();">
+      <form id ="contact-form" method = "post" action = "https://formspree.io/f/xoqbkjnz" onsubmit="return validate();">
 
         <h2> Send me an email</h2>
 
-        <input name= "name" type = "text" class = "form-control" placeholder = "Your Name" required><br>
+        <input id = "full-name" name= "name" type = "text" class = "form-control" placeholder = "Your Name" required><br>
 
         <input name= "email" type = "text" class = "form-control" placeholder = "Your Email" required><br>
-
-        <input name= "subject" type = "text" class = "form-control" placeholder = "Subject" required><br>
 
         <textarea name ="message" class = "form-control" placeholder = "Message" rows = "4" required></textarea>
         <input type = "submit" class = "form-control submit" value = "Submit">

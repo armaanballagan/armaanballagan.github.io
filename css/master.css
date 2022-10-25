@@ -17,14 +17,14 @@ Text (ex. h1, h2, p):
 
 
   a {
-    color:blue;
+    color: #173FFF;
     /* set the text color to blue here */
     text-decoration: none; /* This means we do not want hyperlinks to be underlined */
     display: block
   }
 
   a:hover {
-    color: red;
+    color: #48079D;
     /* set the text color to red here */
     text-decoration: none; /* This means we do not want hyperlinks to be underlined */
   }
@@ -102,8 +102,8 @@ Text (ex. h1, h2, p):
     .title-text {
       position: absolute;
       color: red;
-      font-size: 20px;
-      bottom: 5%;
+      font-size: 1.5rem;
+      bottom: 3%;
       right: 2%;
 
 
@@ -112,6 +112,7 @@ Text (ex. h1, h2, p):
     .columns {
       column-count: 2;
       font-size: 2rem;
+      color: black;
 
     }
   /*section {
@@ -129,7 +130,6 @@ Text (ex. h1, h2, p):
     display:inline-block;
 
   }
-
 
 
   /*.email_sender {
@@ -156,6 +156,7 @@ Text (ex. h1, h2, p):
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: red;
 
 
   }
@@ -168,6 +169,7 @@ Text (ex. h1, h2, p):
     width: 90%;
     max-width: 600px;
     border-radius: 10px;
+    margin: 0 auto;
 
   }
 
