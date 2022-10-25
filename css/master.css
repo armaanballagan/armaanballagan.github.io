@@ -112,6 +112,7 @@ Text (ex. h1, h2, p):
     .columns {
       column-count: 2;
       font-size: 2rem;
+      margin: 0 auto;
       color: black;
 
     }
