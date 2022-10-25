@@ -116,14 +116,7 @@ Text (ex. h1, h2, p):
       color: black;
 
     }
-  /*section {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    background-color: blue;*/
-  }
+
 
   .contact_info {
     text-align: left;
@@ -133,22 +126,6 @@ Text (ex. h1, h2, p):
   }
 
 
-  /*.email_sender {
-    width: 80%;
-    height: 100%;
-    max-width:1300;
-    background-color: red;
-    /*align: center;
-    min-height: 200px;
-    width: 70%;
-
-    font-size: 1.25rem;
-    margin-left: 10rem;
-    text-align: left;
-    padding-bottom: 30px;
-    padding-left: 10%;
-    padding-top: 0px;*/
-  }
 
   .container {
     width: 100%;
@@ -184,6 +161,7 @@ Text (ex. h1, h2, p):
 
 
   .form-control{
+    font-family: arial;
     width: 600px;
     background: transparent;
     border: none;
