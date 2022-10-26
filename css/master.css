@@ -109,12 +109,22 @@ Text (ex. h1, h2, p):
 
     }
 
+    .portfolio {
+      font-size: 2.5em;
+    }
     .columns {
       column-count: 2;
-      font-size: 2rem;
+      text-align: center;
+      align-items: center;
       margin: 0 auto;
+      margin-left: 10%;
+      margin-top: 5vh;
       color: black;
 
+      .columns .right {
+        margin-left: 0%;
+        margin-right: 10%;
+      }
     }
 
 
@@ -134,7 +144,7 @@ Text (ex. h1, h2, p):
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
 
 
   }
