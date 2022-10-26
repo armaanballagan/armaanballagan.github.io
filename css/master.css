@@ -2,20 +2,6 @@
 
 /* Text inside these asterisks and slashes are comments for human */
 
-/* What To Include in a CSS Sheet?
-Body:
-  Background:
-    color or images
-    Repeat
-    Position
-    Attachment
-Text (ex. h1, h2, p):
-  Font
-  Color of text
-  Background Color
-  Alignment */
-
-
   a {
     color: #173FFF;
     /* set the text color to blue here */
@@ -43,10 +29,6 @@ Text (ex. h1, h2, p):
     box-sizing: border-box;
     }
 
-    /* set the background color here */
-    /* set the text color to black here */
-    /* set the font here */
-    /* set the text alignment here */
 
   footer {
     margin-top: 2rem;
@@ -54,6 +36,7 @@ Text (ex. h1, h2, p):
   }
 
   h1 {
+    font-size: 3.5rem;
     margin-bottom: 2rem;
     margin-top: 3rem;
    }
@@ -102,15 +85,25 @@ Text (ex. h1, h2, p):
     .title-text {
       position: absolute;
       color: red;
-      font-size: 1.5rem;
-      bottom: 3%;
-      right: 2%;
-
-
+      font-size: 2rem;
+      bottom: 10%;
+      right: 1%;
     }
+      .title_name {
+          font-size: 5rem;
+      }
 
+
+
+    .about_me {
+      font-size: 2rem;
+    }
     .portfolio {
-      font-size: 2.5em;
+      font-size: 2.5rem;
+    }
+    .project_title {
+      font-weight: bold;
+
     }
     .columns {
       column-count: 2;
@@ -120,12 +113,22 @@ Text (ex. h1, h2, p):
       margin-left: 10%;
       margin-top: 5vh;
       color: black;
+    }
+    .about_me .columns .column_text{
+      margin-top:15vh;
+
+    }
+
+    .portfolio .columns .column_text{
+      margin-top: 5vh;
+
+    }
 
       .columns .right {
-        margin-left: 0%;
+        margin-left: 0;
         margin-right: 10%;
       }
-    }
+
 
 
   .contact_info {
