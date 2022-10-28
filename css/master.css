@@ -16,6 +16,8 @@
   }
 
 
+
+
   body {
     background-color: beige;
     background-image: url("../images/background.jpg");
@@ -36,7 +38,7 @@
   }
 
   h1 {
-    font-size: 3.5rem;
+    font-size: 3.5vw;
     margin-bottom: 2rem;
     margin-top: 3rem;
    }
@@ -76,58 +78,66 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100%;
+    margin: 0 auto;
     padding: 0;
-    position: relative;
+
 
 
     }
 
     .title-text {
-      position: absolute;
+      position: relative;
       color: red;
-      font-size: 2rem;
-      bottom: 10%;
-      right: 1%;
+      max-height: 20vh;
+      font-size: 2vw;
+      top: 47vh;
+      left: 57vw;
     }
       .title_name {
-          font-size: 5rem;
+          font-size: 5vw;
       }
 
 
 
     .about_me {
-      font-size: 2rem;
+      font-size: 2.5vw;
     }
     .portfolio {
-      font-size: 2.5rem;
+      font-size: 2vw;
     }
     .project_title {
       font-weight: bold;
+    }
+
+    .portfolio_text {
+      background: blue;
+    }
+
+  .portfolio .columns .column_text{
 
     }
+
+  .portfolio .columns{
+    max-width: 90%;
+    grid-column-gap: 5vw;
+  }
     .columns {
-      column-count: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       text-align: center;
       align-items: center;
       margin: 0 auto;
-      margin-left: 10%;
-      margin-top: 5vh;
       color: black;
-    }
-    .about_me .columns .column_text{
-      margin-top:15vh;
+
 
     }
 
-    .portfolio .columns .column_text{
-      margin-top: 5vh;
-
+    .about_me_image{
+      margin-bottom: 10vh;
     }
-
-      .columns .right {
-        margin-left: 0;
-        margin-right: 10%;
-      }
+    .about_me .columns{
+      max-width: 90%;
+    }
 
 
 
@@ -175,7 +185,7 @@
 
   .form-control{
     font-family: arial;
-    width: 600px;
+    width: 100%;
     background: transparent;
     border: none;
     outline: none;
@@ -225,13 +235,12 @@
   /* navigation menu */
   nav {
     width:100%;
-    min-height: 100px;
+    height: auto;
     background-color: #fff;
 
   }
 
   nav ul {
-    display: table;
     margin: 0 auto;
     padding: 0px;
     text-align: left;
@@ -241,14 +250,15 @@
   nav ul li {
     display: inline-block;
     list-style: none;
-    line-height: 100px;
+    line-height: 5rem;
 
   }
 
   nav ul li a {
     display: block;
-    font-size: 20px;
+    font-size: 150%;
     font-family: arial;
     color: #1e1e1e;
-    padding: 0 30px;
+    font-weight: 500;
+    padding: 0 3vw;
   }
