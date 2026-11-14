@@ -40,6 +40,35 @@ export const soundEffects = {
     synth: synthNoiseBurst,
   },
 
+  floweyLaugh: {
+    label: "Flowey laugh",
+    usedIn: "Not used yet. Play with playSound(\"floweyLaugh\")",
+    src: asset("audio/sfx/voices/flowey-laugh.mp3"),
+    volume: 0.6,
+    synth: synthBlip,
+  },
+  omegaFloweyLaugh: {
+    label: "Omega Flowey laugh",
+    usedIn: "Not used yet. Play with playSound(\"omegaFloweyLaugh\")",
+    src: asset("audio/sfx/voices/omega-flowey-laugh.mp3"),
+    volume: 0.6,
+    synth: synthBlip,
+  },
+  evilFloweyLaugh: {
+    label: "Evil Flowey laugh",
+    usedIn: "Not used yet. Play with playSound(\"evilFloweyLaugh\")",
+    src: asset("audio/sfx/voices/evil-flowey.mp3"),
+    volume: 0.6,
+    synth: synthBlip,
+  },
+  spiderLaugh: {
+    label: "Spider laugh",
+    usedIn: "Not used yet. Play with playSound(\"spiderLaugh\")",
+    src: asset("audio/sfx/voices/spider-laugh.mp3"),
+    volume: 0.6,
+    synth: synthBlip,
+  },
+
   // ── Add new sound effects below. Copy this template: ─────────────────────
   // someName: {
   //   label: "What it is",
@@ -103,6 +132,107 @@ export const dialogueVoices = {
     usedIn:
       "Hero dialogue box on first load, and each project description when it types out",
     src: asset("audio/sfx/sans-voice.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+
+  // ── Character voices (cut from the voice SFX video). Not used on the page yet.
+  //    To use one: <Typewriter voice="papyrus" ... />  or change `typewriter`'s src above.
+  sans: {
+    label: "sans voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/sans.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  alphys: {
+    label: "Alphys voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/alphys.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  asgore: {
+    label: "Asgore voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/asgore.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  asriel: {
+    label: "Asriel voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/asriel.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  flowey: {
+    label: "Flowey voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/flowey.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  mettaton: {
+    label: "Mettaton voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/mettaton.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  papyrus: {
+    label: "Papyrus voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/papyrus.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  toriel: {
+    label: "Toriel voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/toriel.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  undyne: {
+    label: "Undyne voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/undyne.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  temmie: {
+    label: "Temmie voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/temmie.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  generic1: {
+    label: "Generic 1 voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/generic-1.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  generic2: {
+    label: "Generic 2 voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/generic-2.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  gaster: {
+    label: "Gaster voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/gaster.mp3"),
+    volume: 0.6,
+    rate: 1.3,
+  },
+  frisk: {
+    label: "Frisk (fan-made) voice",
+    usedIn: "Not used yet",
+    src: asset("audio/sfx/voices/frisk-fanmade.mp3"),
     volume: 0.6,
     rate: 1.3,
   },

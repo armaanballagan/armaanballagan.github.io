@@ -8,6 +8,7 @@ Personal portfolio site for Armaan Ballagan (UBC CS student), Undertale-themed, 
 - Content is Armaan's real info (8 projects with category filters, UBC/PNE/Delta Controls experience, email armaanballagan@gmail.com). LinkedIn URL is still a placeholder.
 - `src/Typewriter.tsx` types dialogue text (hero on first load, project descriptions on each selection) with the `typewriter` dialogue voice from `src/audio.ts`; click to skip.
 - Deploy: `.github/workflows/deploy.yml` builds `dist/` and publishes via GitHub Actions on push to `main`. Pages source must be set to "GitHub Actions".
+- 18 Undertale voice clips (cut from a voice SFX video) live in `public/audio/sfx/voices/`; character voices are registered in `dialogueVoices`, laughs in `soundEffects` (not used on the page yet).
 - All sound effects and the music playlist are in `src/audio.ts` (`soundEffects`, `playlist`); App.tsx calls `playSound("name")` and `MusicPlayer`. New sounds go there with a clear label and `usedIn`.
 - Gallery section (`src/Gallery.tsx`) reads photos from `src/gallery.ts` / `public/gallery/`; 7 of Armaan's photos (resized to 1600px, metadata stripped).
 - Hero name is Armaan's own wordmark image `public/name-logo.png` (black made transparent, cropped). Typing speed defaults to 22ms/char (projects 12, gallery 15); voice `rate` 1.3 in `src/audio.ts`.
