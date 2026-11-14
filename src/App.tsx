@@ -215,6 +215,19 @@ function App() {
   const dogsongRef = useRef<HTMLAudioElement | null>(null);
   const track = dogsongOn ? dogsong : playlist[trackIndex];
   const audioActive = musicPlaying || dogsongOn;
+
+  // Mini player: appears once the full player has scrolled off the top of the screen.
+  const fullPlayerRef = useRef<HTMLDivElement>(null);
+  const [showMiniPlayer, setShowMiniPlayer] = useState(false);
+  useEffect(() => {
+    const element = fullPlayerRef.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setShowMiniPlayer(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   const visibleProjects = projects.filter(
     (item) => category === "all" || item.categories.includes(category),
   );
@@ -481,7 +494,7 @@ function App() {
                   </button>
                 </div>
               </div>
-                <div className="music-player is-wide">
+                <div ref={fullPlayerRef} className="music-player is-wide">
                   <button
                     onClick={toggleMusic}
                     className={`gramophone-button ${audioActive ? "is-playing" : ""}`}
@@ -825,6 +838,49 @@ function App() {
       </main>
 
       <SansToggle />
+
+      <div
+        className={`mini-player ${showMiniPlayer ? "is-visible" : ""}`}
+        aria-hidden={!showMiniPlayer}
+        role="region"
+        aria-label="Music player (mini)"
+      >
+        <button
+          onClick={toggleMusic}
+          className={`gramophone-button ${audioActive ? "is-playing" : ""}`}
+          aria-label={audioActive ? "Turn music off" : "Turn music on"}
+          aria-pressed={audioActive}
+          tabIndex={showMiniPlayer ? 0 : -1}
+        >
+          <Gramophone className="size-9 sm:size-10" />
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[7px] leading-loose text-white/40">
+            {dogsongOn ? "NOW PLAYING / ???" : musicPlaying ? "NOW PLAYING" : "MUSIC / OFF"}
+          </p>
+          <p className="truncate text-[8px] leading-loose text-[#ff0] sm:text-[9px]">“{track.title}”</p>
+        </div>
+        {playlist.length > 1 && (
+          <div className="flex shrink-0 gap-1">
+            <button
+              onClick={previousTrack}
+              className="player-control !px-2"
+              aria-label="Previous song"
+              tabIndex={showMiniPlayer ? 0 : -1}
+            >
+              ◀◀
+            </button>
+            <button
+              onClick={nextTrack}
+              className="player-control !px-2"
+              aria-label="Next song"
+              tabIndex={showMiniPlayer ? 0 : -1}
+            >
+              ▶▶
+            </button>
+          </div>
+        )}
+      </div>
 
       <footer className="border-t-4 border-white bg-black px-5 pt-8 pb-32 md:px-8">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-5 text-[8px] leading-loose text-white/40 sm:flex-row sm:items-center sm:justify-between">
