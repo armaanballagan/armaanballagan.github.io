@@ -60,7 +60,6 @@ type Project = {
   categories: Category[];
   image: string;
   imageAlt: string;
-  accent: string;
   links: ProjectLink[];
 };
 
@@ -80,7 +79,6 @@ const projects: Project[] = [
     categories: ["hardware", "software"],
     image: img("street-striker.png"),
     imageAlt: "Street Striker project thumbnail",
-    accent: "#ffb000",
     links: [
       { label: "VIDEO", href: "https://youtu.be/Oxzf_ln4UWg" },
       { label: "DEVPOST", href: "https://devpost.com/software/a-loptcx" },
@@ -97,7 +95,6 @@ const projects: Project[] = [
     categories: ["software", "data"],
     image: img("airsign.png"),
     imageAlt: "AirSign project thumbnail",
-    accent: "#00a2ff",
     links: [
       { label: "LIVE SITE", href: "https://www.talktothehand.cooking/" },
       { label: "VIDEO", href: "https://www.youtube.com/watch?v=KZTJMp2F96Y" },
@@ -115,7 +112,6 @@ const projects: Project[] = [
     categories: ["software", "data"],
     image: img("insightubc.png"),
     imageAlt: "InsightUBC project screenshot",
-    accent: "#00eaff",
     links: [],
   },
   {
@@ -128,7 +124,6 @@ const projects: Project[] = [
     categories: ["software"],
     image: img("journifyai.png"),
     imageAlt: "JournifyAI project screenshot",
-    accent: "#ff3e9d",
     links: [
       { label: "DEVPOST", href: "https://devpost.com/software/journifyai" },
       { label: "GITHUB", href: "https://github.com/JasonCai0522/StormHacks2025" },
@@ -144,7 +139,6 @@ const projects: Project[] = [
     categories: ["software", "data"],
     image: img("nodeify.png"),
     imageAlt: "Nodeify project thumbnail",
-    accent: "#ffff00",
     links: [
       { label: "VIDEO", href: "https://www.youtube.com/watch?v=lXix4OAQFw4" },
       { label: "DEVPOST", href: "https://devpost.com/software/nodeify" },
@@ -161,7 +155,6 @@ const projects: Project[] = [
     categories: ["software"],
     image: img("muffin-time.jpg"),
     imageAlt: "Muffin Time game screenshot",
-    accent: "#ffb000",
     links: [{ label: "PLAY", href: "https://py3.codeskulptor.org/#user310_RKAVpWhNFN_4.py" }],
   },
   {
@@ -174,7 +167,6 @@ const projects: Project[] = [
     categories: ["hardware"],
     image: img("pi-security-robot.jpg"),
     imageAlt: "Raspberry Pi security robot photo",
-    accent: "#ff3e9d",
     links: [],
   },
   {
@@ -187,7 +179,6 @@ const projects: Project[] = [
     categories: ["data"],
     image: img("voice-conversion.png"),
     imageAlt: "AI singing voice conversion project screenshot",
-    accent: "#00a2ff",
     links: [],
   },
 ];
@@ -615,10 +606,7 @@ function App() {
                     />
                   )}
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
-                  <div
-                    className="absolute bottom-0 left-0 bg-black px-4 py-3 text-xs"
-                    style={{ color: project.accent }}
-                  >
+                  <div className="absolute bottom-0 left-0 bg-black px-4 py-3 text-xs text-[#ff0]">
                     FILE {project.id} / {project.title}
                   </div>
                 </div>
