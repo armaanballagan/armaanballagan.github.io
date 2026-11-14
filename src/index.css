@@ -1,0 +1,321 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Press Start 2P", monospace;
+  --font-display: "VT323", monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-width: 320px;
+    background: #000;
+    color: #fff;
+    font-family: "Press Start 2P", monospace;
+    -webkit-font-smoothing: none;
+    image-rendering: pixelated;
+  }
+
+  ::selection {
+    color: #000;
+    background: #ff0;
+  }
+
+  button,
+  a {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+  .image-pixel {
+    image-rendering: pixelated;
+  }
+
+  .star-field {
+    background-color: #000;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgb(255 255 255 / 65%) 0 1px, transparent 1px),
+      radial-gradient(circle at 82% 16%, rgb(255 255 255 / 45%) 0 1px, transparent 1px),
+      radial-gradient(circle at 30% 75%, rgb(255 255 255 / 35%) 0 1px, transparent 1px),
+      radial-gradient(circle at 72% 62%, rgb(255 255 255 / 55%) 0 1px, transparent 1px);
+    background-size:
+      180px 180px,
+      260px 260px,
+      220px 220px,
+      320px 320px;
+  }
+
+  .text-outline {
+    color: #000;
+    -webkit-text-stroke: 2px #fff;
+    text-shadow: 4px 4px 0 #f00;
+  }
+
+  .dialog-box {
+    position: relative;
+    border: 4px solid #fff;
+    padding: 1.5rem;
+    background: #000;
+    box-shadow: 0 0 0 4px #000;
+  }
+
+  .dialog-caret {
+    position: absolute;
+    right: 1.25rem;
+    bottom: 0.75rem;
+    color: #fff;
+    font-size: 0.7rem;
+    animation: blink 900ms steps(1) infinite;
+  }
+
+  .battle-window {
+    border: 4px solid #fff;
+    background:
+      linear-gradient(rgb(0 0 0 / 72%), rgb(0 0 0 / 90%)),
+      url("/undertale/screen10.png") center / cover;
+    box-shadow: 12px 12px 0 rgb(255 255 255 / 10%);
+  }
+
+  .soul-heart {
+    filter: drop-shadow(0 0 14px rgb(255 0 0 / 70%));
+    animation: soul 2.4s ease-in-out infinite;
+  }
+
+  .music-player {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem 0.75rem 0.75rem;
+    border: 2px solid rgb(255 255 255 / 25%);
+    background: rgb(0 0 0 / 78%);
+  }
+
+  .gramophone-button {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    color: #fff;
+    transition:
+      color 120ms steps(2),
+      transform 120ms steps(2);
+  }
+
+  .gramophone-button:hover,
+  .gramophone-button.is-playing {
+    color: #ff0;
+    transform: translateY(-2px);
+  }
+
+  .gramophone-button.is-playing circle:first-of-type {
+    transform-origin: 34px 44px;
+    animation: record-spin 1.2s steps(8) infinite;
+  }
+
+  .sound-bars {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 1.75rem;
+    margin-left: auto;
+  }
+
+  .sound-bars i {
+    width: 3px;
+    height: 4px;
+    background: rgb(255 255 255 / 20%);
+  }
+
+  .sound-bars.is-playing i {
+    background: #ff0;
+    animation: sound-bar 600ms steps(3) infinite alternate;
+  }
+
+  .sound-bars.is-playing i:nth-child(2) {
+    animation-delay: 140ms;
+  }
+
+  .sound-bars.is-playing i:nth-child(3) {
+    animation-delay: 280ms;
+  }
+
+  .sound-bars.is-playing i:nth-child(4) {
+    animation-delay: 70ms;
+  }
+
+  .dog-swap {
+    position: relative;
+  }
+
+  .dog-swap img {
+    position: absolute;
+    inset: 0;
+  }
+
+  .dog-bark,
+  .dog-swap:hover .dog-normal {
+    opacity: 0;
+  }
+
+  .dog-swap:hover .dog-bark {
+    opacity: 1;
+  }
+
+  .pixel-link {
+    position: relative;
+    color: rgb(255 255 255 / 60%);
+    transition: color 120ms steps(2);
+  }
+
+  .pixel-link:hover {
+    color: #ff0;
+  }
+
+  .pixel-link:hover::before {
+    position: absolute;
+    left: -1.25rem;
+    content: "*";
+  }
+
+  .game-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    padding: 0.75rem 1rem;
+    color: #ffb000;
+    font-size: 0.65rem;
+    line-height: 1.5;
+    border: 3px solid #ffb000;
+    background: #000;
+    transition:
+      color 120ms steps(2),
+      border-color 120ms steps(2),
+      transform 120ms steps(2);
+  }
+
+  .game-button:hover {
+    color: #ff0;
+    border-color: #ff0;
+    transform: translateY(-2px);
+  }
+
+  .game-button-fight {
+    color: #fff;
+    border-color: #f00;
+  }
+
+  .project-option {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 4.5rem;
+    padding: 0.75rem;
+    color: rgb(255 255 255 / 55%);
+    font-size: 0.7rem;
+    text-align: left;
+    border-bottom: 2px solid rgb(255 255 255 / 18%);
+  }
+
+  .project-option:last-child {
+    border-bottom: 0;
+  }
+
+  .project-option:hover,
+  .project-option.is-active {
+    color: #fff;
+    background: rgb(255 255 255 / 8%);
+  }
+
+  .save-row {
+    display: grid;
+    grid-template-columns: 0.35fr 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    min-height: 7rem;
+    padding: 1rem;
+    border-bottom: 2px solid rgb(255 255 255 / 20%);
+  }
+
+  .save-row:last-child {
+    border-bottom: 0;
+  }
+}
+
+@keyframes soul {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(28px, -18px) scale(0.95);
+  }
+  50% {
+    transform: translate(-22px, 24px) scale(1.05);
+  }
+  75% {
+    transform: translate(18px, 34px) scale(0.98);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes record-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sound-bar {
+  to {
+    height: 1.6rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .text-outline {
+    -webkit-text-stroke-width: 1px;
+    text-shadow: 3px 3px 0 #f00;
+  }
+
+  .save-row {
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+  }
+
+  .save-row > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .music-player {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
