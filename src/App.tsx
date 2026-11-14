@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { MusicPlayer, playSound, playlist } from "./audio";
 import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
-import { NameLogo } from "./NameLogo";
 
 type IconProps = { className?: string };
 
@@ -343,8 +342,13 @@ function App() {
                 * A SOFTWARE ENGINEER APPEARED.
               </p>
               <h1>
-                <span className="sr-only">Armaan Ballagan</span>
-                <NameLogo className="block h-auto w-full max-w-[640px]" />
+                <img
+                  src={`${import.meta.env.BASE_URL}name-logo.png`}
+                  alt="Armaan Ballagan"
+                  width={990}
+                  height={429}
+                  className="image-smooth block h-auto w-full max-w-[640px]"
+                />
               </h1>
               <div className="dialog-box mt-10 max-w-2xl">
                 <p className="flex text-base leading-[1.9] sm:text-xl">
