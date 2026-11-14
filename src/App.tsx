@@ -3,6 +3,7 @@ import { MusicPlayer, dogsong, playSound, playlist } from "./audio";
 import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
 import { SansToggle } from "./SansToggle";
+import { NameIntro } from "./NameIntro";
 
 type IconProps = { className?: string };
 
@@ -398,15 +399,7 @@ function App() {
               <p className="mb-7 text-xs leading-loose text-[#ff0]">
                 * A SOFTWARE ENGINEER APPEARED.
               </p>
-              <h1>
-                <img
-                  src={`${import.meta.env.BASE_URL}name-logo.png`}
-                  alt="Armaan Ballagan"
-                  width={990}
-                  height={429}
-                  className="image-smooth block h-auto w-full max-w-[640px]"
-                />
-              </h1>
+              <NameIntro />
               <div className="dialog-box mt-10 max-w-2xl">
                 <p className="flex text-base leading-[1.9] sm:text-xl">
                   <span className="mr-3 shrink-0">*</span>
