@@ -17,7 +17,7 @@ npm run preview  # serve the built site
 2. In the repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 3. Every push to `main` runs `.github/workflows/deploy.yml`, which builds and publishes `dist/`.
 
-If you host it under a sub-path instead (e.g. `yourusername.github.io/portfolio`), set `base: "/portfolio/"` in `vite.config.ts` and update the `/undertale/...` image paths.
+`vite.config.ts` uses a relative base (`./`), so the built site works at the root of `yourusername.github.io` or under any sub-path without changes.
 
 ## Structure
 

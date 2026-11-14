@@ -1,6 +1,6 @@
 # Project notes for Claude
 
-Personal portfolio site for Armaan Ballagan (UBC CS student), Undertale-themed, to be hosted on GitHub Pages at the user's `<username>.github.io` repo (user site, so Vite `base` is `/`).
+Personal portfolio site for Armaan Ballagan (UBC CS student), Undertale-themed, to be hosted on GitHub Pages at the user's `<username>.github.io` repo (Vite `base` is `./` so the build works at any path; image paths use `import.meta.env.BASE_URL`).
 
 - Source of truth for the design: Armaan's Figma Make file "Undertale Software Engineer Portfolio". This repo is a faithful export of it.
 - Stack: Vite + React 19 + TypeScript + Tailwind v4 (`@tailwindcss/vite`). No backend; static only.

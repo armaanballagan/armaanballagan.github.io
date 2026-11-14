@@ -3,10 +3,9 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 
-// Served from the root of yourusername.github.io, so base is "/".
-// If you ever host this under a sub-path (e.g. /portfolio/), change base to "/portfolio/".
+// Relative base: works at yourusername.github.io, under a sub-path, and in previews.
 export default defineConfig({
-  base: "/",
+  base: "./",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

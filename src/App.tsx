@@ -58,7 +58,7 @@ const projects = [
     description:
       "A collaborative observability platform helping engineering teams find and fix production issues in real time.",
     stack: ["REACT", "TYPESCRIPT", "NODE.JS"],
-    image: "/undertale/screen1.png",
+    image: `${import.meta.env.BASE_URL}undertale/screen1.png`,
     imageAlt: "Official Undertale screenshot showing the history of humans and monsters",
     accent: "#ffb000",
   },
@@ -69,7 +69,7 @@ const projects = [
     description:
       "An intelligent research workspace that turns scattered customer feedback into clear product decisions.",
     stack: ["NEXT.JS", "POSTGRESQL", "AI"],
-    image: "/undertale/screen10.png",
+    image: `${import.meta.env.BASE_URL}undertale/screen10.png`,
     imageAlt: "Official Undertale screenshot showing a human and monster before a castle",
     accent: "#00a2ff",
   },
@@ -80,7 +80,7 @@ const projects = [
     description:
       "A fast, focused knowledge base that keeps technical documentation close to the code.",
     stack: ["REACT", "GO", "GRAPHQL"],
-    image: "/undertale/screen7.png",
+    image: `${import.meta.env.BASE_URL}undertale/screen7.png`,
     imageAlt: "Official Undertale screenshot featuring Papyrus",
     accent: "#ff3e9d",
   },
@@ -326,12 +326,12 @@ function App() {
                   aria-label="Make the Annoying Dog bark"
                 >
                   <img
-                    src="/undertale/dog.png"
+                    src={`${import.meta.env.BASE_URL}undertale/dog.png`}
                     alt="Annoying Dog from Undertale"
                     className="dog-normal image-pixel size-full object-contain"
                   />
                   <img
-                    src="/undertale/dog-bark.png"
+                    src={`${import.meta.env.BASE_URL}undertale/dog-bark.png`}
                     alt=""
                     className="dog-bark image-pixel size-full object-contain"
                     aria-hidden="true"
@@ -351,7 +351,7 @@ function App() {
               <p className="mb-5 text-[10px] tracking-widest text-[#00eaff]">AREA 01 / ABOUT</p>
               <div className="overflow-hidden border-4 border-white">
                 <img
-                  src="/undertale/screen2.png"
+                  src={`${import.meta.env.BASE_URL}undertale/screen2.png`}
                   alt="Official Undertale screenshot showing a human fallen in the Ruins"
                   className="image-pixel aspect-[4/3] w-full object-cover"
                 />
