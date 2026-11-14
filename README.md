@@ -41,3 +41,12 @@ Put project images in `public/projects/` with these exact names (any missing one
 | `voice-conversion.png` | your own screenshot of the GUI |
 
 To use a different file name or format, change the `img("...")` call for that project in `src/App.tsx`.
+
+## Sounds and music
+
+Everything audio lives in **`src/audio.ts`**:
+
+- **`soundEffects`**: every sound effect, labelled with where it plays. Each has `src: null` until you add a real file; until then a generic browser-generated placeholder plays.
+- **`playlist`**: the songs for the gramophone music player, in order. Add as many as you like; a NEXT TRACK button appears once there are two or more, and songs auto-advance.
+
+To use a real file: put it in `public/audio/sfx/` or `public/audio/music/`, then set `src: asset("audio/sfx/your-file.mp3")` on that entry.

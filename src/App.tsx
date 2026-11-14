@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { MusicPlayer, playSound, playlist } from "./audio";
 
 type IconProps = { className?: string };
 
@@ -43,12 +44,6 @@ function Gramophone({ className = "size-16" }: IconProps) {
     </svg>
   );
 }
-
-type MusicEngine = {
-  context: AudioContext;
-  master: GainNode;
-  timer: number;
-};
 
 type Category = "software" | "data" | "hardware";
 
@@ -213,7 +208,10 @@ function App() {
   const [missingImages, setMissingImages] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
-  const musicRef = useRef<MusicEngine | null>(null);
+  const [trackIndex, setTrackIndex] = useState(0);
+  const musicRef = useRef<MusicPlayer | null>(null);
+  const trackIndexRef = useRef(0);
+  const track = playlist[trackIndex];
   const visibleProjects = projects.filter(
     (item) => category === "all" || item.categories.includes(category),
   );
@@ -229,83 +227,46 @@ function App() {
   };
 
   useEffect(() => {
-    return () => {
-      if (musicRef.current) {
-        window.clearInterval(musicRef.current.timer);
-        void musicRef.current.context.close();
-      }
-    };
+    return () => musicRef.current?.stop();
   }, []);
 
-  const scheduleChiptune = (context: AudioContext, destination: AudioNode) => {
-    const notes = [
-      261.63, 329.63, 392, 523.25, 392, 329.63, 293.66, 349.23, 440, 587.33, 440, 349.23,
-    ];
-    const start = context.currentTime + 0.03;
+  const getPlayer = () => {
+    if (!musicRef.current) {
+      const player = new MusicPlayer();
+      player.onTrackEnd = () => goToTrack(trackIndexRef.current + 1, true);
+      player.onError = () => {
+        player.stop();
+        setMusicPlaying(false);
+      };
+      musicRef.current = player;
+    }
+    return musicRef.current;
+  };
 
-    notes.forEach((frequency, index) => {
-      const oscillator = context.createOscillator();
-      const envelope = context.createGain();
-      const noteStart = start + index * 0.18;
-      oscillator.type = index % 4 === 3 ? "square" : "triangle";
-      oscillator.frequency.setValueAtTime(frequency, noteStart);
-      envelope.gain.setValueAtTime(0.0001, noteStart);
-      envelope.gain.exponentialRampToValueAtTime(0.11, noteStart + 0.015);
-      envelope.gain.exponentialRampToValueAtTime(0.0001, noteStart + 0.15);
-      oscillator.connect(envelope).connect(destination);
-      oscillator.start(noteStart);
-      oscillator.stop(noteStart + 0.17);
-    });
+  const goToTrack = (index: number, keepPlaying: boolean) => {
+    const next = (index + playlist.length) % playlist.length;
+    trackIndexRef.current = next;
+    setTrackIndex(next);
+    if (keepPlaying) {
+      getPlayer().play(playlist[next]);
+      setMusicPlaying(true);
+    }
   };
 
   const toggleMusic = () => {
-    if (musicRef.current) {
-      const engine = musicRef.current;
-      window.clearInterval(engine.timer);
-      engine.master.gain.setTargetAtTime(0.0001, engine.context.currentTime, 0.04);
-      window.setTimeout(() => void engine.context.close(), 150);
-      musicRef.current = null;
+    const player = getPlayer();
+    if (musicPlaying) {
+      player.stop();
       setMusicPlaying(false);
       return;
     }
-
-    const context = new AudioContext();
-    const master = context.createGain();
-    master.gain.value = 0.42;
-    master.connect(context.destination);
-    scheduleChiptune(context, master);
-    const timer = window.setInterval(() => scheduleChiptune(context, master), 2160);
-    musicRef.current = { context, master, timer };
+    player.play(playlist[trackIndexRef.current]);
     setMusicPlaying(true);
   };
 
-  const playBark = () => {
-    const context = new AudioContext();
-    const duration = 0.34;
-    const buffer = context.createBuffer(1, context.sampleRate * duration, context.sampleRate);
-    const data = buffer.getChannelData(0);
+  const nextTrack = () => goToTrack(trackIndexRef.current + 1, musicPlaying);
 
-    for (let index = 0; index < data.length; index += 1) {
-      const time = index / context.sampleRate;
-      const envelope = Math.exp(-time * 11);
-      data[index] = (Math.random() * 2 - 1) * envelope;
-    }
-
-    const source = context.createBufferSource();
-    const filter = context.createBiquadFilter();
-    const gain = context.createGain();
-    filter.type = "bandpass";
-    filter.frequency.setValueAtTime(420, context.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(180, context.currentTime + duration);
-    filter.Q.value = 2.4;
-    gain.gain.setValueAtTime(0.5, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + duration);
-    source.buffer = buffer;
-    source.connect(filter).connect(gain).connect(context.destination);
-    source.start();
-    source.stop(context.currentTime + duration);
-    source.addEventListener("ended", () => void context.close());
-  };
+  const playBark = () => playSound("dogBark");
 
   const copyEmail = async () => {
     try {
@@ -410,11 +371,18 @@ function App() {
                     {musicPlaying ? "NOW PLAYING" : "MUSIC PLAYER / OFF"}
                   </p>
                   <p className="mt-1 text-[9px] leading-loose text-[#ff0] sm:text-[10px]">
-                    “A QUIET DETERMINATION”
+                    “{track.title}”
                   </p>
-                  <p className="mt-1 text-[7px] leading-loose text-white/30">
-                    ORIGINAL BROWSER-GENERATED CHIPTUNE
-                  </p>
+                  <p className="mt-1 text-[7px] leading-loose text-white/30">{track.credit}</p>
+                  {playlist.length > 1 && (
+                    <button
+                      onClick={nextTrack}
+                      className="mt-2 inline-flex min-h-8 items-center gap-2 text-[8px] text-white/60 hover:text-[#ff0]"
+                      aria-label="Next song"
+                    >
+                      NEXT TRACK ({trackIndex + 1}/{playlist.length}) <Arrow className="size-3" />
+                    </button>
+                  )}
                 </div>
                 <span
                   className={`sound-bars ${musicPlaying ? "is-playing" : ""}`}

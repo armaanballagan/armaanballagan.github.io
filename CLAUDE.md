@@ -7,4 +7,5 @@ Personal portfolio site for Armaan Ballagan (UBC CS student), Undertale-themed, 
 - Single page with anchor navigation (`#about`, `#work`, `#experience`, `#contact`), no router.
 - Content is still the Figma Make placeholder persona ("Alex Morgan", PULSE/ATLAS/THREAD, fake jobs and email). Next step is swapping in Armaan's real info: projects like Street Striker (SF6 full-body motion controller, ESP32 + MPU-6050 gloves + camera posture) and AirSign (gesture-to-speech helper, nwPlus HackCamp 2026, MediaPipe).
 - Deploy: `.github/workflows/deploy.yml` builds `dist/` and publishes via GitHub Actions on push to `main`. Pages source must be set to "GitHub Actions".
+- All sound effects and the music playlist are in `src/audio.ts` (`soundEffects`, `playlist`); App.tsx calls `playSound("name")` and `MusicPlayer`. New sounds go there with a clear label and `usedIn`.
 - Keep the pixel look: Press Start 2P / VT323 fonts, 2–4px white borders, `steps()` animations, `image-rendering: pixelated`.
