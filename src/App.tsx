@@ -677,8 +677,38 @@ function App() {
                   <div className="absolute bottom-0 left-0 bg-black px-4 py-3 text-xs text-[#ff0]">
                     FILE {project.id} / {project.title}
                   </div>
+                  {project.links.length > 0 && (
+                    <div className="absolute right-3 top-3 hidden max-w-[calc(100%-1.5rem)] flex-wrap justify-end gap-2 sm:flex">
+                      {project.links.map((link) => (
+                        <a
+                          key={link.label}
+                          href={link.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="project-link"
+                        >
+                          {link.label} <Arrow className="size-3" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="p-6 sm:p-8">
+                  {project.links.length > 0 && (
+                    <div className="mb-6 flex flex-wrap gap-2 sm:hidden">
+                      {project.links.map((link) => (
+                        <a
+                          key={link.label}
+                          href={link.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="project-link"
+                        >
+                          {link.label} <Arrow className="size-3" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <h3 className="text-3xl sm:text-4xl">{project.title}</h3>
                     <span className="text-[9px] leading-loose text-white/45">{project.role}</span>
@@ -694,25 +724,6 @@ function App() {
                       </span>
                     ))}
                   </div>
-                  {project.links.length > 0 ? (
-                    <div className="mt-8 flex flex-wrap gap-x-8 gap-y-4">
-                      {project.links.map((link) => (
-                        <a
-                          key={link.label}
-                          href={link.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex min-h-11 items-center gap-3 text-[10px] text-[#ff0] hover:text-white"
-                        >
-                          {link.label} <Arrow />
-                        </a>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="mt-8 text-[10px] leading-loose text-white/40">
-                      * MORE DETAILS COMING SOON.
-                    </p>
-                  )}
                 </div>
               </article>
             </div>

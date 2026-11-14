@@ -467,3 +467,30 @@
     translate: 0 -6px;
   }
 }
+
+@layer utilities {
+  /* Link chips overlaid on the project thumbnail. */
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    color: #ff0;
+    font-size: 0.6rem;
+    border: 2px solid #ff0;
+    background: #000;
+    transition:
+      color 120ms steps(2),
+      border-color 120ms steps(2),
+      transform 120ms steps(2);
+  }
+
+  .project-link:hover,
+  .project-link:focus-visible {
+    color: #fff;
+    border-color: #fff;
+    transform: translateY(-2px);
+    outline: none;
+  }
+}
