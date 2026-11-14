@@ -319,3 +319,30 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+@layer utilities {
+  .category-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.5rem;
+    color: rgb(255 255 255 / 60%);
+    font-size: 0.55rem;
+    border: 2px solid rgb(255 255 255 / 35%);
+    background: #000;
+    transition:
+      color 120ms steps(2),
+      border-color 120ms steps(2);
+  }
+
+  .category-tab:hover {
+    color: #fff;
+    border-color: #fff;
+  }
+
+  .category-tab.is-active {
+    color: #ff0;
+    border-color: #ff0;
+  }
+}

@@ -24,3 +24,20 @@ npm run preview  # serve the built site
 - `src/App.tsx` – the whole page (header, hero, about, work, experience, contact, footer). Project and experience data live in the `projects` and `experience` arrays at the top.
 - `src/index.css` – Tailwind import, pixel fonts, and the custom classes (`dialog-box`, `game-button`, `battle-window`, etc.).
 - `public/undertale/` – image assets carried over from the Figma Make file.
+
+## Project thumbnails
+
+Put project images in `public/projects/` with these exact names (any missing one shows a pixel placeholder):
+
+| File | Where to get it |
+|---|---|
+| `street-striker.png` | https://d112y698adiu2z.cloudfront.net/photos/production/software_thumbnail_photos/005/513/242/datas/medium.png |
+| `airsign.png` | https://d112y698adiu2z.cloudfront.net/photos/production/software_thumbnail_photos/005/816/290/datas/medium.png |
+| `journifyai.png` | https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/003/824/064/datas/original.png |
+| `nodeify.png` | https://d112y698adiu2z.cloudfront.net/photos/production/software_thumbnail_photos/004/183/709/datas/medium.PNG |
+| `muffin-time.jpg` | https://armaanballagan.github.io/Old-Portfolio/images/muffin_time.jpg |
+| `insightubc.png` | your own screenshot of the dashboard |
+| `pi-security-robot.jpg` | your own photo of the robot |
+| `voice-conversion.png` | your own screenshot of the GUI |
+
+To use a different file name or format, change the `img("...")` call for that project in `src/App.tsx`.

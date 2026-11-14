@@ -50,40 +50,154 @@ type MusicEngine = {
   timer: number;
 };
 
-const projects = [
+type Category = "software" | "data" | "hardware";
+
+type ProjectLink = { label: string; href: string };
+
+type Project = {
+  id: string;
+  title: string;
+  role: string;
+  description: string;
+  stack: string[];
+  categories: Category[];
+  image: string;
+  imageAlt: string;
+  accent: string;
+  links: ProjectLink[];
+};
+
+// Thumbnails live in public/projects/. If a file is missing, a pixel placeholder shows instead.
+const img = (file: string) => `${import.meta.env.BASE_URL}projects/${file}`;
+
+const projects: Project[] = [
   {
     id: "01",
-    title: "PULSE",
-    role: "FULL-STACK / 2024",
+    title: "STREET STRIKER",
+    role: "STORMHACKS 2026",
     description:
-      "A collaborative observability platform helping engineering teams find and fix production issues in real time.",
-    stack: ["REACT", "TYPESCRIPT", "NODE.JS"],
-    image: `${import.meta.env.BASE_URL}undertale/screen1.png`,
-    imageAlt: "Official Undertale screenshot showing the history of humans and monsters",
+      "A full-body motion controller for Street Fighter 6. A camera tracks your posture to lean, crouch and jump, while ESP32 gloves with IMU sensors turn real punches into light and heavy attacks, sent as standard gamepad inputs.",
+    stack: ["PYTHON", "ESP32", "IMU", "COMPUTER VISION"],
+    categories: ["hardware", "software"],
+    image: img("street-striker.png"),
+    imageAlt: "Street Striker project thumbnail",
     accent: "#ffb000",
+    links: [
+      { label: "VIDEO", href: "https://youtu.be/Oxzf_ln4UWg" },
+      { label: "DEVPOST", href: "https://devpost.com/software/a-loptcx" },
+      { label: "GITHUB", href: "https://github.com/JasonCai0522/Stormhacks2026" },
+    ],
   },
   {
     id: "02",
-    title: "ATLAS",
-    role: "PRODUCT ENGINEERING / 2023",
+    title: "AIRSIGN",
+    role: "HACKCAMP 2026",
     description:
-      "An intelligent research workspace that turns scattered customer feedback into clear product decisions.",
-    stack: ["NEXT.JS", "POSTGRESQL", "AI"],
-    image: `${import.meta.env.BASE_URL}undertale/screen10.png`,
-    imageAlt: "Official Undertale screenshot showing a human and monster before a castle",
+      "A webcam-based sign language interpreter and practice tool. It recognizes hand signs in real time, speaks them aloud, captions replies, and quizzes you on new signs, all running in the browser so video stays on your device.",
+    stack: ["NEXT.JS", "TYPESCRIPT", "MEDIAPIPE", "ONNX RUNTIME"],
+    categories: ["software", "data"],
+    image: img("airsign.png"),
+    imageAlt: "AirSign project thumbnail",
     accent: "#00a2ff",
+    links: [
+      { label: "LIVE SITE", href: "https://www.talktothehand.cooking/" },
+      { label: "VIDEO", href: "https://www.youtube.com/watch?v=KZTJMp2F96Y" },
+      { label: "DEVPOST", href: "https://devpost.com/software/airsign-3of20w" },
+      { label: "GITHUB", href: "https://github.com/Veer03/AirSign" },
+    ],
   },
   {
     id: "03",
-    title: "THREAD",
-    role: "FRONTEND / 2022",
+    title: "INSIGHTUBC",
+    role: "COURSE PROJECT / 2026",
     description:
-      "A fast, focused knowledge base that keeps technical documentation close to the code.",
-    stack: ["REACT", "GO", "GRAPHQL"],
-    image: `${import.meta.env.BASE_URL}undertale/screen7.png`,
-    imageAlt: "Official Undertale screenshot featuring Papyrus",
-    accent: "#ff3e9d",
+      "A full-stack data platform for managing, querying and visualizing UBC course, section, building and room datasets through REST endpoints and a Chart.js dashboard, built test-first with a layered Express backend.",
+    stack: ["TYPESCRIPT", "EXPRESS", "MOCHA/CHAI", "CHART.JS"],
+    categories: ["software", "data"],
+    image: img("insightubc.png"),
+    imageAlt: "InsightUBC project screenshot",
+    accent: "#00eaff",
+    links: [],
   },
+  {
+    id: "04",
+    title: "JOURNIFYAI",
+    role: "STORMHACKS 2025",
+    description:
+      "A journaling app where you write entries as usual, then talk them through with Gemini-powered AI coaches modeled on inspirational figures, for the perspective you need, not the one you want.",
+    stack: ["REACT", "EXPRESS", "MONGODB", "GEMINI"],
+    categories: ["software"],
+    image: img("journifyai.png"),
+    imageAlt: "JournifyAI project screenshot",
+    accent: "#ff3e9d",
+    links: [
+      { label: "DEVPOST", href: "https://devpost.com/software/journifyai" },
+      { label: "GITHUB", href: "https://github.com/JasonCai0522/StormHacks2025" },
+    ],
+  },
+  {
+    id: "05",
+    title: "NODEIFY",
+    role: "NWHACKS 2026",
+    description:
+      "A connection manager that merges your emails and contacts into one visual network map, filters for conversations that need attention, and flags relationships that have gone cold.",
+    stack: ["NEXT.JS", "SNOWFLAKE", "GEMINI", "GMAIL API"],
+    categories: ["software", "data"],
+    image: img("nodeify.png"),
+    imageAlt: "Nodeify project thumbnail",
+    accent: "#ffff00",
+    links: [
+      { label: "VIDEO", href: "https://www.youtube.com/watch?v=lXix4OAQFw4" },
+      { label: "DEVPOST", href: "https://devpost.com/software/nodeify" },
+      { label: "GITHUB", href: "https://github.com/jagmansidhu/Nodify" },
+    ],
+  },
+  {
+    id: "06",
+    title: "MUFFIN TIME",
+    role: "INDIE GAME / PYTHON",
+    description:
+      "An indie platformer built with object-oriented programming, with hand-made levels and intentionally challenging gameplay.",
+    stack: ["PYTHON", "OOP", "LEVEL DESIGN"],
+    categories: ["software"],
+    image: img("muffin-time.jpg"),
+    imageAlt: "Muffin Time game screenshot",
+    accent: "#ffb000",
+    links: [{ label: "PLAY", href: "https://py3.codeskulptor.org/#user310_RKAVpWhNFN_4.py" }],
+  },
+  {
+    id: "07",
+    title: "PI SECURITY ROBOT",
+    role: "TEAM PROJECT",
+    description:
+      "A Raspberry Pi security robot that uses a camera and OpenCV face detection to spot people, then rotates on its motors and fires a spray mechanism in response.",
+    stack: ["PYTHON", "OPENCV", "RASPBERRY PI", "MOTORS"],
+    categories: ["hardware"],
+    image: img("pi-security-robot.jpg"),
+    imageAlt: "Raspberry Pi security robot photo",
+    accent: "#ff3e9d",
+    links: [],
+  },
+  {
+    id: "08",
+    title: "AI VOICE CONVERSION",
+    role: "PERSONAL / 2023",
+    description:
+      "A pipeline that splits vocals out of YouTube songs and converts them into other singers' voices, with a Tkinter GUI and custom voice models trained on myself and my friends.",
+    stack: ["PYTHON", "SOFTVC VITS", "DEMUCS", "TKINTER"],
+    categories: ["data"],
+    image: img("voice-conversion.png"),
+    imageAlt: "AI singing voice conversion project screenshot",
+    accent: "#00a2ff",
+    links: [],
+  },
+];
+
+const categoryTabs: { id: "all" | Category; label: string }[] = [
+  { id: "all", label: "ALL" },
+  { id: "software", label: "SOFTWARE" },
+  { id: "data", label: "DATA" },
+  { id: "hardware", label: "HARDWARE" },
 ];
 
 const experience = [
@@ -95,10 +209,24 @@ const experience = [
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeProject, setActiveProject] = useState(0);
+  const [category, setCategory] = useState<"all" | Category>("all");
+  const [missingImages, setMissingImages] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const musicRef = useRef<MusicEngine | null>(null);
+  const visibleProjects = projects.filter(
+    (item) => category === "all" || item.categories.includes(category),
+  );
   const project = projects[activeProject];
+
+  const pickCategory = (next: "all" | Category) => {
+    setCategory(next);
+    const stillVisible = next === "all" || projects[activeProject].categories.includes(next);
+    if (!stillVisible) {
+      const first = projects.findIndex((item) => item.categories.includes(next as Category));
+      if (first >= 0) setActiveProject(first);
+    }
+  };
 
   useEffect(() => {
     return () => {
@@ -413,35 +541,71 @@ function App() {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr]">
-              <div className="border-4 border-white p-3">
-                {projects.map((item, index) => (
-                  <button
-                    key={item.title}
-                    onClick={() => setActiveProject(index)}
-                    className={`project-option ${activeProject === index ? "is-active" : ""}`}
-                    aria-pressed={activeProject === index}
-                  >
-                    <span className="w-7">
-                      {activeProject === index ? <Heart className="size-4 text-[#f00]" /> : ""}
-                    </span>
-                    <span className="w-8 text-white/35">{item.id}</span>
-                    <span>{item.title}</span>
-                    <span className="ml-auto hidden text-[9px] text-white/35 sm:inline">
-                      {item.role}
-                    </span>
-                  </button>
-                ))}
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter projects">
+                  {categoryTabs.map((tab) => {
+                    const active = category === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => pickCategory(tab.id)}
+                        aria-pressed={active}
+                        className={`category-tab ${active ? "is-active" : ""}`}
+                      >
+                        {active && <Heart className="size-3 text-[#f00]" />}
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="border-4 border-white p-3">
+                  {visibleProjects.map((item) => {
+                    const index = projects.indexOf(item);
+                    const active = activeProject === index;
+                    return (
+                      <button
+                        key={item.title}
+                        onClick={() => setActiveProject(index)}
+                        className={`project-option ${active ? "is-active" : ""}`}
+                        aria-pressed={active}
+                      >
+                        <span className="w-7 shrink-0">
+                          {active ? <Heart className="size-4 text-[#f00]" /> : ""}
+                        </span>
+                        <span className="w-8 shrink-0 text-white/35">{item.id}</span>
+                        <span className="flex min-w-0 flex-col gap-2 leading-relaxed">
+                          <span>{item.title}</span>
+                          <span className="text-[8px] text-white/35">{item.role}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <article className="border-4 border-white">
                 <div className="relative aspect-[16/9] overflow-hidden border-b-4 border-white bg-[#111]">
-                  <img
-                    key={project.image}
-                    src={project.image}
-                    alt={project.imageAlt}
-                    className="image-pixel h-full w-full object-cover opacity-80"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
+                  {missingImages[project.image] ? (
+                    <div className="star-field grid h-full w-full place-items-center p-6 text-center">
+                      <div>
+                        <Heart className="soul-heart mx-auto size-10 text-[#f00]" />
+                        <p className="mt-6 text-[9px] leading-loose text-white/50">
+                          * THE SCREENSHOT IS STILL OUT EXPLORING.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <img
+                      key={project.image}
+                      src={project.image}
+                      alt={project.imageAlt}
+                      onError={() =>
+                        setMissingImages((previous) => ({ ...previous, [project.image]: true }))
+                      }
+                      className="h-full w-full object-cover opacity-80"
+                    />
+                  )}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
                   <div
                     className="absolute bottom-0 left-0 bg-black px-4 py-3 text-xs"
                     style={{ color: project.accent }}
@@ -464,13 +628,25 @@ function App() {
                       </span>
                     ))}
                   </div>
-                  <a
-                    href="#"
-                    onClick={(event) => event.preventDefault()}
-                    className="mt-8 inline-flex items-center gap-3 text-[10px] text-[#ff0] hover:text-white"
-                  >
-                    READ CASE STUDY <Arrow />
-                  </a>
+                  {project.links.length > 0 ? (
+                    <div className="mt-8 flex flex-wrap gap-x-8 gap-y-4">
+                      {project.links.map((link) => (
+                        <a
+                          key={link.label}
+                          href={link.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex min-h-11 items-center gap-3 text-[10px] text-[#ff0] hover:text-white"
+                        >
+                          {link.label} <Arrow />
+                        </a>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-8 text-[10px] leading-loose text-white/40">
+                      * MORE DETAILS COMING SOON.
+                    </p>
+                  )}
                 </div>
               </article>
             </div>
