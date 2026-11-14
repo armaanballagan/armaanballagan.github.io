@@ -506,13 +506,6 @@ function App() {
                     </p>
                     <p className="mt-1 text-[7px] leading-loose text-white/30">{track.credit}</p>
                     <div className="mt-3 flex flex-wrap items-center gap-2">
-                      <button
-                        onClick={toggleMusic}
-                        className={`player-control ${audioActive ? "is-on" : ""}`}
-                        aria-label={audioActive ? "Turn music off" : "Turn music on"}
-                      >
-                        {audioActive ? "■ OFF" : "▶ ON"}
-                      </button>
                       {playlist.length > 1 && (
                         <>
                           <button
