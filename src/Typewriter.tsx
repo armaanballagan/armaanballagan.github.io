@@ -22,7 +22,7 @@ const PAUSE_AFTER = /[.,!?;:—]/;
  * - Click anywhere on it to finish instantly.
  * - The full text reserves its space up front, so the layout never jumps.
  */
-export function Typewriter({ parts, voice = "typewriter", speed = 32, className }: TypewriterProps) {
+export function Typewriter({ parts, voice = "typewriter", speed = 22, className }: TypewriterProps) {
   const fullText = parts.map((part) => (typeof part === "string" ? part : part.text)).join("");
   const reduceMotion =
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -66,7 +66,7 @@ export function Typewriter({ parts, voice = "typewriter", speed = 32, className 
   useEffect(() => {
     if (!started || finished) return;
     const previous = fullText[shown - 1] ?? "";
-    const delay = PAUSE_AFTER.test(previous) ? speed * 5 : speed;
+    const delay = PAUSE_AFTER.test(previous) ? speed * 4 : speed;
     const timer = window.setTimeout(() => setShown((count) => count + 1), delay);
     return () => window.clearTimeout(timer);
   }, [started, finished, shown, fullText, speed]);

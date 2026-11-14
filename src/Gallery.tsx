@@ -125,7 +125,7 @@ export function Gallery() {
             <div className="dialog-box order-first col-span-2 flex-1 sm:order-none">
               <p className="flex text-xs leading-[1.9] sm:text-sm">
                 <span className="mr-3 shrink-0">*</span>
-                <Typewriter key={current.file} parts={[current.caption]} speed={22} />
+                <Typewriter key={current.file} parts={[current.caption]} speed={15} />
               </p>
             </div>
             <button onClick={() => step(1)} className="game-button shrink-0" aria-label="Next photo">

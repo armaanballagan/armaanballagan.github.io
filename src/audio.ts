@@ -93,6 +93,8 @@ export type DialogueVoice = {
   /** A looping talking sound. null = generic blips. */
   src: string | null;
   volume: number;
+  /** Playback speed. 1 = normal, 1.3 = 30% faster (pitch stays the same). */
+  rate: number;
 };
 
 export const dialogueVoices = {
@@ -102,6 +104,7 @@ export const dialogueVoices = {
       "Hero dialogue box on first load, and each project description when it types out",
     src: asset("audio/sfx/sans-voice.mp3"),
     volume: 0.6,
+    rate: 1.3,
   },
 } satisfies Record<string, DialogueVoice>;
 
@@ -130,6 +133,7 @@ export function startVoice(name: VoiceName): () => void {
       voiceElements[name] = element;
     }
     element.volume = voice.volume;
+    element.playbackRate = voice.rate;
     if (element.paused) {
       element.currentTime = 0;
       element.play().catch(() => undefined);
@@ -141,7 +145,7 @@ export function startVoice(name: VoiceName): () => void {
       gain.gain.value = voice.volume * 0.4;
       gain.connect(context.destination);
       synthBlip(context, gain);
-    }, 70);
+    }, 70 / voice.rate);
   }
 
   let stopped = false;

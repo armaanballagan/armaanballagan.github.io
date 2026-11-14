@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { MusicPlayer, playSound, playlist } from "./audio";
 import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
+import { NameLogo } from "./NameLogo";
 
 type IconProps = { className?: string };
 
@@ -341,9 +342,9 @@ function App() {
               <p className="mb-7 text-xs leading-loose text-[#ff0]">
                 * A SOFTWARE ENGINEER APPEARED.
               </p>
-              <h1 className="text-[clamp(2.25rem,6.2vw,5rem)] leading-[0.95] tracking-[-0.04em]">
-                ARMAAN
-                <span className="block text-outline">BALLAGAN</span>
+              <h1>
+                <span className="sr-only">Armaan Ballagan</span>
+                <NameLogo className="block h-auto w-full max-w-[640px]" />
               </h1>
               <div className="dialog-box mt-10 max-w-2xl">
                 <p className="flex text-base leading-[1.9] sm:text-xl">
@@ -624,7 +625,7 @@ function App() {
                   </div>
                   <p className="mt-6 flex max-w-2xl text-sm leading-[1.9] text-white/75">
                     <span className="mr-3 shrink-0">*</span>
-                    <Typewriter key={project.id} parts={[project.description]} speed={18} />
+                    <Typewriter key={project.id} parts={[project.description]} speed={12} />
                   </p>
                   <div className="mt-7 flex flex-wrap gap-3">
                     {project.stack.map((item) => (
