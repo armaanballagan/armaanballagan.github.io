@@ -20,14 +20,13 @@ export type GalleryPhoto = {
 };
 
 export const gallery: GalleryPhoto[] = [
-  { file: "placeholder-01.png", caption: "Placeholder. A hackathon team photo goes here.", alt: "Placeholder photo 1" },
-  { file: "placeholder-02.png", caption: "Placeholder. A close-up of a build goes here.", alt: "Placeholder photo 2" },
-  { file: "placeholder-03.png", caption: "Placeholder. A demo-day shot goes here.", alt: "Placeholder photo 3" },
-  { file: "placeholder-04.png", caption: "Placeholder. Something from the Cayman Islands goes here.", alt: "Placeholder photo 4" },
-  { file: "placeholder-05.png", caption: "Placeholder. A late-night coding session goes here.", alt: "Placeholder photo 5" },
-  { file: "placeholder-06.png", caption: "Placeholder. A hardware prototype goes here.", alt: "Placeholder photo 6" },
-  { file: "placeholder-07.png", caption: "Placeholder. Something around UBC goes here.", alt: "Placeholder photo 7" },
-  { file: "placeholder-08.png", caption: "Placeholder. Anything cool goes here.", alt: "Placeholder photo 8" },
+  { file: "forest-lookout.jpg", caption: "Took a break on the rocks. The view was worth the climb.", alt: "Person sitting on a granite boulder looking out over a forest and water to distant mountains" },
+  { file: "lookout-binoculars.jpg", caption: "Scanning the horizon for the next side quest.", alt: "Person in a white cap looking through coin-operated binoculars over a bay at sunset" },
+  { file: "heron.jpg", caption: "A heron, standing perfectly still. Unmatched patience.", alt: "Silhouette of a heron wading in shimmering blue water" },
+  { file: "niagara-snow.jpg", caption: "Niagara Falls in a snowstorm. You feel the mist from up here.", alt: "Horseshoe Falls in falling snow, with mist rising over green water" },
+  { file: "gingerbread-gojo.jpg", caption: "My gingerbread Gojo. Strongest cookie of all time.", alt: "Gingerbread cookie decorated with white hair, a black outfit and blue eyes" },
+  { file: "canoe-lake.jpg", caption: "Canoeing a turquoise mountain lake.", alt: "Bow of a canoe on turquoise water between steep mountains and a glacier" },
+  { file: "pier-sunset.jpg", caption: "Watching the sun go down by the pier.", alt: "Person sitting on a beach watching a pink and orange sunset beside a wooden pier" },
 
   // ── Add your photos. Copy this template: ─────────────────────────────────
   // { file: "my-photo.jpg", caption: "What's happening in it.", alt: "Short description" },
