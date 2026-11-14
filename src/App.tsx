@@ -365,7 +365,7 @@ function App() {
                 </span>
               </div>
               <div className="mt-8 flex flex-wrap gap-4">
-                <a href="#work" className="game-button game-button-fight">
+                <a href="#work" className="game-button">
                   <Heart className="size-4" /> VIEW WORK
                 </a>
                 <a href="#about" className="game-button">
