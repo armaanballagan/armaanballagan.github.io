@@ -416,3 +416,9 @@
     opacity: 1;
   }
 }
+
+@layer utilities {
+  .music-player.is-wide {
+    width: 100%;
+  }
+}

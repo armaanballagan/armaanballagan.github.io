@@ -366,102 +366,104 @@ function App() {
                   CONTACT
                 </a>
               </div>
-              <div className="music-player mt-8">
-                <button
-                  onClick={toggleMusic}
-                  className={`gramophone-button ${musicPlaying ? "is-playing" : ""}`}
-                  aria-label={musicPlaying ? "Turn music off" : "Turn music on"}
-                  aria-pressed={musicPlaying}
-                >
-                  <Gramophone className="size-14 sm:size-16" />
-                </button>
-                <div>
-                  <p className="text-[8px] leading-loose text-white/40">
-                    {musicPlaying ? "NOW PLAYING" : "MUSIC PLAYER / OFF"}
-                  </p>
-                  <p className="mt-1 text-[9px] leading-loose text-[#ff0] sm:text-[10px]">
-                    “{track.title}”
-                  </p>
-                  <p className="mt-1 text-[7px] leading-loose text-white/30">{track.credit}</p>
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <button
-                      onClick={toggleMusic}
-                      className={`player-control ${musicPlaying ? "is-on" : ""}`}
-                      aria-label={musicPlaying ? "Turn music off" : "Turn music on"}
-                    >
-                      {musicPlaying ? "■ OFF" : "▶ ON"}
-                    </button>
-                    {playlist.length > 1 && (
-                      <>
-                        <button
-                          onClick={previousTrack}
-                          className="player-control"
-                          aria-label="Previous song"
-                        >
-                          ◀◀ PREV
-                        </button>
-                        <button onClick={nextTrack} className="player-control" aria-label="Next song">
-                          NEXT ▶▶
-                        </button>
-                      </>
-                    )}
-                    {playlist.length > 1 && (
-                      <span className="text-[7px] text-white/40">
-                        TRACK {trackIndex + 1}/{playlist.length}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <span
-                  className={`sound-bars ${musicPlaying ? "is-playing" : ""}`}
-                  aria-hidden="true"
-                >
-                  <i />
-                  <i />
-                  <i />
-                  <i />
-                </span>
-              </div>
             </div>
 
-            <div className="relative mx-auto w-full max-w-[520px]">
-              <div className="battle-window relative aspect-square overflow-hidden">
-                <div className="absolute inset-x-0 top-0 border-b-4 border-white bg-black/85 p-4 text-[10px] leading-loose sm:text-xs">
-                  ARMAAN&nbsp;&nbsp; LV 03
-                  <span className="ml-4 text-[#ff0]">HP</span>
-                  <span className="ml-2 inline-block h-4 w-20 bg-[#ff0] align-middle" />
+            <div className="mx-auto flex w-full max-w-[520px] flex-col gap-14">
+              <div className="relative">
+                <div className="battle-window relative aspect-square overflow-hidden">
+                  <div className="absolute inset-x-0 top-0 border-b-4 border-white bg-black/85 p-4 text-[10px] leading-loose sm:text-xs">
+                    ARMAAN&nbsp;&nbsp; LV 03
+                    <span className="ml-4 text-[#ff0]">HP</span>
+                    <span className="ml-2 inline-block h-4 w-20 bg-[#ff0] align-middle" />
+                  </div>
+                  <div className="grid h-full place-items-center pt-12">
+                    <Heart className="soul-heart size-16 text-[#f00] sm:size-20" />
+                  </div>
+                  <div className="absolute bottom-5 left-5 right-5 flex justify-between text-[9px] text-white/60 sm:text-[10px]">
+                    <span>DESIGN</span>
+                    <span>CODE</span>
+                    <span>SHIP</span>
+                  </div>
                 </div>
-                <div className="grid h-full place-items-center pt-12">
-                  <Heart className="soul-heart size-16 text-[#f00] sm:size-20" />
-                </div>
-                <div className="absolute bottom-5 left-5 right-5 flex justify-between text-[9px] text-white/60 sm:text-[10px]">
-                  <span>DESIGN</span>
-                  <span>CODE</span>
-                  <span>SHIP</span>
+                <div className="absolute -bottom-7 -right-1 flex items-end">
+                  <span className="mr-2 mb-3 hidden text-[9px] text-white/50 sm:inline">
+                    CLICK TO BARK →
+                  </span>
+                  <button
+                    onClick={playBark}
+                    className="dog-swap size-16 sm:size-20"
+                    aria-label="Make the Annoying Dog bark"
+                  >
+                    <img
+                      src={`${import.meta.env.BASE_URL}undertale/dog.png`}
+                      alt="Annoying Dog from Undertale"
+                      className="dog-normal image-pixel size-full object-contain"
+                    />
+                    <img
+                      src={`${import.meta.env.BASE_URL}undertale/dog-bark.png`}
+                      alt=""
+                      className="dog-bark image-pixel size-full object-contain"
+                      aria-hidden="true"
+                    />
+                  </button>
                 </div>
               </div>
-              <div className="absolute -bottom-7 -right-1 flex items-end">
-                <span className="mr-2 mb-3 hidden text-[9px] text-white/50 sm:inline">
-                  CLICK TO BARK →
-                </span>
-                <button
-                  onClick={playBark}
-                  className="dog-swap size-16 sm:size-20"
-                  aria-label="Make the Annoying Dog bark"
-                >
-                  <img
-                    src={`${import.meta.env.BASE_URL}undertale/dog.png`}
-                    alt="Annoying Dog from Undertale"
-                    className="dog-normal image-pixel size-full object-contain"
-                  />
-                  <img
-                    src={`${import.meta.env.BASE_URL}undertale/dog-bark.png`}
-                    alt=""
-                    className="dog-bark image-pixel size-full object-contain"
+                <div className="music-player is-wide">
+                  <button
+                    onClick={toggleMusic}
+                    className={`gramophone-button ${musicPlaying ? "is-playing" : ""}`}
+                    aria-label={musicPlaying ? "Turn music off" : "Turn music on"}
+                    aria-pressed={musicPlaying}
+                  >
+                    <Gramophone className="size-14 sm:size-16" />
+                  </button>
+                  <div>
+                    <p className="text-[8px] leading-loose text-white/40">
+                      {musicPlaying ? "NOW PLAYING" : "MUSIC PLAYER / OFF"}
+                    </p>
+                    <p className="mt-1 text-[9px] leading-loose text-[#ff0] sm:text-[10px]">
+                      “{track.title}”
+                    </p>
+                    <p className="mt-1 text-[7px] leading-loose text-white/30">{track.credit}</p>
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={toggleMusic}
+                        className={`player-control ${musicPlaying ? "is-on" : ""}`}
+                        aria-label={musicPlaying ? "Turn music off" : "Turn music on"}
+                      >
+                        {musicPlaying ? "■ OFF" : "▶ ON"}
+                      </button>
+                      {playlist.length > 1 && (
+                        <>
+                          <button
+                            onClick={previousTrack}
+                            className="player-control"
+                            aria-label="Previous song"
+                          >
+                            ◀◀ PREV
+                          </button>
+                          <button onClick={nextTrack} className="player-control" aria-label="Next song">
+                            NEXT ▶▶
+                          </button>
+                        </>
+                      )}
+                      {playlist.length > 1 && (
+                        <span className="text-[7px] text-white/40">
+                          TRACK {trackIndex + 1}/{playlist.length}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span
+                    className={`sound-bars ${musicPlaying ? "is-playing" : ""}`}
                     aria-hidden="true"
-                  />
-                </button>
-              </div>
+                  >
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                </div>
             </div>
           </div>
         </section>
