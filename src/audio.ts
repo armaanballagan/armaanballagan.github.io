@@ -157,7 +157,7 @@ export function startVoice(name: VoiceName): () => void {
 /* -----------------------------------------------------------------------------
    MUSIC PLAYER PLAYLIST
    The gramophone plays these in order. When there's more than one track,
-   a NEXT button appears and songs advance automatically when one ends.
+   PREV / NEXT buttons appear and songs advance automatically when one ends.
 ----------------------------------------------------------------------------- */
 
 export type Track = {

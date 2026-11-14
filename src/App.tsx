@@ -268,6 +268,7 @@ function App() {
   };
 
   const nextTrack = () => goToTrack(trackIndexRef.current + 1, musicPlaying);
+  const previousTrack = () => goToTrack(trackIndexRef.current - 1, musicPlaying);
 
   const playBark = () => playSound("dogBark");
 
@@ -394,9 +395,18 @@ function App() {
                       {musicPlaying ? "■ OFF" : "▶ ON"}
                     </button>
                     {playlist.length > 1 && (
-                      <button onClick={nextTrack} className="player-control" aria-label="Skip to next song">
-                        SKIP ▶▶
-                      </button>
+                      <>
+                        <button
+                          onClick={previousTrack}
+                          className="player-control"
+                          aria-label="Previous song"
+                        >
+                          ◀◀ PREV
+                        </button>
+                        <button onClick={nextTrack} className="player-control" aria-label="Next song">
+                          NEXT ▶▶
+                        </button>
+                      </>
                     )}
                     {playlist.length > 1 && (
                       <span className="text-[7px] text-white/40">
