@@ -674,24 +674,26 @@ function App() {
                     />
                   )}
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
-                  <div className="absolute bottom-0 left-0 bg-black px-4 py-3 text-xs text-[#ff0]">
-                    FILE {project.id} / {project.title}
-                  </div>
-                  {project.links.length > 0 && (
-                    <div className="absolute right-3 top-3 hidden max-w-[calc(100%-1.5rem)] flex-wrap justify-end gap-2 sm:flex">
-                      {project.links.map((link) => (
-                        <a
-                          key={link.label}
-                          href={link.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="project-link"
-                        >
-                          {link.label} <Arrow className="size-3" />
-                        </a>
-                      ))}
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3">
+                    <div className="shrink-0 bg-black px-4 py-3 text-xs text-[#ff0]">
+                      FILE {project.id} / {project.title}
                     </div>
-                  )}
+                    {project.links.length > 0 && (
+                      <div className="mb-3 mr-3 hidden min-w-0 flex-wrap-reverse justify-end gap-2 sm:flex">
+                        {project.links.map((link) => (
+                          <a
+                            key={link.label}
+                            href={link.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="project-link"
+                          >
+                            {link.label} <Arrow className="size-3" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="p-6 sm:p-8">
                   {project.links.length > 0 && (
