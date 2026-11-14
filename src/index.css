@@ -346,3 +346,29 @@
     border-color: #ff0;
   }
 }
+
+@layer utilities {
+  .player-control {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.35rem 0.6rem;
+    color: rgb(255 255 255 / 75%);
+    font-size: 0.5rem;
+    border: 2px solid rgb(255 255 255 / 40%);
+    background: #000;
+    transition:
+      color 120ms steps(2),
+      border-color 120ms steps(2);
+  }
+
+  .player-control:hover {
+    color: #ff0;
+    border-color: #ff0;
+  }
+
+  .player-control.is-on {
+    color: #ff0;
+    border-color: #ff0;
+  }
+}

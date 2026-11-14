@@ -1,5 +1,5 @@
 /* =============================================================================
-   AUDIO — every sound effect and every music track on the site lives here.
+   AUDIO — every sound effect, dialogue voice and music track on the site lives here.
 
    HOW TO SWAP IN A REAL SOUND
    1. Drop the file into  public/audio/sfx/   (sound effects)
@@ -82,6 +82,79 @@ export function playSound(name: SoundName) {
 }
 
 /* -----------------------------------------------------------------------------
+   DIALOGUE VOICES
+   Looping "talking" sounds that play while text types out in a dialogue box,
+   and stop the moment the text finishes (or the visitor clicks to skip).
+----------------------------------------------------------------------------- */
+
+export type DialogueVoice = {
+  label: string;
+  usedIn: string;
+  /** A looping talking sound. null = generic blips. */
+  src: string | null;
+  volume: number;
+};
+
+export const dialogueVoices = {
+  typewriter: {
+    label: "Typewriter voice (sans_audio)",
+    usedIn:
+      "Hero dialogue box on first load, and each project description when it types out",
+    src: asset("audio/sfx/sans-voice.mp3"),
+    volume: 0.6,
+  },
+} satisfies Record<string, DialogueVoice>;
+
+export type VoiceName = keyof typeof dialogueVoices;
+
+const voiceElements: Partial<Record<VoiceName, HTMLAudioElement>> = {};
+const voiceUsers: Partial<Record<VoiceName, number>> = {};
+
+/**
+ * Start a dialogue voice. Returns a function that stops it.
+ * Several text boxes can share one voice; it stops when the last one finishes.
+ * Note: browsers block sound until the visitor has clicked or tapped the page,
+ * so text that types out on first load may be silent until then.
+ */
+export function startVoice(name: VoiceName): () => void {
+  const voice: DialogueVoice = dialogueVoices[name];
+  voiceUsers[name] = (voiceUsers[name] ?? 0) + 1;
+  let blipTimer: number | null = null;
+
+  if (voice.src) {
+    let element = voiceElements[name];
+    if (!element) {
+      element = new Audio(voice.src);
+      element.loop = true;
+      element.preload = "auto";
+      voiceElements[name] = element;
+    }
+    element.volume = voice.volume;
+    if (element.paused) {
+      element.currentTime = 0;
+      element.play().catch(() => undefined);
+    }
+  } else {
+    blipTimer = window.setInterval(() => {
+      const context = getSfxContext();
+      const gain = context.createGain();
+      gain.gain.value = voice.volume * 0.4;
+      gain.connect(context.destination);
+      synthBlip(context, gain);
+    }, 70);
+  }
+
+  let stopped = false;
+  return () => {
+    if (stopped) return;
+    stopped = true;
+    if (blipTimer !== null) window.clearInterval(blipTimer);
+    voiceUsers[name] = Math.max(0, (voiceUsers[name] ?? 1) - 1);
+    if (voiceUsers[name] === 0) voiceElements[name]?.pause();
+  };
+}
+
+/* -----------------------------------------------------------------------------
    MUSIC PLAYER PLAYLIST
    The gramophone plays these in order. When there's more than one track,
    a NEXT button appears and songs advance automatically when one ends.
@@ -110,6 +183,14 @@ export const playlist: Track[] = [
     src: null,
     volume: 0.42,
     synth: { loopSeconds: 2.16, schedule: synthChiptuneLoop },
+  },
+  {
+    // PLACEHOLDER: replace with a real song (set src, delete synth).
+    title: "PLACEHOLDER TRACK 2",
+    credit: "TEST SONG / REPLACE ME IN SRC/AUDIO.TS",
+    src: null,
+    volume: 0.35,
+    synth: { loopSeconds: 3.2, schedule: synthPlaceholderLoop },
   },
 
   // ── Add more songs below. Copy this template: ────────────────────────────
@@ -239,5 +320,38 @@ function synthChiptuneLoop(context: AudioContext, destination: AudioNode) {
     oscillator.connect(envelope).connect(destination);
     oscillator.start(noteStart);
     oscillator.stop(noteStart + 0.17);
+  });
+}
+
+/** Placeholder song 2: a minor arpeggio with a bass note, clearly different from track 1. */
+function synthPlaceholderLoop(context: AudioContext, destination: AudioNode) {
+  const start = context.currentTime + 0.03;
+  const step = 0.2;
+  const melody = [220, 261.63, 329.63, 440, 329.63, 261.63, 196, 246.94, 293.66, 392, 293.66, 246.94, 174.61, 220, 261.63, 349.23];
+  melody.forEach((frequency, index) => {
+    const oscillator = context.createOscillator();
+    const envelope = context.createGain();
+    const noteStart = start + index * step;
+    oscillator.type = "square";
+    oscillator.frequency.setValueAtTime(frequency, noteStart);
+    envelope.gain.setValueAtTime(0.0001, noteStart);
+    envelope.gain.exponentialRampToValueAtTime(0.06, noteStart + 0.01);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, noteStart + step * 0.9);
+    oscillator.connect(envelope).connect(destination);
+    oscillator.start(noteStart);
+    oscillator.stop(noteStart + step);
+  });
+  [110, 98, 87.31].forEach((frequency, index) => {
+    const oscillator = context.createOscillator();
+    const envelope = context.createGain();
+    const noteStart = start + index * step * 5.33;
+    oscillator.type = "triangle";
+    oscillator.frequency.setValueAtTime(frequency, noteStart);
+    envelope.gain.setValueAtTime(0.0001, noteStart);
+    envelope.gain.exponentialRampToValueAtTime(0.18, noteStart + 0.02);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, noteStart + step * 5);
+    oscillator.connect(envelope).connect(destination);
+    oscillator.start(noteStart);
+    oscillator.stop(noteStart + step * 5.2);
   });
 }

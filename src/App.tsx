@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MusicPlayer, playSound, playlist } from "./audio";
+import { Typewriter } from "./Typewriter";
 
 type IconProps = { className?: string };
 
@@ -64,6 +65,8 @@ type Project = {
 
 // Thumbnails live in public/projects/. If a file is missing, a pixel placeholder shows instead.
 const img = (file: string) => `${import.meta.env.BASE_URL}projects/${file}`;
+
+const EMAIL = "armaanballagan@gmail.com";
 
 const projects: Project[] = [
   {
@@ -196,9 +199,9 @@ const categoryTabs: { id: "all" | Category; label: string }[] = [
 ];
 
 const experience = [
-  ["2022—NOW", "NORTHSTAR LABS", "SENIOR SOFTWARE ENGINEER"],
-  ["2020—2022", "FORM & FUNCTION", "SOFTWARE ENGINEER"],
-  ["2018—2020", "STUDIO KITE", "FRONTEND DEVELOPER"],
+  ["2024—2029", "UNIVERSITY OF BRITISH COLUMBIA", "BSC, MAJOR IN COMPUTER SCIENCE"],
+  ["AUG 2024", "PNE PLAYLAND", "RIDES ATTENDANT"],
+  ["NOV—DEC 2022", "DELTA CONTROLS", "WEX PLACEMENT / PYTHON FOR HVAC SYSTEMS"],
 ];
 
 function App() {
@@ -270,11 +273,11 @@ function App() {
 
   const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText("hello@alexmorgan.dev");
+      await navigator.clipboard.writeText(EMAIL);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
-      window.location.href = "mailto:hello@alexmorgan.dev";
+      window.location.href = `mailto:${EMAIL}`;
     }
   };
 
@@ -284,8 +287,8 @@ function App() {
         <div className="mx-auto flex h-20 max-w-[1280px] items-center justify-between px-5 md:px-8">
           <a href="#top" className="flex items-center gap-3 text-sm tracking-widest">
             <Heart className="size-5 text-[#f00]" />
-            <span className="hidden sm:inline">ALEX_MORGAN.EXE</span>
-            <span className="sm:hidden">AM.EXE</span>
+            <span className="hidden sm:inline">ARMAAN_BALLAGAN.EXE</span>
+            <span className="sm:hidden">AB.EXE</span>
           </a>
           <nav
             className="hidden items-center gap-8 text-[10px] tracking-widest md:flex"
@@ -336,14 +339,19 @@ function App() {
               <p className="mb-7 text-xs leading-loose text-[#ff0]">
                 * A SOFTWARE ENGINEER APPEARED.
               </p>
-              <h1 className="text-[clamp(3rem,8vw,7rem)] leading-[0.95] tracking-[-0.04em]">
-                ALEX
-                <span className="block text-outline">MORGAN</span>
+              <h1 className="text-[clamp(2.25rem,6.2vw,5rem)] leading-[0.95] tracking-[-0.04em]">
+                ARMAAN
+                <span className="block text-outline">BALLAGAN</span>
               </h1>
               <div className="dialog-box mt-10 max-w-2xl">
-                <p className="text-base leading-[1.9] sm:text-xl">
-                  <span className="mr-3">*</span>I build thoughtful digital experiences, from sturdy
-                  systems to interfaces that feel <span className="text-[#ff0]">determined.</span>
+                <p className="flex text-base leading-[1.9] sm:text-xl">
+                  <span className="mr-3 shrink-0">*</span>
+                  <Typewriter
+                    parts={[
+                      "I build things you can punch, wave at, and talk to, from motion controllers to AI tools that feel ",
+                      { text: "determined.", className: "text-[#ff0]" },
+                    ]}
+                  />
                 </p>
                 <span className="dialog-caret" aria-hidden="true">
                   ▼
@@ -356,12 +364,15 @@ function App() {
                 <a href="#about" className="game-button">
                   ACT / ABOUT
                 </a>
+                <a href="#contact" className="game-button">
+                  CONTACT
+                </a>
               </div>
               <div className="music-player mt-8">
                 <button
                   onClick={toggleMusic}
                   className={`gramophone-button ${musicPlaying ? "is-playing" : ""}`}
-                  aria-label={musicPlaying ? "Stop music" : "Play music"}
+                  aria-label={musicPlaying ? "Turn music off" : "Turn music on"}
                   aria-pressed={musicPlaying}
                 >
                   <Gramophone className="size-14 sm:size-16" />
@@ -374,15 +385,25 @@ function App() {
                     “{track.title}”
                   </p>
                   <p className="mt-1 text-[7px] leading-loose text-white/30">{track.credit}</p>
-                  {playlist.length > 1 && (
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
                     <button
-                      onClick={nextTrack}
-                      className="mt-2 inline-flex min-h-8 items-center gap-2 text-[8px] text-white/60 hover:text-[#ff0]"
-                      aria-label="Next song"
+                      onClick={toggleMusic}
+                      className={`player-control ${musicPlaying ? "is-on" : ""}`}
+                      aria-label={musicPlaying ? "Turn music off" : "Turn music on"}
                     >
-                      NEXT TRACK ({trackIndex + 1}/{playlist.length}) <Arrow className="size-3" />
+                      {musicPlaying ? "■ OFF" : "▶ ON"}
                     </button>
-                  )}
+                    {playlist.length > 1 && (
+                      <button onClick={nextTrack} className="player-control" aria-label="Skip to next song">
+                        SKIP ▶▶
+                      </button>
+                    )}
+                    {playlist.length > 1 && (
+                      <span className="text-[7px] text-white/40">
+                        TRACK {trackIndex + 1}/{playlist.length}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <span
                   className={`sound-bars ${musicPlaying ? "is-playing" : ""}`}
@@ -399,7 +420,7 @@ function App() {
             <div className="relative mx-auto w-full max-w-[520px]">
               <div className="battle-window relative aspect-square overflow-hidden">
                 <div className="absolute inset-x-0 top-0 border-b-4 border-white bg-black/85 p-4 text-[10px] leading-loose sm:text-xs">
-                  ALEX&nbsp;&nbsp; LV 07
+                  ARMAAN&nbsp;&nbsp; LV 03
                   <span className="ml-4 text-[#ff0]">HP</span>
                   <span className="ml-2 inline-block h-4 w-20 bg-[#ff0] align-middle" />
                 </div>
@@ -458,27 +479,31 @@ function App() {
             </div>
             <div>
               <h2 className="text-4xl leading-tight sm:text-6xl">
-                ENGINEER BY TRADE.
+                CS STUDENT BY DAY.
                 <span className="mt-3 block text-[#00eaff]">MAKER AT HEART.</span>
               </h2>
               <div className="dialog-box mt-10">
                 <div className="space-y-5 text-sm leading-[1.9] text-white/80 sm:text-base">
-                  <p>* I&apos;m Alex, a software engineer based in San Francisco.</p>
                   <p>
-                    * For seven years, I&apos;ve helped ambitious teams turn difficult ideas into
-                    simple, useful products.
+                    * I&apos;m Armaan, a computer science student at UBC, originally from the
+                    Cayman Islands.
                   </p>
                   <p>
-                    * My favorite place is where product thinking, design craft, and solid
-                    engineering meet.
+                    * I learn by building. Most of my projects start at hackathons like nwHacks,
+                    StormHacks and HackCamp, where a weekend is enough to wire up something a
+                    little ridiculous.
+                  </p>
+                  <p>
+                    * My favourite place is where hardware, AI and solid software engineering
+                    meet.
                   </p>
                 </div>
               </div>
               <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {[
-                  ["07+", "YEARS"],
-                  ["24", "SHIPPED"],
-                  ["12M+", "USERS"],
+                  ["3RD", "YEAR @ UBC"],
+                  ["4", "HACKATHONS"],
+                  [String(projects.length), "PROJECTS"],
                   ["∞", "COFFEE"],
                 ].map(([number, label]) => (
                   <div key={label} className="border-2 border-white p-4 text-center">
@@ -586,8 +611,9 @@ function App() {
                     <h3 className="text-3xl sm:text-4xl">{project.title}</h3>
                     <span className="text-[9px] leading-loose text-white/45">{project.role}</span>
                   </div>
-                  <p className="mt-6 max-w-2xl text-sm leading-[1.9] text-white/75">
-                    * {project.description}
+                  <p className="mt-6 flex max-w-2xl text-sm leading-[1.9] text-white/75">
+                    <span className="mr-3 shrink-0">*</span>
+                    <Typewriter key={project.id} parts={[project.description]} speed={18} />
                   </p>
                   <div className="mt-7 flex flex-wrap gap-3">
                     {project.stack.map((item) => (
@@ -644,14 +670,18 @@ function App() {
               <p className="text-[10px] text-white/45">INVENTORY / TOOLS</p>
               <div className="grid grid-cols-2 gap-x-6 gap-y-5 text-[10px] sm:grid-cols-4">
                 {[
+                  "PYTHON",
+                  "JAVA",
                   "TYPESCRIPT",
+                  "C / C++",
+                  "SQL",
+                  "R",
                   "REACT",
-                  "NEXT.JS",
-                  "NODE.JS",
-                  "GO",
-                  "POSTGRESQL",
-                  "AWS",
-                  "FIGMA",
+                  "NODE / EXPRESS",
+                  "OPENCV",
+                  "RASPBERRY PI",
+                  "ARDUINO / ESP32",
+                  "GIT",
                 ].map((skill) => (
                   <div key={skill} className="flex items-center gap-3">
                     <span className="text-[#ff0]">* </span>
@@ -680,13 +710,13 @@ function App() {
                 onClick={copyEmail}
                 className="mt-7 flex w-full items-center justify-between border-t-2 border-white/30 pt-6 text-left text-[10px] text-[#ff0] hover:text-white sm:text-xs"
               >
-                <span>{copied ? "* EMAIL COPIED TO INVENTORY!" : "* HELLO@ALEXMORGAN.DEV"}</span>
+                <span>{copied ? "* EMAIL COPIED TO INVENTORY!" : `* ${EMAIL.toUpperCase()}`}</span>
                 <Arrow />
               </button>
             </div>
             <div className="mt-8 flex justify-center gap-4">
               <a
-                href="https://github.com/"
+                href="https://github.com/armaanballagan"
                 target="_blank"
                 rel="noreferrer"
                 className="game-button"
@@ -695,7 +725,7 @@ function App() {
                 <Github /> GITHUB
               </a>
               <a
-                href="https://linkedin.com/"
+                href="https://www.linkedin.com/" /* TODO: your LinkedIn profile URL */
                 target="_blank"
                 rel="noreferrer"
                 className="game-button"
@@ -709,7 +739,7 @@ function App() {
 
       <footer className="border-t-4 border-white bg-black px-5 py-8 md:px-8">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-5 text-[8px] leading-loose text-white/40 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2025 ALEX MORGAN / BUILT WITH DETERMINATION.</p>
+          <p>© 2026 ARMAAN BALLAGAN / BUILT WITH DETERMINATION.</p>
           <p>UNOFFICIAL FAN-THEMED PORTFOLIO. UNDERTALE IMAGERY © TOBY FOX.</p>
           <a
             href="https://undertale.com/"
