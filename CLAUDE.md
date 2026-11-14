@@ -13,4 +13,6 @@ Personal portfolio site for Armaan Ballagan (UBC CS student), Undertale-themed, 
 - Gallery section (`src/Gallery.tsx`) reads photos from `src/gallery.ts` / `public/gallery/`; 7 of Armaan's photos (resized to 1600px, metadata stripped).
 - Hero name is Armaan's own wordmark image `public/name-logo.png` (black made transparent, cropped). Typing speed defaults to 22ms/char (projects 12, gallery 15); voice `rate` 1.3 in `src/audio.ts`.
 - Floating sans button (`src/SansToggle.tsx`, bottom-left, fixed) mutes/unmutes typing voices; trombone sans = on, idle sans = off; saved in localStorage via `setTextVoiceMuted` in `src/audio.ts`.
+- Music: 12 Toby Fox tracks in `public/audio/music/` listed in `songs` (src/audio.ts), Fisher–Yates shuffled into `playlist` on each page load. `dogsong` is separate (easter egg only).
+- Dog easter egg (App.tsx `clickDog`): clicks 1–7 bark (`dog-bark.mp3`) and scale the dog +12% each; 8th click stops the playlist, plays Dogsong and swaps in `undertale/dog-meme.png`. Clicking the dog, OFF, PREV/NEXT, or Dogsong ending resets size/sprite/count.
 - Keep the pixel look: Press Start 2P / VT323 fonts, 2–4px white borders, `steps()` animations, `image-rendering: pixelated`.

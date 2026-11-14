@@ -48,7 +48,7 @@ Everything audio lives in **`src/audio.ts`**:
 
 - **`soundEffects`**: every sound effect, labelled with where it plays. Each has `src: null` until you add a real file; until then a generic browser-generated placeholder plays.
 - **`dialogueVoices`**: looping "talking" sounds for text that types out (`<Typewriter>` in `src/Typewriter.tsx`). `typewriter` uses `public/audio/sfx/sans-voice.mp3`. Browsers block sound until the visitor clicks or taps the page once, so the hero text may type out silently on the very first load.
-- **`playlist`**: the songs for the gramophone music player, in order. Add as many as you like; PREV / NEXT buttons appear once there are two or more, and songs auto-advance. ON/OFF turns music fully off; PREV/NEXT only change the song.
+- **`songs`**: the gramophone's songs. They're shuffled into a new order on every page load (each song plays once before any repeat). Add more by dropping an MP3 in `public/audio/music/` and adding a line. ON/OFF turns music fully off; PREV/NEXT change the song.
 
 To use a real file: put it in `public/audio/sfx/` or `public/audio/music/`, then set `src: asset("audio/sfx/your-file.mp3")` on that entry.
 

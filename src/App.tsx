@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MusicPlayer, playSound, playlist } from "./audio";
+import { MusicPlayer, dogsong, playSound, playlist } from "./audio";
 import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
 import { SansToggle } from "./SansToggle";
@@ -207,7 +207,13 @@ function App() {
   const [trackIndex, setTrackIndex] = useState(0);
   const musicRef = useRef<MusicPlayer | null>(null);
   const trackIndexRef = useRef(0);
-  const track = playlist[trackIndex];
+  // Dog easter egg: each click grows the dog; the 8th click plays Dogsong.
+  const DOGSONG_CLICK = 8;
+  const [dogClicks, setDogClicks] = useState(0);
+  const [dogsongOn, setDogsongOn] = useState(false);
+  const dogsongRef = useRef<HTMLAudioElement | null>(null);
+  const track = dogsongOn ? dogsong : playlist[trackIndex];
+  const audioActive = musicPlaying || dogsongOn;
   const visibleProjects = projects.filter(
     (item) => category === "all" || item.categories.includes(category),
   );
@@ -223,8 +229,55 @@ function App() {
   };
 
   useEffect(() => {
-    return () => musicRef.current?.stop();
+    return () => {
+      musicRef.current?.stop();
+      dogsongRef.current?.pause();
+    };
   }, []);
+
+  /** Stop Dogsong (if playing) and put the dog back to normal. */
+  const endDogsong = () => {
+    const audio = dogsongRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    setDogsongOn(false);
+    setDogClicks(0);
+  };
+
+  const startDogsong = () => {
+    musicRef.current?.stop();
+    setMusicPlaying(false);
+    if (!dogsongRef.current && dogsong.src) {
+      const audio = new Audio(dogsong.src);
+      audio.addEventListener("ended", () => {
+        setDogsongOn(false);
+        setDogClicks(0);
+      });
+      dogsongRef.current = audio;
+    }
+    const audio = dogsongRef.current;
+    if (audio) {
+      audio.volume = dogsong.volume;
+      audio.currentTime = 0;
+      audio.play().catch(() => endDogsong());
+    }
+    setDogsongOn(true);
+  };
+
+  const clickDog = () => {
+    if (dogsongOn) {
+      // Clicking during Dogsong ends it and resets the dog.
+      endDogsong();
+      playSound("dogBark");
+      return;
+    }
+    const clicks = dogClicks + 1;
+    setDogClicks(clicks);
+    if (clicks >= DOGSONG_CLICK) startDogsong();
+    else playSound("dogBark");
+  };
 
   const getPlayer = () => {
     if (!musicRef.current) {
@@ -250,6 +303,11 @@ function App() {
   };
 
   const toggleMusic = () => {
+    if (dogsongOn) {
+      // OFF while Dogsong plays: just stop it.
+      endDogsong();
+      return;
+    }
     const player = getPlayer();
     if (musicPlaying) {
       player.stop();
@@ -260,10 +318,17 @@ function App() {
     setMusicPlaying(true);
   };
 
-  const nextTrack = () => goToTrack(trackIndexRef.current + 1, musicPlaying);
-  const previousTrack = () => goToTrack(trackIndexRef.current - 1, musicPlaying);
-
-  const playBark = () => playSound("dogBark");
+  // Changing songs during Dogsong ends it and plays the chosen song.
+  const nextTrack = () => {
+    const wasDogsong = dogsongOn;
+    if (wasDogsong) endDogsong();
+    goToTrack(trackIndexRef.current + 1, musicPlaying || wasDogsong);
+  };
+  const previousTrack = () => {
+    const wasDogsong = dogsongOn;
+    if (wasDogsong) endDogsong();
+    goToTrack(trackIndexRef.current - 1, musicPlaying || wasDogsong);
+  };
 
   const copyEmail = async () => {
     try {
@@ -394,36 +459,47 @@ function App() {
                     CLICK TO BARK →
                   </span>
                   <button
-                    onClick={playBark}
-                    className="dog-swap size-16 sm:size-20"
-                    aria-label="Make the Annoying Dog bark"
+                    onClick={clickDog}
+                    className={`dog-swap size-16 sm:size-20 ${dogsongOn ? "is-dogsong" : ""}`}
+                    style={{ transform: `scale(${1 + Math.min(dogClicks, DOGSONG_CLICK) * 0.12})` }}
+                    aria-label={dogsongOn ? "Stop Dogsong" : "Make the Annoying Dog bark"}
                   >
-                    <img
-                      src={`${import.meta.env.BASE_URL}undertale/dog.png`}
-                      alt="Annoying Dog from Undertale"
-                      className="dog-normal image-pixel size-full object-contain"
-                    />
-                    <img
-                      src={`${import.meta.env.BASE_URL}undertale/dog-bark.png`}
-                      alt=""
-                      className="dog-bark image-pixel size-full object-contain"
-                      aria-hidden="true"
-                    />
+                    {dogsongOn ? (
+                      <img
+                        src={`${import.meta.env.BASE_URL}undertale/dog-meme.png`}
+                        alt="The dog, transformed"
+                        className="image-smooth size-full object-contain"
+                      />
+                    ) : (
+                      <>
+                        <img
+                          src={`${import.meta.env.BASE_URL}undertale/dog.png`}
+                          alt="Annoying Dog from Undertale"
+                          className="dog-normal image-pixel size-full object-contain"
+                        />
+                        <img
+                          src={`${import.meta.env.BASE_URL}undertale/dog-bark.png`}
+                          alt=""
+                          className="dog-bark image-pixel size-full object-contain"
+                          aria-hidden="true"
+                        />
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
                 <div className="music-player is-wide">
                   <button
                     onClick={toggleMusic}
-                    className={`gramophone-button ${musicPlaying ? "is-playing" : ""}`}
-                    aria-label={musicPlaying ? "Turn music off" : "Turn music on"}
-                    aria-pressed={musicPlaying}
+                    className={`gramophone-button ${audioActive ? "is-playing" : ""}`}
+                    aria-label={audioActive ? "Turn music off" : "Turn music on"}
+                    aria-pressed={audioActive}
                   >
                     <Gramophone className="size-14 sm:size-16" />
                   </button>
                   <div>
                     <p className="text-[8px] leading-loose text-white/40">
-                      {musicPlaying ? "NOW PLAYING" : "MUSIC PLAYER / OFF"}
+                      {dogsongOn ? "NOW PLAYING / ???" : musicPlaying ? "NOW PLAYING" : "MUSIC PLAYER / OFF"}
                     </p>
                     <p className="mt-1 text-[9px] leading-loose text-[#ff0] sm:text-[10px]">
                       “{track.title}”
@@ -432,10 +508,10 @@ function App() {
                     <div className="mt-3 flex flex-wrap items-center gap-2">
                       <button
                         onClick={toggleMusic}
-                        className={`player-control ${musicPlaying ? "is-on" : ""}`}
-                        aria-label={musicPlaying ? "Turn music off" : "Turn music on"}
+                        className={`player-control ${audioActive ? "is-on" : ""}`}
+                        aria-label={audioActive ? "Turn music off" : "Turn music on"}
                       >
-                        {musicPlaying ? "■ OFF" : "▶ ON"}
+                        {audioActive ? "■ OFF" : "▶ ON"}
                       </button>
                       {playlist.length > 1 && (
                         <>
@@ -459,7 +535,7 @@ function App() {
                     </div>
                   </div>
                   <span
-                    className={`sound-bars ${musicPlaying ? "is-playing" : ""}`}
+                    className={`sound-bars ${audioActive ? "is-playing" : ""}`}
                     aria-hidden="true"
                   >
                     <i />

@@ -449,3 +449,21 @@
     outline-offset: 4px;
   }
 }
+
+@layer utilities {
+  /* Dog grows a step with each click (scale set inline), anchored bottom-right. */
+  .dog-swap {
+    transform-origin: bottom right;
+    transition: transform 160ms steps(3);
+  }
+
+  .dog-swap.is-dogsong {
+    animation: dog-dance 520ms steps(2) infinite;
+  }
+}
+
+@keyframes dog-dance {
+  50% {
+    translate: 0 -6px;
+  }
+}

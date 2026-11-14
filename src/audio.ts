@@ -34,9 +34,9 @@ export type SoundEffect = {
 export const soundEffects = {
   dogBark: {
     label: "Dog bark",
-    usedIn: "Hero section: clicking the dog in the corner of the battle window",
-    src: null, // ← e.g. asset("audio/sfx/dog-bark.mp3")
-    volume: 0.5,
+    usedIn: "Hero section: clicking the dog (clicks 1–7, and the click that ends Dogsong)",
+    src: asset("audio/sfx/dog-bark.mp3"),
+    volume: 0.6,
     synth: synthNoiseBurst,
   },
 
@@ -325,8 +325,8 @@ export function startVoice(name: VoiceName): () => void {
 
 /* -----------------------------------------------------------------------------
    MUSIC PLAYER PLAYLIST
-   The gramophone plays these in order. When there's more than one track,
-   PREV / NEXT buttons appear and songs advance automatically when one ends.
+   The gramophone plays these in order. Shuffled into a new order on every page load; songs advance automatically
+   when one ends, and PREV / NEXT step through the shuffled order.
 ----------------------------------------------------------------------------- */
 
 export type Track = {
@@ -345,31 +345,48 @@ export type Track = {
   };
 };
 
-export const playlist: Track[] = [
-  {
-    title: "A QUIET DETERMINATION",
-    credit: "ORIGINAL BROWSER-GENERATED CHIPTUNE",
-    src: null,
-    volume: 0.42,
-    synth: { loopSeconds: 2.16, schedule: synthChiptuneLoop },
-  },
-  {
-    // PLACEHOLDER: replace with a real song (set src, delete synth).
-    title: "PLACEHOLDER TRACK 2",
-    credit: "TEST SONG / REPLACE ME IN SRC/AUDIO.TS",
-    src: null,
-    volume: 0.35,
-    synth: { loopSeconds: 3.2, schedule: synthPlaceholderLoop },
-  },
+/** Every song the gramophone can play. Order here doesn't matter: it's shuffled on each page load. */
+const songs: Track[] = [
+  { title: "YOUR BEST FRIEND", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/your-best-friend.mp3"), volume: 0.5 },
+  { title: "HOME", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/home.mp3"), volume: 0.5 },
+  { title: "FALLEN DOWN (REPRISE)", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/fallen-down-reprise.mp3"), volume: 0.5 },
+  { title: "SANS.", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/sans.mp3"), volume: 0.5 },
+  { title: "RUINS", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/ruins.mp3"), volume: 0.5 },
+  { title: "MY CASTLE TOWN", credit: "TOBY FOX / DELTARUNE CH. 2", src: asset("audio/music/my-castle-town.mp3"), volume: 0.5 },
+  { title: "SHOP", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/shop.mp3"), volume: 0.5 },
+  { title: "SPOOKTUNE", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/spooktune.mp3"), volume: 0.5 },
+  { title: "UWA!! SO TEMPERATE", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/uwa-so-temperate.mp3"), volume: 0.5 },
+  { title: "IT'S RAINING SOMEWHERE ELSE", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/its-raining-somewhere-else.mp3"), volume: 0.5 },
+  { title: "REUNITED", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/reunited.mp3"), volume: 0.5 },
+  { title: "ALPHYS", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/alphys.mp3"), volume: 0.5 },
 
-  // ── Add more songs below. Copy this template: ────────────────────────────
-  // {
-  //   title: "SONG TITLE",
-  //   credit: "ARTIST NAME",
-  //   src: asset("audio/music/song-file.mp3"),
-  //   volume: 0.5,
-  // },
+  // ── Add more songs. Copy this template: ──────────────────────────────────
+  // { title: "SONG TITLE", credit: "ARTIST", src: asset("audio/music/file.mp3"), volume: 0.5 },
 ];
+
+/**
+ * Fisher–Yates shuffle: a random ORDER of the whole list, so every song plays
+ * once before any repeats (unlike picking a random song each time).
+ */
+function shuffle<T>(items: T[]): T[] {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swap = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[swap]] = [copy[swap], copy[index]];
+  }
+  return copy;
+}
+
+/** The playlist for this visit: all songs, in a fresh random order each page load. */
+export const playlist: Track[] = shuffle(songs);
+
+/** Dogsong: NOT in the playlist. Plays only as the dog easter egg (8th click). */
+export const dogsong: Track = {
+  title: "DOGSONG",
+  credit: "TOBY FOX / UNDERTALE",
+  src: asset("audio/music/dogsong.mp3"),
+  volume: 0.5,
+};
 
 /** Plays one track at a time from the playlist. Used by the gramophone in App.tsx. */
 export class MusicPlayer {
@@ -473,54 +490,4 @@ export function synthBlip(context: AudioContext, destination: AudioNode) {
   oscillator.stop(now + 0.1);
 }
 
-/** The original 12-note chiptune loop. */
-function synthChiptuneLoop(context: AudioContext, destination: AudioNode) {
-  const notes = [261.63, 329.63, 392, 523.25, 392, 329.63, 293.66, 349.23, 440, 587.33, 440, 349.23];
-  const start = context.currentTime + 0.03;
-  notes.forEach((frequency, index) => {
-    const oscillator = context.createOscillator();
-    const envelope = context.createGain();
-    const noteStart = start + index * 0.18;
-    oscillator.type = index % 4 === 3 ? "square" : "triangle";
-    oscillator.frequency.setValueAtTime(frequency, noteStart);
-    envelope.gain.setValueAtTime(0.0001, noteStart);
-    envelope.gain.exponentialRampToValueAtTime(0.11, noteStart + 0.015);
-    envelope.gain.exponentialRampToValueAtTime(0.0001, noteStart + 0.15);
-    oscillator.connect(envelope).connect(destination);
-    oscillator.start(noteStart);
-    oscillator.stop(noteStart + 0.17);
-  });
-}
 
-/** Placeholder song 2: a minor arpeggio with a bass note, clearly different from track 1. */
-function synthPlaceholderLoop(context: AudioContext, destination: AudioNode) {
-  const start = context.currentTime + 0.03;
-  const step = 0.2;
-  const melody = [220, 261.63, 329.63, 440, 329.63, 261.63, 196, 246.94, 293.66, 392, 293.66, 246.94, 174.61, 220, 261.63, 349.23];
-  melody.forEach((frequency, index) => {
-    const oscillator = context.createOscillator();
-    const envelope = context.createGain();
-    const noteStart = start + index * step;
-    oscillator.type = "square";
-    oscillator.frequency.setValueAtTime(frequency, noteStart);
-    envelope.gain.setValueAtTime(0.0001, noteStart);
-    envelope.gain.exponentialRampToValueAtTime(0.06, noteStart + 0.01);
-    envelope.gain.exponentialRampToValueAtTime(0.0001, noteStart + step * 0.9);
-    oscillator.connect(envelope).connect(destination);
-    oscillator.start(noteStart);
-    oscillator.stop(noteStart + step);
-  });
-  [110, 98, 87.31].forEach((frequency, index) => {
-    const oscillator = context.createOscillator();
-    const envelope = context.createGain();
-    const noteStart = start + index * step * 5.33;
-    oscillator.type = "triangle";
-    oscillator.frequency.setValueAtTime(frequency, noteStart);
-    envelope.gain.setValueAtTime(0.0001, noteStart);
-    envelope.gain.exponentialRampToValueAtTime(0.18, noteStart + 0.02);
-    envelope.gain.exponentialRampToValueAtTime(0.0001, noteStart + step * 5);
-    oscillator.connect(envelope).connect(destination);
-    oscillator.start(noteStart);
-    oscillator.stop(noteStart + step * 5.2);
-  });
-}
