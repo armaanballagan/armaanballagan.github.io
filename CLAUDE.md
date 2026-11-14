@@ -12,4 +12,5 @@ Personal portfolio site for Armaan Ballagan (UBC CS student), Undertale-themed, 
 - All sound effects and the music playlist are in `src/audio.ts` (`soundEffects`, `playlist`); App.tsx calls `playSound("name")` and `MusicPlayer`. New sounds go there with a clear label and `usedIn`.
 - Gallery section (`src/Gallery.tsx`) reads photos from `src/gallery.ts` / `public/gallery/`; 7 of Armaan's photos (resized to 1600px, metadata stripped).
 - Hero name is Armaan's own wordmark image `public/name-logo.png` (black made transparent, cropped). Typing speed defaults to 22ms/char (projects 12, gallery 15); voice `rate` 1.3 in `src/audio.ts`.
+- Floating sans button (`src/SansToggle.tsx`, bottom-left, fixed) mutes/unmutes typing voices; trombone sans = on, idle sans = off; saved in localStorage via `setTextVoiceMuted` in `src/audio.ts`.
 - Keep the pixel look: Press Start 2P / VT323 fonts, 2–4px white borders, `steps()` animations, `image-rendering: pixelated`.

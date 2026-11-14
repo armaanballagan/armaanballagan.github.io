@@ -422,3 +422,30 @@
     width: 100%;
   }
 }
+
+@layer utilities {
+  .sans-toggle-label {
+    padding: 0.3rem 0.45rem;
+    color: #ff0;
+    font-size: 0.45rem;
+    line-height: 1;
+    border: 2px solid #fff;
+    background: #000;
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+      opacity 120ms steps(2),
+      transform 120ms steps(2);
+  }
+
+  .sans-toggle:hover .sans-toggle-label,
+  .sans-toggle:focus-visible .sans-toggle-label {
+    opacity: 1;
+    transform: none;
+  }
+
+  .sans-toggle:focus-visible {
+    outline: 2px dashed #ff0;
+    outline-offset: 4px;
+  }
+}

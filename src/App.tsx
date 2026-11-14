@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { MusicPlayer, playSound, playlist } from "./audio";
 import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
+import { SansToggle } from "./SansToggle";
 
 type IconProps = { className?: string };
 
@@ -361,6 +362,9 @@ function App() {
                 </a>
                 <a href="#about" className="game-button">
                   ACT / ABOUT
+                </a>
+                <a href="#gallery" className="game-button">
+                  GALLERY
                 </a>
                 <a href="#contact" className="game-button">
                   CONTACT
@@ -745,7 +749,9 @@ function App() {
         </section>
       </main>
 
-      <footer className="border-t-4 border-white bg-black px-5 py-8 md:px-8">
+      <SansToggle />
+
+      <footer className="border-t-4 border-white bg-black px-5 pt-8 pb-32 md:px-8">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-5 text-[8px] leading-loose text-white/40 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 ARMAAN BALLAGAN / BUILT WITH DETERMINATION.</p>
           <p>UNOFFICIAL FAN-THEMED PORTFOLIO. UNDERTALE IMAGERY © TOBY FOX.</p>

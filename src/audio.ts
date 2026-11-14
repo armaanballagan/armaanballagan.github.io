@@ -241,6 +241,39 @@ export const dialogueVoices = {
 export type VoiceName = keyof typeof dialogueVoices;
 
 const voiceElements: Partial<Record<VoiceName, HTMLAudioElement>> = {};
+
+/* ── Text-voice mute (the sans button in the bottom-left corner) ─────────────
+   Remembered between visits in this browser. Only affects typing voices,
+   not sound effects or music. */
+const MUTE_KEY = "text-voice-muted";
+let textVoiceMuted = (() => {
+  try {
+    return window.localStorage.getItem(MUTE_KEY) === "1";
+  } catch {
+    return false;
+  }
+})();
+const muteListeners = new Set<(muted: boolean) => void>();
+
+export const isTextVoiceMuted = () => textVoiceMuted;
+
+export function setTextVoiceMuted(muted: boolean) {
+  textVoiceMuted = muted;
+  try {
+    window.localStorage.setItem(MUTE_KEY, muted ? "1" : "0");
+  } catch {
+    // Storage unavailable (private mode etc.): the setting just won't persist.
+  }
+  if (muted) Object.values(voiceElements).forEach((element) => element?.pause());
+  muteListeners.forEach((listener) => listener(muted));
+}
+
+export function onTextVoiceMuteChange(listener: (muted: boolean) => void) {
+  muteListeners.add(listener);
+  return () => {
+    muteListeners.delete(listener);
+  };
+}
 const voiceUsers: Partial<Record<VoiceName, number>> = {};
 
 /**
@@ -250,6 +283,7 @@ const voiceUsers: Partial<Record<VoiceName, number>> = {};
  * so text that types out on first load may be silent until then.
  */
 export function startVoice(name: VoiceName): () => void {
+  if (textVoiceMuted) return () => undefined;
   const voice: DialogueVoice = dialogueVoices[name];
   voiceUsers[name] = (voiceUsers[name] ?? 0) + 1;
   let blipTimer: number | null = null;
@@ -270,6 +304,7 @@ export function startVoice(name: VoiceName): () => void {
     }
   } else {
     blipTimer = window.setInterval(() => {
+      if (textVoiceMuted) return;
       const context = getSfxContext();
       const gain = context.createGain();
       gain.gain.value = voice.volume * 0.4;
