@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MusicPlayer, playSound, playlist } from "./audio";
 import { Typewriter } from "./Typewriter";
+import { Gallery } from "./Gallery";
 
 type IconProps = { className?: string };
 
@@ -288,14 +289,14 @@ function App() {
         <div className="mx-auto flex h-20 max-w-[1280px] items-center justify-between px-5 md:px-8">
           <a href="#top" className="flex items-center gap-3 text-sm tracking-widest">
             <Heart className="size-5 text-[#f00]" />
-            <span className="hidden sm:inline">ARMAAN_BALLAGAN.EXE</span>
-            <span className="sm:hidden">AB.EXE</span>
+            <span className="hidden lg:inline">ARMAAN_BALLAGAN.EXE</span>
+            <span className="lg:hidden">AB.EXE</span>
           </a>
           <nav
             className="hidden items-center gap-8 text-[10px] tracking-widest md:flex"
             aria-label="Main navigation"
           >
-            {["WORK", "ABOUT", "EXPERIENCE"].map((item) => (
+            {["WORK", "ABOUT", "EXPERIENCE", "GALLERY"].map((item) => (
               <a key={item} href={`#${item.toLowerCase()}`} className="pixel-link">
                 {item}
               </a>
@@ -318,7 +319,7 @@ function App() {
         </div>
         {menuOpen && (
           <nav className="border-t-4 border-white p-5 md:hidden">
-            {["WORK", "ABOUT", "EXPERIENCE", "CONTACT"].map((item) => (
+            {["WORK", "ABOUT", "EXPERIENCE", "GALLERY", "CONTACT"].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -605,7 +606,7 @@ function App() {
                       onError={() =>
                         setMissingImages((previous) => ({ ...previous, [project.image]: true }))
                       }
-                      className="h-full w-full object-cover opacity-80"
+                      className="image-smooth h-full w-full object-cover opacity-80"
                     />
                   )}
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
@@ -702,6 +703,8 @@ function App() {
             </div>
           </div>
         </section>
+
+        <Gallery />
 
         <section id="contact" className="star-field scroll-mt-20 px-5 py-24 md:px-8 lg:py-32">
           <div className="relative mx-auto max-w-[1000px] text-center">

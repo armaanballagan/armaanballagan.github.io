@@ -51,3 +51,7 @@ Everything audio lives in **`src/audio.ts`**:
 - **`playlist`**: the songs for the gramophone music player, in order. Add as many as you like; PREV / NEXT buttons appear once there are two or more, and songs auto-advance. ON/OFF turns music fully off; PREV/NEXT only change the song.
 
 To use a real file: put it in `public/audio/sfx/` or `public/audio/music/`, then set `src: asset("audio/sfx/your-file.mp3")` on that entry.
+
+## Gallery
+
+Photos for the Gallery section are listed in **`src/gallery.ts`** and stored in **`public/gallery/`**. Add a file, add an entry with a caption, and delete the `placeholder-0X.png` entries and files when you have real photos. Clicking a photo opens it full-screen with the caption typed out (arrow keys / Esc work).
