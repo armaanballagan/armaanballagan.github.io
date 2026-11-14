@@ -5,7 +5,7 @@ Personal portfolio site for Armaan Ballagan (UBC CS student), Undertale-themed, 
 - Source of truth for the design: Armaan's Figma Make file "Undertale Software Engineer Portfolio". This repo is a faithful export of it.
 - Stack: Vite + React 19 + TypeScript + Tailwind v4 (`@tailwindcss/vite`). No backend; static only.
 - Single page with anchor navigation (`#about`, `#work`, `#experience`, `#contact`), no router.
-- Content is Armaan's real info (8 projects with category filters, UBC/PNE/Delta Controls experience, email armaanballagan@gmail.com). LinkedIn URL is still a placeholder.
+- Content is Armaan's real info (8 projects with category filters, UBC/PNE/Delta Controls experience, email armaanballagan@gmail.com). LinkedIn: https://www.linkedin.com/in/armaan-ballagan/.
 - `src/Typewriter.tsx` types dialogue text (hero on first load, project descriptions on each selection) with the `typewriter` dialogue voice from `src/audio.ts`; click to skip.
 - Deploy: `.github/workflows/deploy.yml` builds `dist/` and publishes via GitHub Actions on push to `main`. Pages source must be set to "GitHub Actions".
 - 18 Undertale voice clips (cut from a voice SFX video) live in `public/audio/sfx/voices/`; character voices are registered in `dialogueVoices`, laughs in `soundEffects` (not used on the page yet).

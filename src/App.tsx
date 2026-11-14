@@ -799,7 +799,7 @@ function App() {
                 <Github /> GITHUB
               </a>
               <a
-                href="https://www.linkedin.com/" /* TODO: your LinkedIn profile URL */
+                href="https://www.linkedin.com/in/armaan-ballagan/"
                 target="_blank"
                 rel="noreferrer"
                 className="game-button"
