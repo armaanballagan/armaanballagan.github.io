@@ -33,3 +33,35 @@ export const floweyFrames = {
   pellet1: { x: 1208, y: 0, w: 12, h: 12 },
 } satisfies Record<string, FloweyFrame>;
 export type FloweyFrameName = keyof typeof floweyFrames;
+
+/* Frame rects in public/game/flowey-overworld.png (official overworld sheet; all frames bottom-aligned). */
+export const floweyOverworldFrames = {
+  talk0: { x: 0, y: 8, w: 25, h: 25 },
+  talk1: { x: 26, y: 8, w: 25, h: 25 },
+  grow0: { x: 52, y: 0, w: 25, h: 33 },
+  grow1: { x: 78, y: 0, w: 25, h: 33 },
+  grow2: { x: 104, y: 0, w: 25, h: 33 },
+  grow3: { x: 130, y: 0, w: 25, h: 33 },
+  grow4: { x: 156, y: 0, w: 25, h: 33 },
+  grow5: { x: 182, y: 0, w: 25, h: 33 },
+  grow6: { x: 208, y: 0, w: 25, h: 33 },
+  grow7: { x: 234, y: 0, w: 25, h: 33 },
+  grow8: { x: 260, y: 0, w: 25, h: 33 },
+  laugh0: { x: 286, y: 0, w: 25, h: 33 },
+  laugh1: { x: 312, y: 0, w: 25, h: 33 },
+  laugh2: { x: 338, y: 0, w: 25, h: 33 },
+  shrink0: { x: 364, y: 0, w: 25, h: 33 },
+  shrink1: { x: 390, y: 0, w: 25, h: 33 },
+  shrink2: { x: 416, y: 0, w: 25, h: 33 },
+  shrink3: { x: 442, y: 0, w: 25, h: 33 },
+  shrink4: { x: 468, y: 0, w: 25, h: 33 },
+  shrink5: { x: 494, y: 0, w: 25, h: 33 },
+  shrink6: { x: 520, y: 0, w: 25, h: 33 },
+  shrink7: { x: 546, y: 0, w: 25, h: 33 },
+  shrink8: { x: 572, y: 0, w: 25, h: 33 },
+  sink0: { x: 598, y: 8, w: 25, h: 25 },
+  sink1: { x: 624, y: 8, w: 25, h: 25 },
+  sink2: { x: 650, y: 8, w: 25, h: 25 },
+  sink3: { x: 676, y: 8, w: 25, h: 25 },
+  sink4: { x: 702, y: 8, w: 25, h: 25 },
+} satisfies Record<string, FloweyFrame>;

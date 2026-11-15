@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { asset as publicAsset, playSound, startVoice, type VoiceName } from "./audio";
-import { floweyFrames, type FloweyFrame, type FloweyFrameName } from "./floweyFrames";
+import { floweyFrames, floweyOverworldFrames, type FloweyFrame, type FloweyFrameName } from "./floweyFrames";
 import { flowey as floweyEvents } from "./floweyEvents";
 import { friskFrames, type FriskFrame } from "./friskFrames";
 
@@ -579,12 +579,28 @@ export function AboutGame() {
     };
     const drawOverworldFlowey = (g: typeof game.current) => {
       if (!floweyOverworld.complete) return;
-      const fw = floweyOverworld.width;
-      const fh = floweyOverworld.height;
-      // While rising, only the top part pokes out of the ground.
-      const shown = g.flowey === "rising" ? Math.round(fh * Math.min(1, g.floweyTime / FLOWEY_RISE_TIME)) : fh;
-      if (shown <= 0) return;
-      ctx.drawImage(floweyOverworld, 0, 0, fw, shown, Math.round(FLOWEY_X - fw / 2), FLOWEY_Y - shown, fw, shown);
+      const f = floweyOverworldFrames;
+      let frame: FloweyFrame;
+      if (g.flowey === "rising") {
+        // The sheet's sink frames, played backwards, pop him up out of the ground.
+        const sink = [f.sink0, f.sink1, f.sink2, f.sink3, f.sink4];
+        frame = sink[Math.max(0, 4 - Math.floor((g.floweyTime / FLOWEY_RISE_TIME) * 5))];
+      } else {
+        const talk = dialogRef.current;
+        const talking = talk?.voice === "flowey" && typedRef.current < talk.pages[talk.page].length;
+        frame = talking && Math.floor(performance.now() / 130) % 2 ? f.talk1 : f.talk0;
+      }
+      ctx.drawImage(
+        floweyOverworld,
+        frame.x,
+        frame.y,
+        frame.w,
+        frame.h,
+        Math.round(FLOWEY_X - frame.w / 2),
+        FLOWEY_Y - frame.h + 1,
+        frame.w,
+        frame.h,
+      );
     };
     const drawSoul = (x: number, y: number) => {
       ctx.fillStyle = "#ff0000";
