@@ -30,7 +30,7 @@ export const gallery: GalleryPhoto[] = [
   { file: "niagara-snow.jpg", caption: "Niagara Falls in a snowstorm. Couldn't feel my hands by the end, but I'd do it again.", alt: "Horseshoe Falls in falling snow, with mist rising over green water", ratio: 4 / 3 },
   { file: "gingerbread-gojo.jpg", caption: "Gingerbread Gojo. He's seen better days.", alt: "Gingerbread cookie decorated with white hair, a black outfit and blue eyes", ratio: 5 / 4 },
   { file: "canoe-lake.jpg", caption: "Canoeing the turquoise water at Lake Louise.", alt: "Bow of a canoe on the turquoise water of Lake Louise, between steep mountains and a glacier", ratio: 3 / 4 },
-  { file: "mountain-lookout.jpg", caption: "Taking in the view from the top of Mount Mackenzie, Revelstoke, with the whole town and river laid out below.", alt: "Leaning on a railing at the top of Mount Mackenzie in Revelstoke, looking down at the town, the Columbia River and the mountains beyond", ratio: 4 / 3 },
+  { file: "mountain-lookout.jpg", caption: "The view over Revelstoke fills you with determination.", alt: "Leaning on a railing at the top of Mount Mackenzie in Revelstoke, looking down at the town, the Columbia River and the mountains beyond", ratio: 4 / 3 },
   { file: "pier-sunset.jpg", caption: "Watching the sun go down by the pier at Crescent Beach.", alt: "Sitting on the beach at Crescent Beach watching a pink and orange sunset beside the pier", ratio: 4 / 3 },
 
   // ── Add your photos. Copy this template: ─────────────────────────────────
