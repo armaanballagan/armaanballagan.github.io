@@ -483,14 +483,16 @@
     transition:
       color 120ms steps(2),
       border-color 120ms steps(2),
-      transform 120ms steps(2);
+      box-shadow 120ms steps(2);
   }
 
+  /* No movement on hover: a lifting chip slid out from under the cursor at its
+     bottom edge, so clicks there could miss. */
   .project-link:hover,
   .project-link:focus-visible {
     color: #fff;
     border-color: #fff;
-    transform: translateY(-2px);
+    box-shadow: 3px 3px 0 #fff;
     outline: none;
   }
 }

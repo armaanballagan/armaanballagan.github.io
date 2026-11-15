@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { MusicPlayer, dogsong, playSound, playlist } from "./audio";
 import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
@@ -69,6 +69,21 @@ type Project = {
 
 // Thumbnails live in public/projects/. If a file is missing, a pixel placeholder shows instead.
 const img = (file: string) => `${import.meta.env.BASE_URL}projects/${file}`;
+
+/**
+ * External links: a plain click explicitly opens a new tab (some browsers and
+ * in-app views were ignoring target="_blank"). Ctrl/⌘/Shift/middle clicks keep
+ * the browser's own behaviour. If a popup blocker stops the new tab, the link
+ * opens in this tab instead so the click is never lost.
+ */
+const openExternal = (event: MouseEvent<HTMLAnchorElement>) => {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  const url = event.currentTarget.href;
+  const tab = window.open(url, "_blank");
+  if (tab) tab.opener = null;
+  else window.location.href = url;
+};
 
 const EMAIL = "armaanballagan@gmail.com";
 
@@ -231,6 +246,45 @@ function App() {
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
+
+  // ...but it steps aside while it would sit on top of a project's link buttons
+  // (they're at the bottom-right of the thumbnail, right where the mini player is),
+  // otherwise clicks on LIVE SITE / GITHUB etc. landed on the player instead.
+  const miniPlayerRef = useRef<HTMLDivElement>(null);
+  const [miniPlayerTucked, setMiniPlayerTucked] = useState(false);
+  useEffect(() => {
+    let frame = 0;
+    const check = () => {
+      const mini = miniPlayerRef.current;
+      if (!mini) return;
+      const style = getComputedStyle(mini);
+      const right = window.innerWidth - parseFloat(style.right);
+      const bottom = window.innerHeight - parseFloat(style.bottom);
+      const left = right - mini.offsetWidth;
+      const top = bottom - mini.offsetHeight;
+      const margin = 12;
+      const overlaps = [...document.querySelectorAll<HTMLElement>(".project-link")].some((link) => {
+        if (!link.offsetParent) return false;
+        const r = link.getBoundingClientRect();
+        return r.right > left - margin && r.left < right + margin && r.bottom > top - margin && r.top < bottom + margin;
+      });
+      setMiniPlayerTucked(overlaps);
+    };
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [activeProject, category]); // switching projects moves the link buttons too
+  const miniPlayerVisible = showMiniPlayer && !miniPlayerTucked;
+
   const visibleProjects = projects.filter(
     (item) => category === "all" || item.categories.includes(category),
   );
@@ -647,6 +701,7 @@ function App() {
                             href={link.href}
                             target="_blank"
                             rel="noreferrer"
+                            onClick={openExternal}
                             className="project-link"
                           >
                             {link.label} <Arrow className="size-3" />
@@ -665,6 +720,7 @@ function App() {
                           href={link.href}
                           target="_blank"
                           rel="noreferrer"
+                          onClick={openExternal}
                           className="project-link"
                         >
                           {link.label} <Arrow className="size-3" />
@@ -768,6 +824,7 @@ function App() {
                 href="https://github.com/armaanballagan"
                 target="_blank"
                 rel="noreferrer"
+                onClick={openExternal}
                 className="game-button"
                 aria-label="GitHub"
               >
@@ -777,6 +834,7 @@ function App() {
                 href="https://www.linkedin.com/in/armaan-ballagan/"
                 target="_blank"
                 rel="noreferrer"
+                onClick={openExternal}
                 className="game-button"
               >
                 LINKEDIN
@@ -789,8 +847,9 @@ function App() {
       <SansToggle />
 
       <div
-        className={`mini-player ${showMiniPlayer ? "is-visible" : ""}`}
-        aria-hidden={!showMiniPlayer}
+        ref={miniPlayerRef}
+        className={`mini-player ${miniPlayerVisible ? "is-visible" : ""}`}
+        aria-hidden={!miniPlayerVisible}
         role="region"
         aria-label="Music player (mini)"
       >
@@ -799,7 +858,7 @@ function App() {
           className={`gramophone-button ${audioActive ? "is-playing" : ""}`}
           aria-label={audioActive ? "Turn music off" : "Turn music on"}
           aria-pressed={audioActive}
-          tabIndex={showMiniPlayer ? 0 : -1}
+          tabIndex={miniPlayerVisible ? 0 : -1}
         >
           <Gramophone className="size-9 sm:size-10" />
         </button>
@@ -815,7 +874,7 @@ function App() {
               onClick={previousTrack}
               className="player-control !px-2"
               aria-label="Previous song"
-              tabIndex={showMiniPlayer ? 0 : -1}
+              tabIndex={miniPlayerVisible ? 0 : -1}
             >
               ◀◀
             </button>
@@ -823,7 +882,7 @@ function App() {
               onClick={nextTrack}
               className="player-control !px-2"
               aria-label="Next song"
-              tabIndex={showMiniPlayer ? 0 : -1}
+              tabIndex={miniPlayerVisible ? 0 : -1}
             >
               ▶▶
             </button>
@@ -839,6 +898,7 @@ function App() {
             href="https://undertale.com/"
             target="_blank"
             rel="noreferrer"
+            onClick={openExternal}
             className="text-white/60 hover:text-[#ff0]"
           >
             ART SOURCE: OFFICIAL SITE ↗
