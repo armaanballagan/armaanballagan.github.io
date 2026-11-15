@@ -27,6 +27,7 @@ export const gallery: GalleryPhoto[] = [
   { file: "gingerbread-gojo.jpg", caption: "Gingerbread Gojo. He's seen better days.", alt: "Gingerbread cookie decorated with white hair, a black outfit and blue eyes" },
   { file: "canoe-lake.jpg", caption: "Canoeing the turquoise water at Lake Louise.", alt: "Bow of a canoe on the turquoise water of Lake Louise, between steep mountains and a glacier" },
   { file: "pier-sunset.jpg", caption: "Watching the sun go down by the pier at Crescent Beach.", alt: "Sitting on the beach at Crescent Beach watching a pink and orange sunset beside the pier" },
+  { file: "mountain-lookout.jpg", caption: "Up at the lookout, with the whole town and river laid out below. A great place to save.", alt: "Person in a white cap and backpack leaning on a railing at a mountain lookout above a river valley town" },
 
   // ── Add your photos. Copy this template: ─────────────────────────────────
   // { file: "my-photo.jpg", caption: "What's happening in it.", alt: "Short description" },
