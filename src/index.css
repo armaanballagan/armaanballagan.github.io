@@ -585,25 +585,26 @@
   position: absolute;
   right: clamp(1rem, 6vw, 4rem);
   bottom: calc(100% + 4px);
-  width: 69px;
+  width: 84px;
   height: 52px;
   overflow: hidden;
   cursor: pointer;
 }
 
+/* Official battle sprite (42×44) at 2x. Visible part = 52px − translateY. */
 .flowey-peek img {
   display: block;
-  width: 69px;
-  height: 78px;
+  width: 84px;
+  height: 88px;
   image-rendering: pixelated;
   transform: translateY(100%);
-  animation: flowey-peek 8s steps(1) infinite;
+  animation: flowey-peek 4.5s steps(1) infinite;
 }
 
 .flowey-peek:hover img,
 .flowey-peek:focus-visible img {
   animation: none;
-  transform: translateY(8%);
+  transform: translateY(0);
 }
 
 .flowey-peek:focus-visible {
@@ -611,22 +612,31 @@
   outline-offset: 2px;
 }
 
+/* ~1s hidden, pops up, ~3s looking around, ducks. */
 @keyframes flowey-peek {
   0%,
-  58% {
+  14% {
     transform: translateY(100%);
   }
-  60% {
-    transform: translateY(55%);
+  16% {
+    transform: translateY(36%);
   }
-  62%,
-  86% {
-    transform: translateY(26%);
+  18%,
+  48% {
+    transform: translateY(7%);
   }
-  88% {
-    transform: translateY(55%);
+  50%,
+  52% {
+    transform: translateY(12%);
   }
-  90%,
+  54%,
+  80% {
+    transform: translateY(7%);
+  }
+  83% {
+    transform: translateY(36%);
+  }
+  86%,
   100% {
     transform: translateY(100%);
   }
@@ -635,7 +645,7 @@
 @media (prefers-reduced-motion: reduce) {
   .flowey-peek img {
     animation: none;
-    transform: translateY(26%);
+    transform: translateY(7%);
   }
 }
 

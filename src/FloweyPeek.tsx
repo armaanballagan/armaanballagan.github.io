@@ -5,8 +5,9 @@ import { flowey } from "./floweyEvents";
 /* =============================================================================
    FLOWEY PEEK — easter egg in the Save Files section.
 
-   Flowey pops his head over the top edge of the save-file box every few
-   seconds. Clicking him blacks out the page, he says a few lines, then he
+   Flowey (his official white battle sprite, 2x) pops his head over the top
+   edge of the save-file box every few seconds (timing: `flowey-peek` in
+   index.css). Clicking him blacks out the page, he says a few lines, then he
    leaves for the About game (room 3, on the grass patch) and the page scrolls
    there. After the fight he comes back here so the egg can be found again.
 
@@ -91,7 +92,7 @@ export function FloweyPeek() {
             setTyped(0);
           }}
         >
-          <img src={asset("game/flowey-overworld.png")} alt="" draggable={false} />
+          <img src={portraitSrc.nice} alt="" draggable={false} />
         </button>
       )}
 
