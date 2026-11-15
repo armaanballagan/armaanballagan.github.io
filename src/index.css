@@ -256,14 +256,14 @@
    --soul-reach widens it on bigger screens. */
 .soul-heart-title {
   --soul-reach: 1;
-  /* ~74px/s, the same speed the original small wiggle moved at */
-  animation: soul-wide 7.4s ease-in-out infinite;
+  /* ~85px/s, a little quicker than the original small wiggle (~74px/s) */
+  animation: soul-wide 6.4s ease-in-out infinite;
 }
 
 @media (min-width: 640px) {
   .soul-heart-title {
     --soul-reach: 1.3;
-    animation-duration: 12s;
+    animation-duration: 10.5s;
   }
 }
 
