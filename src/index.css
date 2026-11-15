@@ -251,37 +251,42 @@
   }
 }
 
-/* Title-screen heart: wanders further across the battle box, a bit slower.
+/* Title-screen heart: hops between 5 spots in the battle box. It holds still
+   at each spot (~55% of each step), then dashes to the next one.
    Distances are in % of the heart's own size, so it scales with the box;
    --soul-reach widens it on bigger screens. */
 .soul-heart-title {
   --soul-reach: 1;
-  /* ~85px/s, a little quicker than the original small wiggle (~74px/s) */
-  animation: soul-wide 6.4s ease-in-out infinite;
+  animation: soul-wide 9s ease-in-out infinite; /* phones: ~1s pause, ~0.8s dash */
 }
 
 @media (min-width: 640px) {
   .soul-heart-title {
     --soul-reach: 1.3;
-    animation-duration: 10.5s;
+    animation-duration: 11s; /* ~1.2s pause, ~1s dash */
   }
 }
 
 @keyframes soul-wide {
   0%,
+  11%,
   100% {
     transform: translate(0, 0) scale(1);
   }
-  20% {
+  20%,
+  31% {
     transform: translate(calc(var(--soul-reach) * 115%), calc(var(--soul-reach) * -85%)) scale(0.95);
   }
-  40% {
+  40%,
+  51% {
     transform: translate(calc(var(--soul-reach) * -105%), calc(var(--soul-reach) * -60%)) scale(1.03);
   }
-  60% {
+  60%,
+  71% {
     transform: translate(calc(var(--soul-reach) * -90%), calc(var(--soul-reach) * 95%)) scale(0.97);
   }
-  80% {
+  80%,
+  91% {
     transform: translate(calc(var(--soul-reach) * 110%), calc(var(--soul-reach) * 75%)) scale(1.05);
   }
 }
