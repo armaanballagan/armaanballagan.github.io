@@ -11,11 +11,11 @@
     scroll-behavior: smooth;
   }
 
-  /* Everything sized in rem (text, spacing, buttons) runs at 66% on tablets and
+  /* Everything sized in rem (text, spacing, buttons) runs at 70% on tablets and
      up, so the pages feel less zoomed-in. Phones keep the full size. */
   @media (min-width: 640px) {
     html {
-      font-size: 66%;
+      font-size: 70%;
     }
   }
 
