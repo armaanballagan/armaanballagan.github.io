@@ -727,3 +727,43 @@
   border-bottom: 0.45em solid transparent;
   border-right: 0.7em solid #fff;
 }
+
+/* ── AI covers player on the AI Voice Conversion card (App.tsx renderCoverDeck) ── */
+.cover-deck {
+  width: min(21rem, 100%);
+  padding: 0.55rem 0.6rem 0.6rem;
+  border: 2px solid rgb(255 255 255 / 55%);
+  background: #000;
+  box-shadow: 4px 4px 0 rgb(255 255 0 / 18%);
+  text-align: left;
+}
+
+.cover-deck.is-playing {
+  border-color: #ff0;
+}
+
+.cover-deck-label {
+  margin-bottom: 0.5rem;
+  color: #ff0;
+  font-size: 7px;
+  line-height: 1.6;
+}
+
+.cover-play {
+  min-width: 2.6rem;
+  justify-content: center;
+  font-size: 0.7rem;
+}
+
+.cover-deck-bar {
+  margin-top: 0.55rem;
+  height: 6px;
+  border: 1px solid rgb(255 255 255 / 40%);
+  cursor: pointer;
+}
+
+.cover-deck-bar > span {
+  display: block;
+  height: 100%;
+  background: #ff0;
+}

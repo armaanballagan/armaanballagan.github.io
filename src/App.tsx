@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { MusicPlayer, dogsong, playSound, playlist } from "./audio";
+import { MusicPlayer, aiCovers, dogsong, playSound, playlist, type Track } from "./audio";
 import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
 import { SansToggle } from "./SansToggle";
@@ -65,6 +65,8 @@ type Project = {
   image: string;
   imageAlt: string;
   links: ProjectLink[];
+  /** AI Voice Conversion only: songs sung by my voice model, with their own player on the card. */
+  covers?: Track[];
 };
 
 // Thumbnails live in public/projects/. If a file is missing, a pixel placeholder shows instead.
@@ -200,8 +202,9 @@ const projects: Project[] = [
     stack: ["PYTHON", "SOFTVC VITS", "DEMUCS", "TKINTER"],
     categories: ["data"],
     image: img("voice-conversion.png"),
-    imageAlt: "AI singing voice conversion project screenshot",
-    links: [],
+    imageAlt: "The AI Voice Changer app: paste a YouTube link, download, split vocals, pick a speaker and f0 method, then convert and play the result",
+    links: [{ label: "GITHUB", href: "https://github.com/armaanballagan/SVC-AI-Voice-Changer" }],
+    covers: aiCovers,
   },
 ];
 
@@ -236,6 +239,15 @@ function App() {
   const track = dogsongOn ? dogsong : playlist[trackIndex];
   const audioActive = musicPlaying || dogsongOn;
 
+  // AI covers (AI Voice Conversion card). Playing one pauses the main music;
+  // when a cover finishes on its own, the main music carries on where it was.
+  const coverRef = useRef<HTMLAudioElement | null>(null);
+  const loadedCover = useRef<number | null>(null);
+  const musicPausedForCover = useRef(false);
+  const [coverIndex, setCoverIndex] = useState(0);
+  const [coverPlaying, setCoverPlaying] = useState(false);
+  const [coverProgress, setCoverProgress] = useState({ time: 0, duration: 0 });
+
   // Mini player: appears once the full player has scrolled off the top of the screen.
   const fullPlayerRef = useRef<HTMLDivElement>(null);
   const [showMiniPlayer, setShowMiniPlayer] = useState(false);
@@ -265,7 +277,7 @@ function App() {
       const left = right - mini.offsetWidth;
       const top = bottom - mini.offsetHeight;
       const margin = 12;
-      const overlaps = [...document.querySelectorAll<HTMLElement>(".project-link")].some((link) => {
+      const overlaps = [...document.querySelectorAll<HTMLElement>(".project-link, .cover-deck")].some((link) => {
         if (!link.offsetParent) return false;
         const r = link.getBoundingClientRect();
         return r.right > left - margin && r.left < right + margin && r.bottom > top - margin && r.top < bottom + margin;
@@ -305,6 +317,7 @@ function App() {
     return () => {
       musicRef.current?.stop();
       dogsongRef.current?.pause();
+      coverRef.current?.pause();
     };
   }, []);
 
@@ -320,6 +333,8 @@ function App() {
   };
 
   const startDogsong = () => {
+    if (coverPlaying) stopCover(false);
+    musicPausedForCover.current = false;
     musicRef.current?.stop();
     setMusicPlaying(false);
     if (!dogsongRef.current && dogsong.src) {
@@ -369,6 +384,10 @@ function App() {
     const next = (index + playlist.length) % playlist.length;
     trackIndexRef.current = next;
     setTrackIndex(next);
+    if (!keepPlaying && musicPausedForCover.current) {
+      musicRef.current?.stop();
+      musicPausedForCover.current = false;
+    }
     if (keepPlaying) {
       getPlayer().play(playlist[next]);
       setMusicPlaying(true);
@@ -387,7 +406,12 @@ function App() {
       setMusicPlaying(false);
       return;
     }
-    player.play(playlist[trackIndexRef.current]);
+    // Continue the song an AI cover interrupted; otherwise start the current song.
+    const continuing = musicPausedForCover.current;
+    if (coverPlaying) stopCover(false);
+    if (continuing) player.resume(playlist[trackIndexRef.current]);
+    else player.play(playlist[trackIndexRef.current]);
+    musicPausedForCover.current = false;
     setMusicPlaying(true);
   };
 
@@ -401,6 +425,143 @@ function App() {
     const wasDogsong = dogsongOn;
     if (wasDogsong) endDogsong();
     goToTrack(trackIndexRef.current - 1, musicPlaying || wasDogsong);
+  };
+
+  /* ── AI covers ── */
+  // Leaving the AI Voice Conversion card stops its cover (its controls go with it)
+  // and hands back to the main music.
+  const projectHasCovers = Boolean(project.covers);
+  useEffect(() => {
+    if (projectHasCovers) loadCover(loadedCover.current ?? 0); // fetch the length to show
+    else if (coverRef.current && !coverRef.current.paused) stopCover(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectHasCovers]);
+
+  const resumeMusicAfterCover = () => {
+    if (!musicPausedForCover.current) return;
+    musicPausedForCover.current = false;
+    getPlayer().resume(playlist[trackIndexRef.current]);
+    setMusicPlaying(true);
+  };
+
+  const getCoverAudio = () => {
+    if (!coverRef.current) {
+      const audio = new Audio();
+      audio.preload = "metadata";
+      const sync = () => setCoverProgress({ time: audio.currentTime, duration: audio.duration || 0 });
+      audio.addEventListener("timeupdate", sync);
+      audio.addEventListener("loadedmetadata", sync);
+      audio.addEventListener("ended", () => {
+        audio.currentTime = 0;
+        setCoverPlaying(false);
+        resumeMusicAfterCover();
+      });
+      coverRef.current = audio;
+    }
+    return coverRef.current;
+  };
+
+  const loadCover = (index: number) => {
+    const audio = getCoverAudio();
+    if (loadedCover.current !== index) {
+      audio.src = aiCovers[index].src ?? "";
+      audio.volume = aiCovers[index].volume;
+      loadedCover.current = index;
+      setCoverProgress({ time: 0, duration: 0 });
+    }
+    setCoverIndex(index);
+    return audio;
+  };
+
+  const playCover = (index: number) => {
+    if (dogsongOn) endDogsong();
+    if (musicPlaying) {
+      musicRef.current?.pause();
+      musicPausedForCover.current = true;
+      setMusicPlaying(false);
+    }
+    const audio = loadCover(index);
+    setCoverPlaying(true);
+    audio.play().catch(() => setCoverPlaying(false));
+  };
+
+  const pauseCover = () => {
+    coverRef.current?.pause();
+    setCoverPlaying(false);
+  };
+
+  /** Stop the cover completely; optionally hand back to the main music. */
+  const stopCover = (resumeMusic: boolean) => {
+    const audio = coverRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    setCoverPlaying(false);
+    if (resumeMusic) resumeMusicAfterCover();
+    else musicPausedForCover.current = false;
+  };
+
+  const stepCover = (delta: number) => {
+    const next = (coverIndex + delta + aiCovers.length) % aiCovers.length;
+    if (coverPlaying) playCover(next);
+    else loadCover(next);
+  };
+
+  const seekCover = (event: MouseEvent<HTMLDivElement>) => {
+    const audio = coverRef.current;
+    if (!audio || !coverProgress.duration) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    audio.currentTime = ((event.clientX - rect.left) / rect.width) * coverProgress.duration;
+  };
+
+  const formatTime = (seconds: number) => {
+    const whole = Math.max(0, Math.floor(seconds));
+    return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, "0")}`;
+  };
+
+  /** The special player on the AI Voice Conversion card (sits where other projects have their link buttons). */
+  const renderCoverDeck = (className = "") => {
+    if (!project.covers) return null;
+    const cover = aiCovers[coverIndex];
+    const percent = coverProgress.duration ? Math.min(100, (coverProgress.time / coverProgress.duration) * 100) : 0;
+    return (
+      <div
+        className={`cover-deck ${coverPlaying ? "is-playing" : ""} ${className}`}
+        role="group"
+        aria-label="AI covers sung by my voice model"
+      >
+        <p className="cover-deck-label">
+          <span aria-hidden="true">♪ </span>AI COVER {coverIndex + 1}/{aiCovers.length} · SUNG BY MY VOICE MODEL
+        </p>
+        <div className="flex items-center gap-2">
+          <button type="button" className="player-control !px-2" onClick={() => stepCover(-1)} aria-label="Previous AI cover">
+            ◀◀
+          </button>
+          <button
+            type="button"
+            className={`player-control cover-play ${coverPlaying ? "is-on" : ""}`}
+            onClick={() => (coverPlaying ? pauseCover() : playCover(coverIndex))}
+            aria-label={coverPlaying ? `Pause ${cover.title}` : `Play ${cover.title} (AI cover)`}
+          >
+            {coverPlaying ? "❚❚" : "▶"}
+          </button>
+          <button type="button" className="player-control !px-2" onClick={() => stepCover(1)} aria-label="Next AI cover">
+            ▶▶
+          </button>
+          <div className="min-w-0 flex-1 leading-relaxed">
+            <p className="truncate text-[9px] text-white">"{cover.title}"</p>
+            <p className="truncate text-[7px] text-white/50">
+              {cover.credit} · {formatTime(coverProgress.time)} /{" "}
+              {coverProgress.duration ? formatTime(coverProgress.duration) : "--:--"}
+            </p>
+          </div>
+        </div>
+        <div className="cover-deck-bar" onClick={seekCover} aria-hidden="true">
+          <span style={{ width: `${percent}%` }} />
+        </div>
+      </div>
+    );
   };
 
   const copyEmail = async () => {
@@ -695,8 +856,10 @@ function App() {
                     <div className="shrink-0 bg-black px-4 py-3 text-xs text-[#ff0]">
                       FILE {project.id} / {project.title}
                     </div>
-                    {project.links.length > 0 && (
-                      <div className="mb-3 mr-3 hidden min-w-0 flex-wrap-reverse justify-end gap-2 sm:flex">
+                    {(project.links.length > 0 || project.covers) && (
+                      <div className="mb-3 mr-3 hidden min-w-0 flex-col items-end gap-2 sm:flex">
+                        {project.links.length > 0 && (
+                      <div className="flex min-w-0 flex-wrap-reverse justify-end gap-2">
                         {project.links.map((link) => (
                           <a
                             key={link.label}
@@ -709,6 +872,9 @@ function App() {
                             {link.label} <Arrow className="size-3" />
                           </a>
                         ))}
+                      </div>
+                        )}
+                        {renderCoverDeck()}
                       </div>
                     )}
                   </div>
@@ -730,6 +896,7 @@ function App() {
                       ))}
                     </div>
                   )}
+                  {renderCoverDeck("mb-6 w-full sm:hidden")}
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <h3 className="text-3xl sm:text-4xl">{project.title}</h3>
                     <span className="text-[9px] leading-loose text-white/45">{project.role}</span>

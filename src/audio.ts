@@ -396,6 +396,20 @@ export const dogsong: Track = {
   volume: 0.5,
 };
 
+/**
+ * AI COVERS: songs sung by Armaan's own voice model from the AI Voice Conversion
+ * project (so-vits-svc). They play from the special player on that project's
+ * card, never from the main playlist. Starting one pauses the main music; when
+ * a cover finishes, the main music picks up where it left off.
+ * Files: public/audio/covers/ (loudness-matched to the music, 128 kbps).
+ */
+export const aiCovers: Track[] = [
+  { title: "KARMA POLICE", credit: "RADIOHEAD", src: asset("audio/covers/karma-police.mp3"), volume: 0.4 },
+  { title: "505", credit: "ARCTIC MONKEYS", src: asset("audio/covers/505.mp3"), volume: 0.4 },
+  { title: "NOTION", credit: "THE RARE OCCASIONS", src: asset("audio/covers/notion.mp3"), volume: 0.4 },
+  { title: "FROM THE START", credit: "LAUFEY", src: asset("audio/covers/from-the-start.mp3"), volume: 0.4 },
+];
+
 /** Plays one track at a time from the playlist. Used by the gramophone in App.tsx. */
 export class MusicPlayer {
   private context: AudioContext | null = null;
@@ -434,6 +448,17 @@ export class MusicPlayer {
       this.context = context;
       this.master = master;
     }
+  }
+
+  /** Pause a file-based track, keeping its position (used while an AI cover plays). */
+  pause() {
+    this.element?.pause();
+  }
+
+  /** Continue a paused track; if there isn't one, start `track` from the top. */
+  resume(track: Track) {
+    if (this.element) this.element.play().catch(() => this.onError?.(track));
+    else this.play(track);
   }
 
   stop() {
