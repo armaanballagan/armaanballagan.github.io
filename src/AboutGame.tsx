@@ -59,7 +59,7 @@ const ROOMS: Room[] = [
         zone: { x0: 170, y0: 24, x1: 201, y1: 54 },
         pages: [
           "* (It's a sign.)",
-          "* ARMAAN BALLAGAN.\n* 3rd-year Computer Science @ UBC, class of 2029.",
+          "* ARMAAN BALLAGAN.\n* 3rd-year Computer Science @ UBC.\n* Class of 2029.",
         ],
       },
       {
