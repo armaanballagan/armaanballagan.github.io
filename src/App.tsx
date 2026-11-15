@@ -196,7 +196,7 @@ const categoryTabs: { id: "all" | Category; label: string }[] = [
 
 const experience = [
   ["2024—2029", "UNIVERSITY OF BRITISH COLUMBIA", "BSC, MAJOR IN COMPUTER SCIENCE"],
-  ["AUG 2024", "PNE PLAYLAND", "RIDES ATTENDANT"],
+  ["AUG 2024", "PNE PLAYLAND", "RIDES ATTENDANT AT HELLEVATOR"],
   ["NOV—DEC 2022", "DELTA CONTROLS", "WEX PLACEMENT / PYTHON FOR HVAC SYSTEMS"],
 ];
 
