@@ -196,10 +196,10 @@ const projects: Project[] = [
   {
     id: "08",
     title: "AI VOICE CONVERSION",
-    role: "PERSONAL / 2023",
+    role: "CS 12 FINAL PROJECT / 2023",
     description:
-      "A pipeline that splits vocals out of YouTube songs and converts them into other singers' voices, with a Tkinter GUI and custom voice models trained on myself and my friends.",
-    stack: ["PYTHON", "SOFTVC VITS", "DEMUCS", "TKINTER"],
+      "A Tkinter app that downloads a song from YouTube, splits it into lead vocals, backing vocals and instrumental, converts the lead vocals into another voice with so-vits-svc, and mixes it all back together. The voice models are trained on myself and my friends, and it can even turn the result into a music video with an AI-generated image.",
+    stack: ["PYTHON", "SO-VITS-SVC", "BS-ROFORMER", "TKINTER", "MIN-DALLE"],
     categories: ["data"],
     image: img("voice-conversion.png"),
     imageAlt: "The AI Voice Changer app: paste a YouTube link, download, split vocals, pick a speaker and f0 method, then convert and play the result",
