@@ -79,20 +79,29 @@ const ROOMS: Room[] = [
       { zone: { x0: -60, y0: 0, x1: -3, y1: 240 }, to: 0, x: 314, y: 145, dir: "left" },
       { zone: { x0: 236, y0: 0, x1: 272, y1: 145 }, to: 2, x: 160, y: 228, dir: "up" },
     ],
+    // Three signs along the back edge of the corridor, read left to right.
     signs: [
       {
-        zone: { x0: 46, y0: 140, x1: 77, y1: 174 },
+        zone: { x0: 34, y0: 140, x1: 65, y1: 174 },
         pages: [
-          "* Originally from the Cayman Islands.",
-          "* Now exploring the Underground.\n* ...I mean, Vancouver.",
+          "* (The sign is covered in tiny doodles of robots.)",
+          "* Armaan likes building where hardware, AI and software meet.",
+          "* Motion controllers, sign-language apps, AI voice changers...\n* If it sounds cool, it gets built.",
         ],
       },
       {
-        zone: { x0: 126, y0: 140, x1: 157, y1: 174 },
+        zone: { x0: 94, y0: 140, x1: 125, y1: 174 },
         pages: [
           "* Learns by building.",
           "* Most projects start at hackathons like nwHacks, StormHacks and HackCamp.",
           "* A weekend is enough to wire up something a little ridiculous.",
+        ],
+      },
+      {
+        zone: { x0: 154, y0: 140, x1: 185, y1: 174 },
+        pages: [
+          "* STATS\n* YEAR 3 @ UBC.  4 HACKATHONS.\n* 8 PROJECTS.  COFFEE: ∞",
+          "* STATUS: looking for co-op and internship roles.",
         ],
       },
     ],
@@ -101,28 +110,9 @@ const ROOMS: Room[] = [
   {
     image: "room3.png",
     walk: [{ x0: 12, y0: 62, x1: 308, y1: 240 }],
-    block: [
-      { x0: 34, y0: 102, x1: 53, y1: 120 },
-      { x0: 266, y0: 102, x1: 285, y1: 120 },
-      { x0: 150, y0: 36, x1: 169, y1: 54 },
-    ],
     exits: [{ zone: { x0: -60, y0: 237, x1: 400, y1: 300 }, to: 1, x: 254, y: 168, dir: "down" }],
+    // No signs here, just the grass patch (Flowey's spot).
     signs: [
-      {
-        zone: { x0: 28, y0: 98, x1: 59, y1: 130 },
-        pages: ["* Favourite place: where hardware, AI and solid software engineering meet."],
-      },
-      {
-        zone: { x0: 260, y0: 98, x1: 291, y1: 130 },
-        pages: ["* STATS\n* YEAR 3 @ UBC.  4 HACKATHONS.\n* 8 PROJECTS.  COFFEE: ∞"],
-      },
-      {
-        zone: { x0: 144, y0: 32, x1: 175, y1: 66 },
-        pages: [
-          "* (A note is pinned to the sign.)",
-          "* \"Currently looking for co-op and internship roles.\"",
-        ],
-      },
       {
         zone: { x0: 139, y0: 106, x1: 181, y1: 138 },
         pages: ["* A patch of grass in the light.", "* For some reason, it feels like you're being watched."],
@@ -957,10 +947,10 @@ export function AboutGame() {
 
         {/* Text version for screen readers and search engines. */}
         <div className="sr-only">
-          <p>I'm Armaan, a computer science student at UBC (class of 2029), originally from the Cayman Islands.</p>
+          <p>I'm Armaan Ballagan, a computer science student at UBC (class of 2029).</p>
+          <p>I like building where hardware, AI and software meet: motion controllers, sign-language apps, AI voice changers.</p>
           <p>I learn by building. Most of my projects start at hackathons like nwHacks, StormHacks and HackCamp.</p>
-          <p>My favourite place is where hardware, AI and solid software engineering meet.</p>
-          <p>Currently looking for co-op and internship roles.</p>
+          <p>Year 3 at UBC, 4 hackathons, 8 projects. Currently looking for co-op and internship roles.</p>
         </div>
 
         <div
