@@ -232,7 +232,7 @@ export function NameIntro() {
       <span className="sr-only">Armaan Ballagan</span>
       <div
         ref={wrapRef}
-        className="relative w-full max-w-[576px]"
+        className="relative w-full max-w-[525px]"
         style={{ aspectRatio: `${LOGO_W} / ${LOGO_H}` }}
         onClick={() => skipRef.current()}
         aria-hidden="true"
