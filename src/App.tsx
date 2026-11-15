@@ -638,8 +638,10 @@ function App() {
                   <span className="mr-3 shrink-0">*</span>
                   <Typewriter
                     parts={[
-                      "I build things you can punch, wave at, and talk to, from motion controllers to AI tools that feel ",
-                      { text: "determined.", className: "text-[#ff0]" },
+                      "Driven by ",
+                      { text: "curiosity", className: "text-[#ff0]" },
+                      ", I build practical tools and projects I think are cool, while always hunting for the next skill to learn ",
+                      { text: "(～￣▽￣)～", className: "whitespace-nowrap" },
                     ]}
                   />
                 </p>
