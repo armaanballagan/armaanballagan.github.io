@@ -1,9 +1,65 @@
-import { useEffect, useRef, useState } from "react";
-import { gallery, galleryImage } from "./gallery";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { gallery, galleryImage, type GalleryPhoto } from "./gallery";
 import { Typewriter } from "./Typewriter";
 
-/** The Gallery section: a grid of framed photos that open in an enlarged view. */
+/* Photos are laid out in rows, in order. Each row is filled until the
+   photos' combined width÷height ratio reaches ROW_TARGET, then every photo in
+   the row is sized in proportion to its ratio so they all share one height
+   (no cropping, no ragged columns). Phones get one photo per row. */
+const ROW_TARGET = { wide: 3, medium: 1.9 };
+
+function useRowTarget() {
+  const query = () =>
+    window.matchMedia("(min-width: 1024px)").matches
+      ? ROW_TARGET.wide
+      : window.matchMedia("(min-width: 640px)").matches
+        ? ROW_TARGET.medium
+        : 0;
+  const [target, setTarget] = useState(() => (typeof window === "undefined" ? ROW_TARGET.wide : query()));
+  useEffect(() => {
+    const update = () => setTarget(query());
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return target;
+}
+
+type Placed = { photo: GalleryPhoto; index: number; ratio: number };
+
+function groupRows(items: Placed[], target: number): Placed[][] {
+  if (target === 0) return items.map((item) => [item]);
+  const rows: Placed[][] = [];
+  let row: Placed[] = [];
+  let sum = 0;
+  for (const item of items) {
+    row.push(item);
+    sum += item.ratio;
+    if (sum >= target) {
+      rows.push(row);
+      row = [];
+      sum = 0;
+    }
+  }
+  if (row.length) {
+    // A lonely leftover photo would be huge; tuck it into the previous row.
+    if (sum < target * 0.55 && rows.length) rows[rows.length - 1].push(...row);
+    else rows.push(row);
+  }
+  return rows;
+}
+
+/** The Gallery section: rows of framed photos that open in an enlarged view. */
 export function Gallery() {
+  const rowTarget = useRowTarget();
+  const [ratios, setRatios] = useState<Record<string, number>>({});
+  const rows = useMemo(
+    () =>
+      groupRows(
+        gallery.map((photo, index) => ({ photo, index, ratio: ratios[photo.file] ?? photo.ratio ?? 4 / 3 })),
+        rowTarget,
+      ),
+    [ratios, rowTarget],
+  );
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const lastTriggerRef = useRef<HTMLButtonElement | null>(null);
@@ -58,29 +114,47 @@ export function Gallery() {
           </p>
         </div>
 
-        <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
-          {gallery.map((photo, index) => (
-            <figure key={photo.file} className="gallery-item mb-6 break-inside-avoid">
-              <button
-                onClick={(event) => open(index, event.currentTarget)}
-                className="gallery-frame group block w-full"
-                aria-label={`Open photo: ${photo.alt}`}
-              >
-                <img
-                  src={galleryImage(photo.file)}
-                  alt={photo.alt}
-                  loading="lazy"
-                  className="image-smooth block w-full"
-                />
-                <span className="gallery-hint" aria-hidden="true">
-                  * VIEW
-                </span>
-              </button>
-              <figcaption className="mt-3 text-[9px] leading-loose text-white/55">
-                <span className="text-[#ff0]">* </span>
-                {photo.caption}
-              </figcaption>
-            </figure>
+        <div className="flex flex-col gap-8">
+          {rows.map((row) => (
+            <div key={row[0].photo.file} className="flex items-start gap-6">
+              {row.map(({ photo, index, ratio }) => (
+                <figure
+                  key={photo.file}
+                  className="gallery-item min-w-0"
+                  // grow factors are scaled ×100: a lone photo with a sum < 1 would otherwise not fill its row
+                  style={{ flex: `${ratio * 100} 1 0%` }}
+                >
+                  <button
+                    onClick={(event) => open(index, event.currentTarget)}
+                    className="gallery-frame group block w-full"
+                    aria-label={`Open photo: ${photo.alt}`}
+                  >
+                    <img
+                      src={galleryImage(photo.file)}
+                      alt={photo.alt}
+                      loading="lazy"
+                      className="image-smooth block w-full"
+                      style={{ aspectRatio: String(ratio) }}
+                      onLoad={(event) => {
+                        const { naturalWidth, naturalHeight } = event.currentTarget;
+                        if (!naturalHeight) return;
+                        const real = naturalWidth / naturalHeight;
+                        setRatios((known) =>
+                          Math.abs((known[photo.file] ?? 0) - real) < 0.001 ? known : { ...known, [photo.file]: real },
+                        );
+                      }}
+                    />
+                    <span className="gallery-hint" aria-hidden="true">
+                      * VIEW
+                    </span>
+                  </button>
+                  <figcaption className="mt-3 text-[9px] leading-loose text-white/55">
+                    <span className="text-[#ff0]">* </span>
+                    {photo.caption}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
           ))}
         </div>
       </div>
