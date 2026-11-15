@@ -182,7 +182,7 @@ const projects: Project[] = [
   {
     id: "07",
     title: "PI SECURITY ROBOT",
-    role: "TEAM PROJECT",
+    role: "TEAM PROJECT / 2023",
     description:
       "A Raspberry Pi security robot that uses a camera and OpenCV face detection to spot people, then rotates on its motors and fires a spray mechanism in response.",
     stack: ["PYTHON", "OPENCV", "RASPBERRY PI", "MOTORS"],
