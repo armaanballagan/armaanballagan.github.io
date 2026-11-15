@@ -59,7 +59,7 @@ const ROOMS: Room[] = [
         zone: { x0: 170, y0: 24, x1: 201, y1: 54 },
         pages: [
           "* (It's a sign.)",
-          "* ARMAAN BALLAGAN.\n* Computer Science @ UBC, class of 2029.",
+          "* ARMAAN BALLAGAN.\n* 3rd-year Computer Science @ UBC, class of 2029.",
         ],
       },
       {
@@ -92,16 +92,18 @@ const ROOMS: Room[] = [
       {
         zone: { x0: 94, y0: 140, x1: 125, y1: 174 },
         pages: [
-          "* Learns by building.",
-          "* Most projects start at hackathons like nwHacks, StormHacks and HackCamp.",
-          "* A weekend is enough to wire up something a little ridiculous.",
+          "* Curiosity is Armaan's main stat.",
+          "* Every project levels up a new skill.\n* Every hackathon is a boss fight.",
+          "* Bosses fought so far: nwHacks, StormHacks and HackCamp.",
         ],
       },
       {
         zone: { x0: 154, y0: 140, x1: 185, y1: 174 },
         pages: [
-          "* STATS\n* YEAR 3 @ UBC.  4 HACKATHONS.\n* 8 PROJECTS.  COFFEE: ∞",
-          "* STATUS: looking for co-op and internship roles.",
+          "* The sign is blank except for one line:",
+          "* \"Hire me.\"",
+          "* ...It's very direct.",
+          "* (Small print: open to co-op and internship roles.)",
         ],
       },
     ],
@@ -947,7 +949,7 @@ export function AboutGame() {
 
         {/* Text version for screen readers and search engines. */}
         <div className="sr-only">
-          <p>I'm Armaan Ballagan, a computer science student at UBC (class of 2029).</p>
+          <p>I'm Armaan Ballagan, a 3rd-year computer science student at UBC (class of 2029).</p>
           <p>I like building where hardware, AI and software meet: motion controllers, sign-language apps, AI voice changers.</p>
           <p>I learn by building. Most of my projects start at hackathons like nwHacks, StormHacks and HackCamp.</p>
           <p>Year 3 at UBC, 4 hackathons, 8 projects. Currently looking for co-op and internship roles.</p>

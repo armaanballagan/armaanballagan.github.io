@@ -982,6 +982,9 @@ function App() {
               <p className="text-sm leading-[1.9] sm:text-base">
                 * You feel like a great collaboration is about to begin.
               </p>
+              <p className="mt-4 text-sm leading-[1.9] sm:text-base">
+                * Open to internships, collaborations and full-time roles. Say hi and I&apos;ll get back to you quickly.
+              </p>
               <button
                 onClick={copyEmail}
                 className="mt-7 flex w-full items-center justify-between border-t-2 border-white/30 pt-6 text-left text-[10px] text-[#ff0] hover:text-white sm:text-xs"
