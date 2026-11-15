@@ -251,6 +251,41 @@
   }
 }
 
+/* Title-screen heart: wanders further across the battle box, a bit slower.
+   Distances are in % of the heart's own size, so it scales with the box;
+   --soul-reach widens it on bigger screens. */
+.soul-heart-title {
+  --soul-reach: 1;
+  /* ~55px/s on phones, ~64px/s on desktop (the old heart moved ~74px/s) */
+  animation: soul-wide 10s ease-in-out infinite;
+}
+
+@media (min-width: 640px) {
+  .soul-heart-title {
+    --soul-reach: 1.3;
+    animation-duration: 14s;
+  }
+}
+
+@keyframes soul-wide {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  20% {
+    transform: translate(calc(var(--soul-reach) * 115%), calc(var(--soul-reach) * -85%)) scale(0.95);
+  }
+  40% {
+    transform: translate(calc(var(--soul-reach) * -105%), calc(var(--soul-reach) * -60%)) scale(1.03);
+  }
+  60% {
+    transform: translate(calc(var(--soul-reach) * -90%), calc(var(--soul-reach) * 95%)) scale(0.97);
+  }
+  80% {
+    transform: translate(calc(var(--soul-reach) * 110%), calc(var(--soul-reach) * 75%)) scale(1.05);
+  }
+}
+
 @keyframes soul {
   0%,
   100% {

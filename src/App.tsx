@@ -672,7 +672,7 @@ function App() {
                     <span className="ml-2 inline-block h-4 w-20 bg-[#ff0] align-middle" />
                   </div>
                   <div className="grid h-full place-items-center pt-12">
-                    <Heart className="soul-heart size-16 text-[#f00] sm:size-20" />
+                    <Heart className="soul-heart soul-heart-title size-16 text-[#f00] sm:size-20" />
                   </div>
                   <div className="absolute bottom-5 left-5 right-5 flex justify-between text-[9px] text-white/60 sm:text-[10px]">
                     <span>DESIGN</span>
