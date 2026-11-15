@@ -11,6 +11,14 @@
     scroll-behavior: smooth;
   }
 
+  /* Everything sized in rem (text, spacing, buttons) runs at 90% on tablets and
+     up, so the pages feel less zoomed-in. Phones keep the full size. */
+  @media (min-width: 640px) {
+    html {
+      font-size: 90%;
+    }
+  }
+
   body {
     min-width: 320px;
     background: #000;

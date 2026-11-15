@@ -927,7 +927,7 @@ export function AboutGame() {
       id="about"
       className="scroll-mt-20 border-b-4 border-white bg-[#070707] px-5 py-24 md:px-8 lg:py-32"
     >
-      <div className="mx-auto max-w-[1280px]">
+      <div className="mx-auto max-w-[1152px]">
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="mb-5 text-[10px] tracking-widest text-[#00eaff]">AREA 01 / ABOUT</p>
@@ -956,8 +956,8 @@ export function AboutGame() {
         </div>
 
         <div
-          className="relative mx-auto w-full max-w-[960px] border-4 border-white bg-black"
-          style={{ maxWidth: "min(960px, calc((100svh - 8rem) * 4 / 3))" }}
+          className="relative mx-auto w-full max-w-[864px] border-4 border-white bg-black"
+          style={{ maxWidth: "min(864px, calc((100svh - 8rem) * 4 / 3))" }}
           aria-hidden="true"
         >
           <canvas
@@ -987,7 +987,7 @@ export function AboutGame() {
         </div>
 
         {isTouch && (
-          <div className="mx-auto mt-6 flex max-w-[960px] items-center justify-between" aria-hidden="true">
+          <div className="mx-auto mt-6 flex max-w-[864px] items-center justify-between" aria-hidden="true">
             <div className="grid grid-cols-3 grid-rows-3 gap-1">
               {pad("up", "▲", "col-start-2 row-start-1")}
               {pad("left", "◀", "col-start-1 row-start-2")}

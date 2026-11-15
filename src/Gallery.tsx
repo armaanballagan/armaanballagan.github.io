@@ -103,7 +103,7 @@ export function Gallery() {
       id="gallery"
       className="scroll-mt-20 border-b-4 border-white bg-[#070707] px-5 py-24 md:px-8 lg:py-32"
     >
-      <div className="mx-auto max-w-[1280px]">
+      <div className="mx-auto max-w-[1152px]">
         <div className="mb-14 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="mb-5 text-[10px] tracking-widest text-[#ffb000]">AREA 04 / GALLERY</p>
@@ -169,7 +169,7 @@ export function Gallery() {
             if (event.target === event.currentTarget) close();
           }}
         >
-          <div className="mx-auto flex w-full max-w-[1100px] items-center justify-between gap-4 pb-4 text-[10px]">
+          <div className="mx-auto flex w-full max-w-[990px] items-center justify-between gap-4 pb-4 text-[10px]">
             <span className="text-white/50">
               PHOTO {openIndex + 1} / {gallery.length}
             </span>
@@ -179,7 +179,7 @@ export function Gallery() {
           </div>
 
           <div
-            className="mx-auto flex min-h-0 w-full max-w-[1100px] flex-1 items-center justify-center"
+            className="mx-auto flex min-h-0 w-full max-w-[990px] flex-1 items-center justify-center"
             onClick={(event) => {
               if (event.target === event.currentTarget) close();
             }}
@@ -192,7 +192,7 @@ export function Gallery() {
             />
           </div>
 
-          <div className="mx-auto mt-4 grid w-full max-w-[1100px] grid-cols-2 gap-3 sm:flex sm:items-stretch sm:gap-4">
+          <div className="mx-auto mt-4 grid w-full max-w-[990px] grid-cols-2 gap-3 sm:flex sm:items-stretch sm:gap-4">
             <button onClick={() => step(-1)} className="game-button shrink-0" aria-label="Previous photo">
               ◀ PREV
             </button>
