@@ -97,8 +97,8 @@ const projects: Project[] = [
       "A webcam-based sign language interpreter and practice tool. It recognizes hand signs in real time, speaks them aloud, captions replies, and quizzes you on new signs, all running in the browser so video stays on your device.",
     stack: ["NEXT.JS", "TYPESCRIPT", "MEDIAPIPE", "ONNX RUNTIME"],
     categories: ["software", "data"],
-    image: img("airsign.png"),
-    imageAlt: "AirSign project thumbnail",
+    image: img("airsign.jpg"),
+    imageAlt: "AirSign tracking a hand signing the letter A, next to an ASL alphabet chart and practice tools",
     links: [
       { label: "LIVE SITE", href: "https://www.talktothehand.cooking/" },
       { label: "VIDEO", href: "https://www.youtube.com/watch?v=KZTJMp2F96Y" },
@@ -115,7 +115,7 @@ const projects: Project[] = [
     stack: ["TYPESCRIPT", "EXPRESS", "MOCHA/CHAI", "CHART.JS"],
     categories: ["software", "data"],
     image: img("insightubc.png"),
-    imageAlt: "InsightUBC project screenshot",
+    imageAlt: "InsightUBC dashboard showing a line chart of UBC's university-wide average grade over the years",
     links: [],
   },
   {
@@ -127,7 +127,7 @@ const projects: Project[] = [
     stack: ["REACT", "EXPRESS", "MONGODB", "GEMINI"],
     categories: ["software"],
     image: img("journifyai.png"),
-    imageAlt: "JournifyAI project screenshot",
+    imageAlt: "JournifyAI mockups: a journal timeline and a grid of AI coaches",
     links: [
       { label: "DEVPOST", href: "https://devpost.com/software/journifyai" },
       { label: "GITHUB", href: "https://github.com/JasonCai0522/StormHacks2025" },
@@ -142,7 +142,7 @@ const projects: Project[] = [
     stack: ["NEXT.JS", "SNOWFLAKE", "GEMINI", "GMAIL API"],
     categories: ["software", "data"],
     image: img("nodeify.png"),
-    imageAlt: "Nodeify project thumbnail",
+    imageAlt: "Nodeify dashboard sorting Gmail into priority counts, a node graph and an email list",
     links: [
       { label: "VIDEO", href: "https://www.youtube.com/watch?v=lXix4OAQFw4" },
       { label: "DEVPOST", href: "https://devpost.com/software/nodeify" },
