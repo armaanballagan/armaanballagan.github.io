@@ -100,10 +100,10 @@ const projects: Project[] = [
       "A full-body motion controller for Street Fighter 6. A camera tracks your posture to lean, crouch and jump, while ESP32 gloves with IMU sensors turn real punches into light and heavy attacks, sent as standard gamepad inputs.",
     stack: ["PYTHON", "ESP32", "IMU", "COMPUTER VISION"],
     categories: ["hardware", "software"],
-    image: img("street-striker.png"),
-    imageAlt: "Street Striker project thumbnail",
+    image: img("street-striker.jpg"),
+    imageAlt: "Street Striker in action: a player throws punches in the sensor boxing gloves while Street Fighter 6 runs on a laptop",
     links: [
-      { label: "VIDEO", href: "https://youtu.be/Oxzf_ln4UWg" },
+      { label: "VIDEO", href: "https://youtu.be/Oc5va1rGpS0" },
       { label: "DEVPOST", href: "https://devpost.com/software/a-loptcx" },
       { label: "GITHUB", href: "https://github.com/JasonCai0522/Stormhacks2026" },
     ],
