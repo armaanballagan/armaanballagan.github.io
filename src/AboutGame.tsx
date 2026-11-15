@@ -6,7 +6,8 @@ import { friskFrames, type FriskFrame } from "./friskFrames";
    ABOUT GAME — the About section as a tiny playable Ruins area.
 
    Arrow keys / WASD walk (only while the game is on screen), Z / Enter / Space
-   reads the sign Frisk is facing. Three rooms, joined left-to-right. All
+   reads the sign Frisk is facing. Three rooms: flower cave → corridor → through
+   the Ruins gate into the dark grass-patch room. All
    coordinates are in the game's native 320×240 pixels.
 
    EDIT THE ABOUT TEXT in `ROOMS[n].signs[].pages` below.
@@ -21,51 +22,67 @@ const asset = (path: string) => `${import.meta.env.BASE_URL}game/${path}`;
 type Rect = { x0: number; y0: number; x1: number; y1: number };
 type Dir = "down" | "up" | "left" | "right";
 type Sign = { zone: Rect; pages: string[] };
+type Exit = { zone: Rect; to: number; x: number; y: number; dir: Dir }; // feet entering `zone` → room `to`
 type Room = {
   image: string;
   walk: Rect[]; // where Frisk's feet may go
-  exitLeft?: { to: number; x: number };
-  exitRight?: { to: number; x: number };
+  block?: Rect[]; // solid things standing on the floor (signs)
+  exits: Exit[];
   signs: Sign[];
 };
 
+// Where Frisk lands after the fall (centre of the golden flowers in room 1).
+const LAND_X = 133;
+const LAND_Y = 110;
+
 const ROOMS: Room[] = [
+  // 1 — the cave Frisk falls into, with the bed of golden flowers.
   {
     image: "room1.png",
     walk: [
-      { x0: 22, y0: 96, x1: 298, y1: 222 },
-      { x0: 290, y0: 116, x1: 330, y1: 186 },
+      { x0: 45, y0: 30, x1: 220, y1: 60 },
+      { x0: 7, y0: 48, x1: 258, y1: 140 },
+      { x0: 26, y0: 130, x1: 300, y1: 160 },
+      { x0: 262, y0: 127, x1: 330, y1: 160 },
+      { x0: 46, y0: 150, x1: 219, y1: 223 },
     ],
-    exitRight: { to: 1, x: 6 },
+    block: [{ x0: 176, y0: 27, x1: 195, y1: 45 }],
+    exits: [{ zone: { x0: 322, y0: 0, x1: 400, y1: 240 }, to: 1, x: 6, y: 182, dir: "right" }],
     signs: [
       {
-        zone: { x0: 40, y0: 74, x1: 112, y1: 104 },
+        zone: { x0: 170, y0: 24, x1: 201, y1: 54 },
         pages: [
-          "* (It's a plaque.)",
+          "* (It's a sign.)",
           "* ARMAAN BALLAGAN.\n* Computer Science @ UBC, class of 2029.",
         ],
       },
       {
-        zone: { x0: 112, y0: 134, x1: 208, y1: 206 },
+        zone: { x0: 103, y0: 84, x1: 163, y1: 120 },
         pages: ["* A bed of golden flowers.", "* They broke your fall."],
       },
     ],
   },
+  // 2 — the dark corridor leading to the Ruins gate.
   {
     image: "room2.png",
-    walk: [{ x0: -10, y0: 116, x1: 330, y1: 178 }],
-    exitLeft: { to: 0, x: 312 },
-    exitRight: { to: 2, x: 6 },
+    walk: [
+      { x0: -10, y0: 163, x1: 289, y1: 196 },
+      { x0: 240, y0: 138, x1: 268, y1: 170 }, // through the gate
+    ],
+    exits: [
+      { zone: { x0: -60, y0: 0, x1: -3, y1: 240 }, to: 0, x: 314, y: 145, dir: "left" },
+      { zone: { x0: 236, y0: 0, x1: 272, y1: 145 }, to: 2, x: 160, y: 228, dir: "up" },
+    ],
     signs: [
       {
-        zone: { x0: 56, y0: 94, x1: 128, y1: 118 },
+        zone: { x0: 46, y0: 140, x1: 77, y1: 174 },
         pages: [
           "* Originally from the Cayman Islands.",
           "* Now exploring the Underground.\n* ...I mean, Vancouver.",
         ],
       },
       {
-        zone: { x0: 192, y0: 94, x1: 264, y1: 118 },
+        zone: { x0: 126, y0: 140, x1: 157, y1: 174 },
         pages: [
           "* Learns by building.",
           "* Most projects start at hackathons like nwHacks, StormHacks and HackCamp.",
@@ -74,25 +91,35 @@ const ROOMS: Room[] = [
       },
     ],
   },
+  // 3 — the dark room with the patch of grass in the light (Flowey's spot).
   {
     image: "room3.png",
-    walk: [{ x0: -10, y0: 130, x1: 314, y1: 232 }],
-    exitLeft: { to: 1, x: 312 },
+    walk: [{ x0: 12, y0: 62, x1: 308, y1: 240 }],
+    block: [
+      { x0: 34, y0: 102, x1: 53, y1: 120 },
+      { x0: 266, y0: 102, x1: 285, y1: 120 },
+      { x0: 150, y0: 36, x1: 169, y1: 54 },
+    ],
+    exits: [{ zone: { x0: -60, y0: 237, x1: 400, y1: 300 }, to: 1, x: 254, y: 168, dir: "down" }],
     signs: [
       {
-        zone: { x0: 66, y0: 100, x1: 138, y1: 126 },
+        zone: { x0: 28, y0: 98, x1: 59, y1: 130 },
         pages: ["* Favourite place: where hardware, AI and solid software engineering meet."],
       },
       {
-        zone: { x0: 182, y0: 100, x1: 254, y1: 126 },
+        zone: { x0: 260, y0: 98, x1: 291, y1: 130 },
         pages: ["* STATS\n* YEAR 3 @ UBC.  4 HACKATHONS.\n* 8 PROJECTS.  COFFEE: ∞"],
       },
       {
-        zone: { x0: 130, y0: 100, x1: 190, y1: 126 },
+        zone: { x0: 144, y0: 32, x1: 175, y1: 66 },
         pages: [
-          "* The door won't budge.",
-          "* A note is pinned to it:\n* \"Currently looking for co-op and internship roles.\"",
+          "* (A note is pinned to the sign.)",
+          "* \"Currently looking for co-op and internship roles.\"",
         ],
+      },
+      {
+        zone: { x0: 139, y0: 106, x1: 181, y1: 138 },
+        pages: ["* A patch of grass in the light.", "* For some reason, it feels like you're being watched."],
       },
     ],
   },
@@ -100,7 +127,9 @@ const ROOMS: Room[] = [
 
 const inside = (r: Rect, x: number, y: number) => x >= r.x0 && x <= r.x1 && y >= r.y0 && y <= r.y1;
 const walkable = (room: Room, x: number, y: number) =>
-  [x - FOOT_HALF, x + FOOT_HALF].every((fx) => room.walk.some((r) => inside(r, fx, y)));
+  [x - FOOT_HALF, x + FOOT_HALF].every(
+    (fx) => room.walk.some((r) => inside(r, fx, y)) && !room.block?.some((r) => inside(r, fx, y)),
+  );
 
 const KEY_DIRS: Record<string, Dir> = {
   ArrowUp: "up",
@@ -130,8 +159,8 @@ export function AboutGame() {
   // Mutable game state (kept out of React to avoid re-rendering every frame).
   const game = useRef({
     room: 0,
-    x: 160,
-    y: 172,
+    x: LAND_X,
+    y: LAND_Y,
     dir: "down" as Dir,
     walkTime: 0,
     moving: false,
@@ -305,20 +334,13 @@ export function AboutGame() {
           g.walkTime += dt;
 
           // Room changes
-          if (g.x > W + 2 && room.exitRight) {
-            g.room = room.exitRight.to;
-            g.x = room.exitRight.x;
+          const exit = room.exits.find((e) => inside(e.zone, g.x, g.y));
+          if (exit) {
+            g.room = exit.to;
+            g.x = exit.x;
+            g.y = exit.y;
+            g.dir = exit.dir;
             g.fade = 1;
-          } else if (g.x < -2 && room.exitLeft) {
-            g.room = room.exitLeft.to;
-            g.x = room.exitLeft.x;
-            g.fade = 1;
-          }
-          // Keep feet inside the new room's floor.
-          const next = ROOMS[g.room];
-          if (!walkable(next, g.x, g.y)) {
-            const band = next.walk.find((r) => g.x >= r.x0 && g.x <= r.x1) ?? next.walk[0];
-            g.y = Math.min(band.y1, Math.max(band.y0, g.y));
           }
         } else {
           g.walkTime = 0;
@@ -336,14 +358,14 @@ export function AboutGame() {
       if (frisk.complete && g.phase !== "waiting") {
         if (g.phase === "falling") {
           const t = Math.min(1, g.phaseTime / 0.9);
-          const y = -20 + (172 - -20) * t * t; // accelerate like a fall
-          drawFrame(friskFrames.fall[Math.floor(g.phaseTime * 10) % 4], 160, y);
+          const y = -20 + (LAND_Y - -20) * t * t; // accelerate like a fall
+          drawFrame(friskFrames.fall[Math.floor(g.phaseTime * 10) % 4], LAND_X, y);
           if (t >= 1) {
             g.phase = "landed";
             g.phaseTime = 0;
           }
         } else if (g.phase === "landed") {
-          drawFrame(friskFrames.lie[1], 160, 174);
+          drawFrame(friskFrames.lie[1], LAND_X, LAND_Y + 2);
           if (g.phaseTime > 1.1) {
             g.phase = "play";
             g.phaseTime = 0;
