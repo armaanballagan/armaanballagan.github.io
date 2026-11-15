@@ -577,7 +577,7 @@ function App() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-black text-white">
       <header className="fixed inset-x-0 top-0 z-50 border-b-4 border-white bg-black">
-        <div className="mx-auto flex h-20 max-w-[1050px] items-center justify-between px-5 md:px-8">
+        <div className="mx-auto flex h-20 max-w-[960px] items-center justify-between px-5 md:px-8">
           <a href="#top" className="flex items-center gap-3 text-sm tracking-widest">
             <Heart className="size-5 text-[#f00]" />
             <span className="hidden lg:inline">ARMAAN_BALLAGAN.EXE</span>
@@ -627,7 +627,7 @@ function App() {
 
       <main id="top">
         <section className="star-field relative flex min-h-screen items-center border-b-4 border-white px-5 pb-16 pt-28 md:px-8">
-          <div className="mx-auto grid w-full max-w-[1050px] items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="mx-auto grid w-full max-w-[960px] items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="relative z-10">
               <p className="mb-7 text-xs leading-loose text-[#ff0]">
                 * A SOFTWARE ENGINEER APPEARED.
@@ -664,7 +664,7 @@ function App() {
               </div>
             </div>
 
-            <div className="mx-auto flex w-full max-w-[426px] flex-col gap-14">
+            <div className="mx-auto flex w-full max-w-[390px] flex-col gap-14">
               <div className="relative">
                 <div className="battle-window relative aspect-square overflow-hidden">
                   <div className="absolute inset-x-0 top-0 border-b-4 border-white bg-black/85 p-4 text-[10px] leading-loose sm:text-xs">
@@ -774,7 +774,7 @@ function App() {
           id="work"
           className="scroll-mt-20 border-b-4 border-white px-5 py-24 md:px-8 lg:py-32"
         >
-          <div className="mx-auto max-w-[1050px]">
+          <div className="mx-auto max-w-[960px]">
             <div className="mb-14 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="mb-5 text-[10px] tracking-widest text-[#ff0]">
@@ -923,7 +923,7 @@ function App() {
           id="experience"
           className="scroll-mt-20 border-b-4 border-white px-5 py-24 md:px-8 lg:py-32"
         >
-          <div className="mx-auto max-w-[1050px]">
+          <div className="mx-auto max-w-[960px]">
             <p className="mb-5 text-[10px] tracking-widest text-[#ff3e9d]">AREA 03 / EXPERIENCE</p>
             <h2 className="text-4xl sm:text-6xl">SAVE FILES</h2>
             <div className="relative mt-16 border-4 border-white p-3 sm:p-6">
@@ -969,7 +969,7 @@ function App() {
         <Gallery />
 
         <section id="contact" className="star-field scroll-mt-20 px-5 py-24 md:px-8 lg:py-32">
-          <div className="relative mx-auto max-w-[820px] text-center">
+          <div className="relative mx-auto max-w-[750px] text-center">
             <Heart className="mx-auto size-10 text-[#f00]" />
             <p className="mt-7 text-[10px] tracking-widest text-[#ff0]">FINAL AREA / CONTACT</p>
             <h2 className="mt-8 text-4xl leading-tight sm:text-7xl">
@@ -1064,7 +1064,7 @@ function App() {
       </div>
 
       <footer className="border-t-4 border-white bg-black px-5 pt-8 pb-32 md:px-8">
-        <div className="mx-auto flex max-w-[1050px] flex-col gap-5 text-[8px] leading-loose text-white/40 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-[960px] flex-col gap-5 text-[8px] leading-loose text-white/40 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 ARMAAN BALLAGAN / BUILT WITH DETERMINATION.</p>
           <p>UNOFFICIAL FAN-THEMED PORTFOLIO. UNDERTALE IMAGERY © TOBY FOX.</p>
           <a
