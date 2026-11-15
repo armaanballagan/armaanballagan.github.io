@@ -980,7 +980,7 @@ function App() {
             </h2>
             <div className="dialog-box mx-auto mt-12 max-w-2xl text-left">
               <p className="text-sm leading-[1.9] sm:text-base">
-                * You feel like a great collaboration is about to begin.
+                * You feel like you&apos;ve found your next new hire. It fills you with determination!
               </p>
               <p className="mt-4 text-sm leading-[1.9] sm:text-base">
                 * Open to internships, collaborations and full-time roles. Say hi and I&apos;ll get back to you quickly.
