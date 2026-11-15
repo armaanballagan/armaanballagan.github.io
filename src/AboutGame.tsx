@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { startVoice } from "./audio";
+import { asset as publicAsset, playSound, startVoice, type VoiceName } from "./audio";
+import { floweyFrames, type FloweyFrame, type FloweyFrameName } from "./floweyFrames";
+import { flowey as floweyEvents } from "./floweyEvents";
 import { friskFrames, type FriskFrame } from "./friskFrames";
 
 /* =============================================================================
@@ -7,8 +9,12 @@ import { friskFrames, type FriskFrame } from "./friskFrames";
 
    Arrow keys / WASD walk (only while the game is on screen), Z / Enter / Space
    reads the sign Frisk is facing. Three rooms: flower cave → corridor → through
-   the Ruins gate into the dark grass-patch room. All
-   coordinates are in the game's native 320×240 pixels.
+   the Ruins gate into the dark grass-patch room. All coordinates are in the
+   game's native 320×240 pixels.
+
+   FLOWEY EASTER EGG: find him peeking in Save Files (FloweyPeek.tsx). He then
+   waits on the grass patch in room 3; talking to him starts a short fight
+   (FIGHT / AFTER_HIT below) where the arrow keys move the red SOUL.
 
    EDIT THE ABOUT TEXT in `ROOMS[n].signs[].pages` below.
 ============================================================================= */
@@ -17,7 +23,7 @@ const W = 320;
 const H = 240;
 const SPEED = 92; // px per second
 const FOOT_HALF = 6; // half-width of Frisk's feet for collisions
-const asset = (path: string) => `${import.meta.env.BASE_URL}game/${path}`;
+const asset = (path: string) => publicAsset(`game/${path}`);
 
 type Rect = { x0: number; y0: number; x1: number; y1: number };
 type Dir = "down" | "up" | "left" | "right";
@@ -125,10 +131,170 @@ const ROOMS: Room[] = [
   },
 ];
 
+/* ── Flowey (room 3, after he's found in Save Files) ── */
+const FLOWEY_ROOM = 2;
+const FLOWEY_X = 160; // feet, centre of the grass patch
+const FLOWEY_Y = 125;
+const FLOWEY_BLOCK: Rect = { x0: 153, y0: 116, x1: 167, y1: 127 };
+const FLOWEY_TALK_ZONE: Rect = { x0: 136, y0: 98, x1: 184, y1: 144 };
+const FLOWEY_RISE_TIME = 0.9;
+
+const FLOWEY_INTRO = [
+  "* Howdy again! It's me, FLOWEY!",
+  "* You came all the way down here just to find little old me? Golly!",
+  "* Tell ya what. Let's play a little game!",
+];
+const FLOWEY_INTRO_PORTRAITS = ["nice", "nice", "wink"] as const;
+const FLOWEY_GONE = ["* (The flower is gone.)", "* (You get the feeling it'll be back.)"];
+
+/* ── The fight ── */
+type Face = "nice" | "wink" | "sideUm" | "sassy" | "pissed" | "evil" | "grin";
+const FACE_FRAMES: Record<Face, FloweyFrameName[]> = {
+  nice: ["nice0", "nice1"],
+  wink: ["wink", "wink"],
+  sideUm: ["sideUm0", "sideUm1"],
+  sassy: ["sassy0", "sassy1"],
+  pissed: ["pissed0", "pissed1"],
+  evil: ["evil0", "evil1"],
+  grin: ["grin0", "grin1"],
+};
+type Wave = { count: number; speed: number; volleys?: number; gap?: number; spread?: number };
+type Step =
+  | { kind: "talk"; text: string; face: Face }
+  | { kind: "wave"; wave: Wave }
+  | { kind: "ring" }
+  | { kind: "hurt" }
+  | { kind: "laugh" }
+  | { kind: "sink" }
+  | { kind: "end" };
+
+// Each dodged wave makes him a little more annoyed. The last attack (ring)
+// closes in from every side, so it always lands.
+const FIGHT: Step[] = [
+  { kind: "talk", face: "nice", text: "See that heart? That's your SOUL!" },
+  { kind: "talk", face: "nice", text: "You can move it around with the arrows." },
+  { kind: "talk", face: "nice", text: "I've got some FRIENDLINESS PELLETS for ya!" },
+  { kind: "talk", face: "wink", text: "Go on, catch as many as you can!" },
+  { kind: "wave", wave: { count: 5, speed: 80 } },
+  { kind: "talk", face: "sideUm", text: "Hey, buddy... you missed them." },
+  { kind: "talk", face: "nice", text: "Let's try that again, okay?" },
+  { kind: "wave", wave: { count: 7, speed: 100 } },
+  { kind: "talk", face: "sassy", text: "...Are you dodging on purpose?" },
+  { kind: "wave", wave: { count: 5, speed: 115, volleys: 2, gap: 0.8 } },
+  { kind: "talk", face: "pissed", text: "Quit dodging! Just RUN INTO THEM!!!" },
+  { kind: "wave", wave: { count: 9, speed: 140, spread: 0.6 } },
+  { kind: "talk", face: "evil", text: "...Heh. You figured it out, huh?" },
+  { kind: "talk", face: "evil", text: "Then you're not going ANYWHERE." },
+  { kind: "ring" },
+];
+const AFTER_HIT: Step[] = [
+  { kind: "hurt" },
+  { kind: "talk", face: "grin", text: "Hee hee hee..." },
+  { kind: "talk", face: "grin", text: "In this portfolio, it's HIRE or be HIRED." },
+  { kind: "laugh" },
+  { kind: "sink" },
+  { kind: "end" },
+];
+
+const BOX: Rect = { x0: 125, y0: 122, x1: 195, y1: 192 }; // inside of the white bullet box
+const SOUL_SPEED = 78;
+const SOUL_HALF = 4;
+const HIT_DISTANCE = 7;
+const SOUL_ROWS = [".RRR.RRR.", "RRRRRRRRR", "RRRRRRRRR", ".RRRRRRR.", "..RRRRR..", "...RRR...", "....R...."];
+const TALK_HOLD = 1.5; // seconds a finished bubble stays up before moving on
+
+type Pellet = {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  spawnAt: number;
+  launchAt: number;
+  speed: number;
+  aimOffset: number;
+  launched: boolean;
+  ringAngle?: number;
+};
+
+type Battle = {
+  steps: Step[];
+  step: number;
+  t: number; // time in the current step
+  soulX: number;
+  soulY: number;
+  pellets: Pellet[];
+  hp: number;
+  face: Face;
+  sprite: FloweyFrameName | null; // overrides the face (laugh / sink frames)
+  talkDoneAt: number | null;
+  skip: boolean;
+  fadeIn: number;
+  fadeOut: number;
+  hit: boolean;
+};
+
+const newBattle = (): Battle => ({
+  steps: FIGHT,
+  step: 0,
+  t: 0,
+  soulX: (BOX.x0 + BOX.x1) / 2,
+  soulY: (BOX.y0 + BOX.y1) / 2 + 10,
+  pellets: [],
+  hp: 20,
+  face: "nice",
+  sprite: null,
+  talkDoneAt: null,
+  skip: false,
+  fadeIn: 1,
+  fadeOut: 0,
+  hit: false,
+});
+
+function spawnWave(wave: Wave): Pellet[] {
+  const pellets: Pellet[] = [];
+  const volleys = wave.volleys ?? 1;
+  for (let v = 0; v < volleys; v++) {
+    for (let i = 0; i < wave.count; i++) {
+      const angle = Math.PI * (1.1 + (0.8 * i) / Math.max(1, wave.count - 1));
+      const spawnAt = v * (wave.gap ?? 0) * 1.6;
+      pellets.push({
+        x: 160 + 46 * Math.cos(angle),
+        y: 64 + 30 * Math.sin(angle),
+        vx: 0,
+        vy: 0,
+        spawnAt,
+        launchAt: spawnAt + 0.9,
+        speed: wave.speed,
+        aimOffset: (wave.spread ?? 0) * (i / Math.max(1, wave.count - 1) - 0.5),
+        launched: false,
+      });
+    }
+  }
+  return pellets;
+}
+
+function spawnRing(): Pellet[] {
+  return Array.from({ length: 20 }, (_, i) => ({
+    x: 0,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    spawnAt: 0,
+    launchAt: 0,
+    speed: 0,
+    aimOffset: 0,
+    launched: true,
+    ringAngle: (i / 20) * Math.PI * 2,
+  }));
+}
+
 const inside = (r: Rect, x: number, y: number) => x >= r.x0 && x <= r.x1 && y >= r.y0 && y <= r.y1;
-const walkable = (room: Room, x: number, y: number) =>
+const walkable = (room: Room, x: number, y: number, extraBlocks: Rect[] = []) =>
   [x - FOOT_HALF, x + FOOT_HALF].every(
-    (fx) => room.walk.some((r) => inside(r, fx, y)) && !room.block?.some((r) => inside(r, fx, y)),
+    (fx) =>
+      room.walk.some((r) => inside(r, fx, y)) &&
+      !room.block?.some((r) => inside(r, fx, y)) &&
+      !extraBlocks.some((r) => inside(r, fx, y)),
   );
 
 const KEY_DIRS: Record<string, Dir> = {
@@ -148,12 +314,23 @@ const KEY_DIRS: Record<string, Dir> = {
 const ACTION_KEYS = new Set(["z", "Z", "Enter", " "]);
 
 type Phase = "waiting" | "falling" | "landed" | "play";
+type FloweyState = "absent" | "waiting" | "rising" | "present";
+type Dialog = {
+  pages: string[];
+  page: number;
+  voice: VoiceName;
+  portraits?: readonly string[];
+  onDone?: () => void;
+};
 
 export function AboutGame() {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [dialog, setDialog] = useState<{ pages: string[]; page: number } | null>(null);
+  const [dialog, setDialog] = useState<Dialog | null>(null);
   const [typed, setTyped] = useState(0);
+  const [bubble, setBubble] = useState<string | null>(null);
+  const [bubbleTyped, setBubbleTyped] = useState(0);
+  const [inBattle, setInBattle] = useState(false);
   const [isTouch] = useState(() => typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches);
 
   // Mutable game state (kept out of React to avoid re-rendering every frame).
@@ -167,28 +344,46 @@ export function AboutGame() {
     phase: "waiting" as Phase,
     phaseTime: 0,
     held: new Set<Dir>(),
-    active: false, // section on screen → keyboard controls the game
+    active: false, // game on screen → keyboard controls the game
     fade: 0,
+    flowey: "absent" as FloweyState,
+    floweyTime: 0,
+    battle: null as Battle | null,
   });
   if (import.meta.env.DEV) (window as unknown as { __aboutGame: unknown }).__aboutGame = game.current;
   const dialogRef = useRef(dialog);
   dialogRef.current = dialog;
   const typedRef = useRef(typed);
   typedRef.current = typed;
+  const bubbleRef = useRef(bubble);
+  bubbleRef.current = bubble;
+  const bubbleTypedRef = useRef(bubbleTyped);
+  bubbleTypedRef.current = bubbleTyped;
 
   const currentText = dialog ? dialog.pages[dialog.page] : "";
   const typingDone = typed >= currentText.length;
+  const bubbleDone = bubble !== null && bubbleTyped >= bubble.length;
 
-  /* ── Dialogue typing (uses the site's typewriter voice + mute button) ── */
+  /* ── Dialogue typing (uses the site's voices + mute button) ── */
   useEffect(() => {
     if (!dialog || typingDone) return;
-    const stop = startVoice("typewriter");
-    const timer = window.setInterval(() => setTyped((count) => count + 1), 28);
+    const stop = startVoice(dialog.voice);
+    const timer = window.setInterval(() => setTyped((count) => count + 1), dialog.voice === "flowey" ? 36 : 28);
     return () => {
       window.clearInterval(timer);
       stop();
     };
   }, [dialog, typingDone]);
+
+  useEffect(() => {
+    if (bubble === null || bubbleDone) return;
+    const stop = startVoice("flowey");
+    const timer = window.setInterval(() => setBubbleTyped((count) => count + 1), 34);
+    return () => {
+      window.clearInterval(timer);
+      stop();
+    };
+  }, [bubble, bubbleDone]);
 
   const advanceDialog = useCallback(() => {
     const current = dialogRef.current;
@@ -197,11 +392,25 @@ export function AboutGame() {
     if (typedRef.current < text.length) {
       setTyped(text.length); // finish the line instantly
     } else if (current.page < current.pages.length - 1) {
-      setDialog({ pages: current.pages, page: current.page + 1 });
+      setDialog({ ...current, page: current.page + 1 });
       setTyped(0);
     } else {
       setDialog(null);
+      current.onDone?.();
     }
+  }, []);
+
+  const openDialog = useCallback((next: Omit<Dialog, "page">) => {
+    game.current.held.clear();
+    setDialog({ ...next, page: 0 });
+    setTyped(0);
+  }, []);
+
+  const startBattle = useCallback(() => {
+    const g = game.current;
+    g.battle = newBattle();
+    g.held.clear();
+    setInBattle(true);
   }, []);
 
   const interact = useCallback(() => {
@@ -211,6 +420,16 @@ export function AboutGame() {
       advanceDialog();
       return;
     }
+    const b = g.battle;
+    if (b) {
+      // Z during the fight: finish / skip Flowey's speech bubble.
+      const text = bubbleRef.current;
+      if (text !== null) {
+        if (bubbleTypedRef.current < text.length) setBubbleTyped(text.length);
+        else b.skip = true;
+      }
+      return;
+    }
     const reach = 14;
     const probe = {
       up: [g.x, g.y - reach],
@@ -218,13 +437,30 @@ export function AboutGame() {
       left: [g.x - reach, g.y - 4],
       right: [g.x + reach, g.y - 4],
     }[g.dir];
-    const sign = ROOMS[g.room].signs.find((s) => inside(s.zone, probe[0], probe[1]) || inside(s.zone, g.x, g.y - 6));
-    if (sign) {
-      g.held.clear();
-      setDialog({ pages: sign.pages, page: 0 });
-      setTyped(0);
+    const near = (zone: Rect) => inside(zone, probe[0], probe[1]) || inside(zone, g.x, g.y - 6);
+
+    if (g.room === FLOWEY_ROOM && g.flowey === "present" && near(FLOWEY_TALK_ZONE)) {
+      openDialog({
+        pages: FLOWEY_INTRO,
+        voice: "flowey",
+        portraits: FLOWEY_INTRO_PORTRAITS.map((name) => asset(name === "wink" ? "flowey-portrait-wink.png" : "flowey-portrait.png")),
+        onDone: startBattle,
+      });
+      return;
     }
-  }, [advanceDialog]);
+    const sign = ROOMS[g.room].signs.find((s) => near(s.zone));
+    if (sign) openDialog({ pages: sign.pages, voice: "typewriter" });
+  }, [advanceDialog, openDialog, startBattle]);
+
+  /* ── Flowey found in Save Files → he waits on the grass patch ── */
+  useEffect(
+    () =>
+      floweyEvents.onFound(() => {
+        const g = game.current;
+        if (g.flowey === "absent") g.flowey = "waiting";
+      }),
+    [],
+  );
 
   /* ── Keyboard: only while the game is on screen ── */
   useEffect(() => {
@@ -257,39 +493,63 @@ export function AboutGame() {
     };
   }, [interact]);
 
-  /* ── Is the game on screen? (starts the fall the first time) ── */
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const g = game.current;
-        g.active = entry.intersectionRatio >= 0.45;
-        if (!g.active) g.held.clear();
-        if (g.active && g.phase === "waiting") {
-          g.phase = reduceMotion ? "play" : "falling";
-          g.phaseTime = 0;
-        }
-      },
-      { threshold: [0, 0.25, 0.45, 0.6, 1] },
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
+  /* ── Is the game on screen? Measured on the canvas itself (the section is
+        much taller than the game, so a ratio of the whole section was
+        unreliable). Starts the fall the first time. ── */
+  const activate = useCallback(() => {
+    const g = game.current;
+    g.active = true;
+    if (g.phase === "waiting") {
+      g.phase = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "play" : "falling";
+      g.phaseTime = 0;
+    }
   }, []);
+
+  useEffect(() => {
+    let frame = 0;
+    const check = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const viewport = window.innerHeight;
+      const visible = Math.max(0, Math.min(rect.bottom, viewport) - Math.max(rect.top, 0));
+      const onScreen = rect.height > 0 && visible >= Math.min(rect.height, viewport) * 0.55;
+      if (onScreen) activate();
+      else {
+        game.current.active = false;
+        game.current.held.clear();
+      }
+    };
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    const interval = window.setInterval(check, 500); // catches smooth scrolls / layout shifts
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearInterval(interval);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [activate]);
 
   /* ── Game loop ── */
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
-    const rooms = ROOMS.map((room) => {
+    const load = (path: string) => {
       const img = new Image();
-      img.src = asset(room.image);
+      img.src = asset(path);
       return img;
-    });
-    const frisk = new Image();
-    frisk.src = asset("frisk.png");
+    };
+    const rooms = ROOMS.map((room) => load(room.image));
+    const frisk = load("frisk.png");
+    const floweyOverworld = load("flowey-overworld.png");
+    const floweyBattle = load("flowey-battle.png");
 
     const drawFrame = (frame: FriskFrame, feetX: number, feetY: number) => {
       ctx.drawImage(
@@ -304,6 +564,214 @@ export function AboutGame() {
         frame.h,
       );
     };
+    const drawBattleSprite = (frame: FloweyFrame, centerX: number, bottomY: number) => {
+      ctx.drawImage(
+        floweyBattle,
+        frame.x,
+        frame.y,
+        frame.w,
+        frame.h,
+        Math.round(centerX - frame.w / 2),
+        Math.round(bottomY - frame.h),
+        frame.w,
+        frame.h,
+      );
+    };
+    const drawOverworldFlowey = (g: typeof game.current) => {
+      if (!floweyOverworld.complete) return;
+      const fw = floweyOverworld.width;
+      const fh = floweyOverworld.height;
+      // While rising, only the top part pokes out of the ground.
+      const shown = g.flowey === "rising" ? Math.round(fh * Math.min(1, g.floweyTime / FLOWEY_RISE_TIME)) : fh;
+      if (shown <= 0) return;
+      ctx.drawImage(floweyOverworld, 0, 0, fw, shown, Math.round(FLOWEY_X - fw / 2), FLOWEY_Y - shown, fw, shown);
+    };
+    const drawSoul = (x: number, y: number) => {
+      ctx.fillStyle = "#ff0000";
+      const ox = Math.round(x) - 4;
+      const oy = Math.round(y) - 3;
+      SOUL_ROWS.forEach((row, ry) => {
+        for (let rx = 0; rx < row.length; rx++) if (row[rx] === "R") ctx.fillRect(ox + rx, oy + ry, 1, 1);
+      });
+    };
+
+    const enterStep = (b: Battle) => {
+      b.t = 0;
+      b.talkDoneAt = null;
+      b.skip = false;
+      const step = b.steps[b.step];
+      if (!step) return;
+      if (step.kind === "talk") {
+        b.face = step.face;
+        b.sprite = null;
+        setBubble(step.text);
+        setBubbleTyped(0);
+      } else {
+        setBubble(null);
+      }
+      if (step.kind === "wave") b.pellets = spawnWave(step.wave);
+      if (step.kind === "ring") {
+        b.face = "evil";
+        b.pellets = spawnRing();
+      }
+      if (step.kind === "hurt") {
+        b.pellets = [];
+        b.face = "grin";
+        playSound("soulHurt");
+      }
+      if (step.kind === "laugh") playSound("floweyLaugh");
+    };
+    const nextStep = (b: Battle) => {
+      b.step += 1;
+      enterStep(b);
+    };
+    const finishBattle = () => {
+      const g = game.current;
+      g.battle = null;
+      g.flowey = "absent";
+      g.fade = 1;
+      g.dir = "down";
+      setBubble(null);
+      setInBattle(false);
+      floweyEvents.emitGone();
+      openDialog({ pages: FLOWEY_GONE, voice: "typewriter" });
+    };
+
+    const updateBattle = (b: Battle, dt: number, g: typeof game.current) => {
+      if (b.t === 0 && b.step === 0 && b.fadeIn === 1) enterStep(b);
+      b.t += dt;
+      b.fadeIn = Math.max(0, b.fadeIn - dt * 2.5);
+
+      // SOUL movement (allowed while he talks, like the real game)
+      if (b.steps[b.step]?.kind !== "hurt" && b.steps !== AFTER_HIT) {
+        let dx = 0;
+        let dy = 0;
+        if (g.held.has("left")) dx -= 1;
+        if (g.held.has("right")) dx += 1;
+        if (g.held.has("up")) dy -= 1;
+        if (g.held.has("down")) dy += 1;
+        const step = SOUL_SPEED * dt * (dx && dy ? Math.SQRT1_2 : 1);
+        b.soulX = Math.min(BOX.x1 - SOUL_HALF, Math.max(BOX.x0 + SOUL_HALF, b.soulX + dx * step));
+        b.soulY = Math.min(BOX.y1 - SOUL_HALF, Math.max(BOX.y0 + SOUL_HALF, b.soulY + dy * step));
+      }
+
+      const step = b.steps[b.step];
+      if (!step) return;
+
+      // Pellets
+      if (step.kind === "wave" || step.kind === "ring") {
+        const ringRadius = 64 - 17 * b.t;
+        for (const p of b.pellets) {
+          if (b.t < p.spawnAt) continue;
+          if (p.ringAngle !== undefined) {
+            const angle = p.ringAngle + b.t * 0.7;
+            p.x = (BOX.x0 + BOX.x1) / 2 + Math.cos(angle) * Math.max(0, ringRadius);
+            p.y = (BOX.y0 + BOX.y1) / 2 + Math.sin(angle) * Math.max(0, ringRadius);
+          } else if (!p.launched) {
+            if (b.t >= p.launchAt) {
+              const aim = Math.atan2(b.soulY - p.y, b.soulX - p.x) + p.aimOffset;
+              p.vx = Math.cos(aim) * p.speed;
+              p.vy = Math.sin(aim) * p.speed;
+              p.launched = true;
+            }
+          } else {
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+          }
+          if (Math.hypot(p.x - b.soulX, p.y - b.soulY) < HIT_DISTANCE) b.hit = true;
+        }
+        if (b.hit) {
+          b.steps = AFTER_HIT;
+          b.step = 0;
+          enterStep(b);
+          return;
+        }
+        const offscreen = (p: Pellet) => p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20;
+        if (step.kind === "wave" && b.pellets.every((p) => p.launched && offscreen(p))) {
+          b.pellets = [];
+          nextStep(b);
+        }
+        return;
+      }
+
+      if (step.kind === "talk") {
+        // (bubbleRef lags one render behind setBubble, so match the text first)
+        if (bubbleRef.current === step.text && bubbleTypedRef.current >= step.text.length) {
+          b.talkDoneAt ??= b.t;
+          if (b.skip || b.t - b.talkDoneAt > TALK_HOLD) nextStep(b);
+        }
+      } else if (step.kind === "hurt") {
+        b.hp = Math.max(1, Math.round(20 - 19 * Math.min(1, b.t / 0.5)));
+        if (b.t > 1.1) nextStep(b);
+      } else if (step.kind === "laugh") {
+        b.sprite = Math.floor(b.t * 8) % 2 ? "laugh1" : "laugh0";
+        if (b.t > 2.8) nextStep(b);
+      } else if (step.kind === "sink") {
+        const frame = 8 - Math.floor(b.t * 10);
+        b.sprite = frame >= 0 ? (`rise${frame}` as FloweyFrameName) : null;
+        if (b.t > 1.3) nextStep(b);
+      } else if (step.kind === "end") {
+        b.fadeOut = Math.min(1, b.t / 0.5);
+        if (b.t > 0.6) finishBattle();
+      }
+    };
+
+    const drawBattle = (b: Battle) => {
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, W, H);
+      const step = b.steps[b.step];
+      const shake = step?.kind === "hurt" && b.t < 0.4 ? Math.round(Math.sin(b.t * 80) * 2) : 0;
+
+      // Flowey
+      if (floweyBattle.complete) {
+        const sinking = step?.kind === "sink" || step?.kind === "end";
+        let name: FloweyFrameName | null = b.sprite;
+        if (!name && !sinking) {
+          const talking = step?.kind === "talk" && bubbleTypedRef.current < (bubbleRef.current ?? "").length;
+          name = FACE_FRAMES[b.face][talking ? Math.floor(b.t * 8) % 2 : 0];
+        }
+        if (name) drawBattleSprite(floweyFrames[name], 160 + shake, 98);
+      }
+
+      // Bullet box
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(BOX.x0 - 3 + shake, BOX.y0 - 3, BOX.x1 - BOX.x0 + 6, 2);
+      ctx.fillRect(BOX.x0 - 3 + shake, BOX.y1 + 1, BOX.x1 - BOX.x0 + 6, 2);
+      ctx.fillRect(BOX.x0 - 3 + shake, BOX.y0 - 3, 2, BOX.y1 - BOX.y0 + 6);
+      ctx.fillRect(BOX.x1 + 1 + shake, BOX.y0 - 3, 2, BOX.y1 - BOX.y0 + 6);
+
+      // Pellets
+      if (floweyBattle.complete) {
+        for (const p of b.pellets) {
+          if (b.t < p.spawnAt) continue;
+          const spin = Math.floor((b.t + p.spawnAt) * 10) % 2 ? floweyFrames.pellet1 : floweyFrames.pellet0;
+          ctx.drawImage(floweyBattle, spin.x, spin.y, spin.w, spin.h, Math.round(p.x - 6), Math.round(p.y - 6), spin.w, spin.h);
+        }
+      }
+
+      // SOUL (blinks after being hit)
+      const blinking = step?.kind === "hurt" && Math.floor(b.t * 14) % 2 === 1;
+      if (!blinking && step?.kind !== "end") drawSoul(b.soulX + shake, b.soulY);
+
+      // Stats line
+      ctx.font = "8px 'Press Start 2P', monospace";
+      ctx.textBaseline = "top";
+      ctx.fillStyle = "#fff";
+      ctx.fillText("FRISK   LV 1", 32, 210);
+      ctx.fillText("HP", 158, 210);
+      ctx.fillStyle = "#c00";
+      ctx.fillRect(180, 209, 24, 10);
+      ctx.fillStyle = "#ff0";
+      ctx.fillRect(180, 209, Math.round((24 * b.hp) / 20), 10);
+      ctx.fillStyle = "#fff";
+      ctx.fillText(`${String(b.hp).padStart(2, " ")} / 20`, 212, 210);
+
+      const cover = Math.max(b.fadeIn, b.fadeOut);
+      if (cover > 0) {
+        ctx.fillStyle = `rgba(0,0,0,${cover})`;
+        ctx.fillRect(0, 0, W, H);
+      }
+    };
 
     let raf = 0;
     let last = performance.now();
@@ -312,6 +780,29 @@ export function AboutGame() {
       last = now;
       const g = game.current;
       g.phaseTime += dt;
+
+      ctx.imageSmoothingEnabled = false;
+
+      if (g.battle) {
+        updateBattle(g.battle, dt, g);
+        if (g.battle) {
+          drawBattle(g.battle);
+          raf = requestAnimationFrame(tick);
+          return;
+        }
+      }
+
+      // Flowey pops up once Frisk is in his room
+      if (g.flowey === "waiting" && g.room === FLOWEY_ROOM && g.phase === "play") {
+        g.flowey = "rising";
+        g.floweyTime = 0;
+      }
+      if (g.flowey === "rising") {
+        g.floweyTime += dt;
+        if (g.floweyTime >= FLOWEY_RISE_TIME) g.flowey = "present";
+      }
+      const floweyHere = g.room === FLOWEY_ROOM && (g.flowey === "rising" || g.flowey === "present");
+      const extraBlocks = floweyHere ? [FLOWEY_BLOCK] : [];
 
       // Movement
       if (g.phase === "play" && !dialogRef.current) {
@@ -328,9 +819,9 @@ export function AboutGame() {
           const step = SPEED * dt * (dx && dy ? Math.SQRT1_2 : 1);
           const room = ROOMS[g.room];
           const nx = g.x + dx * step;
-          if (walkable(room, nx, g.y)) g.x = nx;
+          if (walkable(room, nx, g.y, extraBlocks)) g.x = nx;
           const ny = g.y + dy * step;
-          if (walkable(room, g.x, ny)) g.y = ny;
+          if (walkable(room, g.x, ny, extraBlocks)) g.y = ny;
           g.walkTime += dt;
 
           // Room changes
@@ -345,17 +836,19 @@ export function AboutGame() {
         } else {
           g.walkTime = 0;
         }
+      } else {
+        g.moving = false;
       }
 
       // Draw room
-      ctx.imageSmoothingEnabled = false;
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, W, H);
       const roomImg = rooms[g.room];
       if (roomImg.complete) ctx.drawImage(roomImg, 0, 0);
 
-      // Draw Frisk
-      if (frisk.complete && g.phase !== "waiting") {
+      // Draw Flowey and Frisk, back to front
+      const drawFrisk = () => {
+        if (!frisk.complete || g.phase === "waiting") return;
         if (g.phase === "falling") {
           const t = Math.min(1, g.phaseTime / 0.9);
           const y = -20 + (LAND_Y - -20) * t * t; // accelerate like a fall
@@ -376,6 +869,13 @@ export function AboutGame() {
           const index = g.moving ? Math.floor(g.walkTime * 6) % frames.length : 0;
           drawFrame(frames[index], g.x, g.y);
         }
+      };
+      if (floweyHere && g.y > FLOWEY_Y) {
+        drawOverworldFlowey(g);
+        drawFrisk();
+      } else {
+        drawFrisk();
+        if (floweyHere) drawOverworldFlowey(g);
       }
 
       // Fade between rooms
@@ -389,7 +889,7 @@ export function AboutGame() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [openDialog]);
 
   /* ── Touch controls ── */
   const press = (dir: Dir) => () => {
@@ -399,7 +899,7 @@ export function AboutGame() {
   const pad = (dir: Dir, label: string, extra: string) => (
     <button
       type="button"
-      aria-label={`Walk ${dir}`}
+      aria-label={`Move ${dir}`}
       className={`game-pad ${extra}`}
       onPointerDown={press(dir)}
       onPointerUp={release(dir)}
@@ -411,6 +911,7 @@ export function AboutGame() {
   );
 
   const dialogAtTop = game.current.y > 150;
+  const portrait = dialog?.portraits?.[dialog.page];
 
   return (
     <section
@@ -428,7 +929,11 @@ export function AboutGame() {
             </h2>
           </div>
           <p className="max-w-xs text-[9px] leading-loose text-white/50">
-            {isTouch ? "USE THE PAD TO WALK. TAP A TO READ." : "ARROWS / WASD TO WALK. Z / ENTER TO READ."}
+            {inBattle
+              ? "MOVE THE HEART TO DODGE. DON'T TRUST THE FLOWER."
+              : isTouch
+                ? "USE THE PAD TO WALK. TAP A TO READ."
+                : "ARROWS / WASD TO WALK. Z / ENTER TO READ."}
             <br />
             READ THE SIGNS TO LEARN ABOUT ME.
           </p>
@@ -442,22 +947,33 @@ export function AboutGame() {
           <p>Currently looking for co-op and internship roles.</p>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[960px] border-4 border-white bg-black" aria-hidden="true">
+        <div
+          className="relative mx-auto w-full max-w-[960px] border-4 border-white bg-black"
+          style={{ maxWidth: "min(960px, calc((100svh - 8rem) * 4 / 3))" }}
+          aria-hidden="true"
+        >
           <canvas
             ref={canvasRef}
             width={W}
             height={H}
             className="block aspect-[4/3] h-auto w-full"
             style={{ imageRendering: "pixelated" }}
+            onPointerDown={activate}
             onClick={interact}
           />
           {dialog && (
             <div
-              className={`game-dialog absolute inset-x-[4%] ${dialogAtTop ? "top-[5%]" : "bottom-[5%]"}`}
+              className={`game-dialog absolute inset-x-[4%] ${portrait ? "has-portrait" : ""} ${dialogAtTop ? "top-[5%]" : "bottom-[5%]"}`}
               onClick={advanceDialog}
             >
+              {portrait && <img src={portrait} alt="" />}
               <p className="whitespace-pre-line">{currentText.slice(0, typed)}</p>
               {typingDone && <span className="dialog-caret">▼</span>}
+            </div>
+          )}
+          {inBattle && bubble !== null && (
+            <div className="flowey-bubble">
+              <p>{bubble.slice(0, bubbleTyped)}</p>
             </div>
           )}
         </div>

@@ -4,6 +4,7 @@ import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
 import { SansToggle } from "./SansToggle";
 import { NameIntro } from "./NameIntro";
+import { FloweyPeek } from "./FloweyPeek";
 import { AboutGame } from "./AboutGame";
 
 type IconProps = { className?: string };
@@ -698,7 +699,8 @@ function App() {
           <div className="mx-auto max-w-[1280px]">
             <p className="mb-5 text-[10px] tracking-widest text-[#ff3e9d]">AREA 03 / EXPERIENCE</p>
             <h2 className="text-4xl sm:text-6xl">SAVE FILES</h2>
-            <div className="mt-12 border-4 border-white p-3 sm:p-6">
+            <div className="relative mt-16 border-4 border-white p-3 sm:p-6">
+              <FloweyPeek />
               {experience.map(([period, company, role], index) => (
                 <div key={company} className="save-row">
                   <span className="text-[#ff0]">FILE {index + 1}</span>

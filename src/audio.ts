@@ -42,7 +42,7 @@ export const soundEffects = {
 
   floweyLaugh: {
     label: "Flowey laugh",
-    usedIn: "Not used yet. Play with playSound(\"floweyLaugh\")",
+    usedIn: "About game: Flowey's laugh after the friendliness pellets hit",
     src: asset("audio/sfx/voices/flowey-laugh.mp3"),
     volume: 0.6,
     synth: synthBlip,
@@ -67,6 +67,14 @@ export const soundEffects = {
     src: asset("audio/sfx/voices/spider-laugh.mp3"),
     volume: 0.6,
     synth: synthBlip,
+  },
+
+  soulHurt: {
+    label: "SOUL hit",
+    usedIn: "About game: a friendliness pellet hits the heart",
+    src: null,
+    volume: 0.5,
+    synth: synthNoiseBurst,
   },
 
   // ── Add new sound effects below. Copy this template: ─────────────────────
