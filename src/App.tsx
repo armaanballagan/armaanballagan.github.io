@@ -127,8 +127,9 @@ const projects: Project[] = [
     stack: ["REACT", "EXPRESS", "MONGODB", "GEMINI"],
     categories: ["software"],
     image: img("journifyai.png"),
-    imageAlt: "JournifyAI mockups: a journal timeline and a grid of AI coaches",
+    imageAlt: "JournifyAI: the tagline 'Find the Voice You Need. Not the One You Want.' next to its journal timeline and AI coaches screens",
     links: [
+      { label: "LIVE SITE", href: "https://journifyai.onrender.com/" },
       { label: "DEVPOST", href: "https://devpost.com/software/journifyai" },
       { label: "GITHUB", href: "https://github.com/JasonCai0522/StormHacks2025" },
     ],
