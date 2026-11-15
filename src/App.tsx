@@ -73,16 +73,18 @@ const img = (file: string) => `${import.meta.env.BASE_URL}projects/${file}`;
 /**
  * External links: a plain click explicitly opens a new tab (some browsers and
  * in-app views were ignoring target="_blank"). Ctrl/⌘/Shift/middle clicks keep
- * the browser's own behaviour. If a popup blocker stops the new tab, the link
- * opens in this tab instead so the click is never lost.
+ * the browser's own behaviour. If something blocks the new tab, the click falls
+ * back to the plain link (never navigates this page away, which sites like
+ * YouTube refuse to load inside an embedded preview).
  */
 const openExternal = (event: MouseEvent<HTMLAnchorElement>) => {
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  event.preventDefault();
-  const url = event.currentTarget.href;
-  const tab = window.open(url, "_blank");
-  if (tab) tab.opener = null;
-  else window.location.href = url;
+  const tab = window.open(event.currentTarget.href, "_blank");
+  if (tab) {
+    event.preventDefault(); // we opened it ourselves
+    tab.opener = null;
+  }
+  // If the new tab was blocked, the normal target="_blank" link carries on as usual.
 };
 
 const EMAIL = "armaanballagan@gmail.com";
