@@ -532,3 +532,50 @@
     }
   }
 }
+
+@layer utilities {
+  /* About game: Undertale-style dialogue box over the canvas. */
+  .game-dialog {
+    border: 4px solid #fff;
+    background: #000;
+    padding: 0.9em 1.1em 1.4em;
+    color: #fff;
+    font-family: "VT323", monospace;
+    font-size: clamp(1rem, 2.6vw, 1.75rem);
+    line-height: 1.25;
+    min-height: 26%;
+    cursor: pointer;
+  }
+
+  .game-dialog .dialog-caret {
+    font-family: "Press Start 2P", monospace;
+  }
+
+  /* Touch controls under the game. */
+  .game-pad {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    color: #fff;
+    font-size: 0.8rem;
+    border: 3px solid #fff;
+    background: #000;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .game-pad:active {
+    color: #ff0;
+    border-color: #ff0;
+  }
+
+  .game-pad-a {
+    width: 4.5rem;
+    height: 4.5rem;
+    color: #ffb000;
+    border-color: #ffb000;
+    border-radius: 9999px;
+    font-size: 1rem;
+  }
+}

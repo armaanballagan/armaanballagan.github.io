@@ -4,6 +4,7 @@ import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
 import { SansToggle } from "./SansToggle";
 import { NameIntro } from "./NameIntro";
+import { AboutGame } from "./AboutGame";
 
 type IconProps = { className?: string };
 
@@ -547,62 +548,7 @@ function App() {
           </div>
         </section>
 
-        <section
-          id="about"
-          className="scroll-mt-20 border-b-4 border-white bg-[#070707] px-5 py-24 md:px-8 lg:py-32"
-        >
-          <div className="mx-auto grid max-w-[1280px] gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-            <div>
-              <p className="mb-5 text-[10px] tracking-widest text-[#00eaff]">AREA 01 / ABOUT</p>
-              <div className="overflow-hidden border-4 border-white">
-                <img
-                  src={`${import.meta.env.BASE_URL}undertale/screen2.png`}
-                  alt="Official Undertale screenshot showing a human fallen in the Ruins"
-                  className="image-pixel aspect-[4/3] w-full object-cover"
-                />
-              </div>
-              <p className="mt-3 text-[8px] leading-relaxed text-white/35">
-                DECORATIVE ART FROM THE OFFICIAL UNDERTALE WEBSITE.
-              </p>
-            </div>
-            <div>
-              <h2 className="text-4xl leading-tight sm:text-6xl">
-                CS STUDENT BY DAY.
-                <span className="mt-3 block text-[#00eaff]">MAKER AT HEART.</span>
-              </h2>
-              <div className="dialog-box mt-10">
-                <div className="space-y-5 text-sm leading-[1.9] text-white/80 sm:text-base">
-                  <p>
-                    * I&apos;m Armaan, a computer science student at UBC, originally from the
-                    Cayman Islands.
-                  </p>
-                  <p>
-                    * I learn by building. Most of my projects start at hackathons like nwHacks,
-                    StormHacks and HackCamp, where a weekend is enough to wire up something a
-                    little ridiculous.
-                  </p>
-                  <p>
-                    * My favourite place is where hardware, AI and solid software engineering
-                    meet.
-                  </p>
-                </div>
-              </div>
-              <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {[
-                  ["3RD", "YEAR @ UBC"],
-                  ["4", "HACKATHONS"],
-                  [String(projects.length), "PROJECTS"],
-                  ["∞", "COFFEE"],
-                ].map(([number, label]) => (
-                  <div key={label} className="border-2 border-white p-4 text-center">
-                    <div className="text-2xl text-[#ff0]">{number}</div>
-                    <div className="mt-2 text-[8px] text-white/45">{label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        <AboutGame />
 
         <section
           id="work"
