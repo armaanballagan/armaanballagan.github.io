@@ -84,9 +84,9 @@ const ROOMS: Room[] = [
       {
         zone: { x0: 34, y0: 140, x1: 65, y1: 174 },
         pages: [
-          "* (The sign is covered in tiny doodles of robots.)",
-          "* Armaan likes building where hardware, AI and software meet.",
-          "* Motion controllers, sign-language apps, AI voice changers...\n* If it sounds cool, it gets built.",
+          "* You check the sign's INVENTORY.",
+          "* 8 projects and 4 hackathon badges.",
+          "* ...and an unlimited supply of coffee.",
         ],
       },
       {
