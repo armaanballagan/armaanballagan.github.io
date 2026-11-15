@@ -159,7 +159,7 @@ const projects: Project[] = [
     stack: ["PYTHON", "OOP", "LEVEL DESIGN"],
     categories: ["software"],
     image: img("muffin-time.jpg"),
-    imageAlt: "Muffin Time game screenshot",
+    imageAlt: "Muffin Time level 5: a muffin facing a giant angry cloud with glowing red eyes, a key and the exit door, with Keys Left and Time Left at the bottom",
     links: [{ label: "PLAY", href: "https://py3.codeskulptor.org/#user310_RKAVpWhNFN_4.py" }],
   },
   {
