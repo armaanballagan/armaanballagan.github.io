@@ -927,11 +927,13 @@ export function AboutGame() {
       id="about"
       className="scroll-mt-20 border-b-4 border-white bg-[#070707] px-5 py-24 md:px-8 lg:py-32"
     >
-      <div className="mx-auto max-w-[896px]">
+      <div className="@container mx-auto max-w-[896px]">
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="mb-5 text-[10px] tracking-widest text-[#00eaff]">AREA 01 / ABOUT</p>
-            <h2 className="text-4xl leading-tight sm:text-6xl">
+            {/* On tablets/computers, sized so "CS STUDENT BY DAY." (18 pixel-font characters, each 1em wide)
+                fits on one line next to the controls hint (up to 20rem + gap). */}
+            <h2 className="text-4xl leading-tight sm:text-[min(3.75rem,calc((100cqi_-_22rem)/19))]">
               CS STUDENT BY DAY.
               <span className="mt-3 block text-[#00eaff]">MAKER AT HEART.</span>
             </h2>
