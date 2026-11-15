@@ -591,11 +591,11 @@
   cursor: pointer;
 }
 
-/* Official battle sprite (42×44) at 2x. Visible part = 52px − translateY. */
+/* Official overworld sprite (21×21) at 4x. Visible part = 52px − translateY. */
 .flowey-peek img {
   display: block;
   width: 84px;
-  height: 88px;
+  height: 84px;
   image-rendering: pixelated;
   transform: translateY(100%);
   animation: flowey-peek 4.5s steps(1) infinite;
@@ -619,22 +619,22 @@
     transform: translateY(100%);
   }
   16% {
-    transform: translateY(36%);
+    transform: translateY(45%);
   }
   18%,
   48% {
-    transform: translateY(7%);
+    transform: translateY(6%);
   }
   50%,
   52% {
-    transform: translateY(12%);
+    transform: translateY(11%);
   }
   54%,
   80% {
-    transform: translateY(7%);
+    transform: translateY(6%);
   }
   83% {
-    transform: translateY(36%);
+    transform: translateY(45%);
   }
   86%,
   100% {
@@ -645,7 +645,7 @@
 @media (prefers-reduced-motion: reduce) {
   .flowey-peek img {
     animation: none;
-    transform: translateY(7%);
+    transform: translateY(6%);
   }
 }
 
