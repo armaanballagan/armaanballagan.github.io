@@ -186,8 +186,8 @@ const projects: Project[] = [
     stack: ["PYTHON", "OPENCV", "RASPBERRY PI", "MOTORS"],
     categories: ["hardware"],
     image: img("pi-security-robot.jpg"),
-    imageAlt: "Raspberry Pi security robot photo",
-    links: [],
+    imageAlt: "The Pi security robot on a classroom table: a spray bottle on a wooden stand, with a Raspberry Pi, breadboard wiring and a motor on a cardboard arm",
+    links: [{ label: "VIDEO", href: "https://youtube.com/shorts/fmFXkBdV8xY" }],
   },
   {
     id: "08",
