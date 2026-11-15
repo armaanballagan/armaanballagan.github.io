@@ -404,10 +404,10 @@ export const dogsong: Track = {
  * Files: public/audio/covers/ (loudness-matched to the music, 128 kbps).
  */
 export const aiCovers: Track[] = [
-  { title: "KARMA POLICE", credit: "RADIOHEAD", src: asset("audio/covers/karma-police.mp3"), volume: 0.4 },
-  { title: "505", credit: "ARCTIC MONKEYS", src: asset("audio/covers/505.mp3"), volume: 0.4 },
   { title: "NOTION", credit: "THE RARE OCCASIONS", src: asset("audio/covers/notion.mp3"), volume: 0.4 },
   { title: "FROM THE START", credit: "LAUFEY", src: asset("audio/covers/from-the-start.mp3"), volume: 0.4 },
+  { title: "505", credit: "ARCTIC MONKEYS", src: asset("audio/covers/505.mp3"), volume: 0.4 },
+  { title: "KARMA POLICE", credit: "RADIOHEAD", src: asset("audio/covers/karma-police.mp3"), volume: 0.4 },
 ];
 
 /** Plays one track at a time from the playlist. Used by the gramophone in App.tsx. */
