@@ -969,10 +969,11 @@ function App() {
         <Gallery />
 
         <section id="contact" className="star-field scroll-mt-20 px-5 py-24 md:px-8 lg:py-32">
-          <div className="relative mx-auto max-w-[700px] text-center">
+          <div className="@container relative mx-auto max-w-[700px] text-center">
             <Heart className="mx-auto size-10 text-[#f00]" />
             <p className="mt-7 text-[10px] tracking-widest text-[#ff0]">FINAL AREA / CONTACT</p>
-            <h2 className="mt-8 text-4xl leading-tight sm:text-7xl">
+            {/* Sized so "SOMETHING GREAT." (16 pixel-font characters, each 1em wide) always fits on one line. */}
+            <h2 className="mt-8 text-[min(4.5rem,calc(100cqi/16.5))] leading-tight">
               LET&apos;S MAKE
               <br />
               SOMETHING GREAT.
