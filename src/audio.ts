@@ -191,7 +191,7 @@ export const dialogueVoices = {
   },
   flowey: {
     label: "Flowey voice",
-    usedIn: "Not used yet",
+    usedIn: "About game and Save Files peek: everything Flowey says",
     src: asset("audio/sfx/voices/flowey.mp3"),
     volume: 0.3,
     rate: 1.3,
@@ -240,9 +240,9 @@ export const dialogueVoices = {
   },
   generic2: {
     label: "Generic 2 voice",
-    usedIn: "Not used yet",
+    usedIn: "About game: the narrator text (signs, and the line after the Asgore ending)",
     src: asset("audio/sfx/voices/generic-2.mp3"),
-    volume: 0.3,
+    volume: 1, // the file is much quieter than the others; at 1 it matches Flowey's voice
     rate: 1.3,
   },
   gaster: {

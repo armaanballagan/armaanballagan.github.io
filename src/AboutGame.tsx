@@ -481,7 +481,7 @@ export function AboutGame() {
       return;
     }
     const sign = ROOMS[g.room].signs.find((s) => near(s.zone));
-    if (sign) openDialog({ pages: sign.pages, voice: "typewriter" });
+    if (sign) openDialog({ pages: sign.pages, voice: "generic2" });
   }, [advanceDialog, openDialog, startBattle]);
 
   /* ── Flowey found in Save Files → he waits on the grass patch ── */
@@ -697,7 +697,7 @@ export function AboutGame() {
       g.dir = "down";
       setBubble(null);
       setInBattle(false);
-      openDialog({ pages: FLOWEY_GONE, voice: "typewriter" });
+      openDialog({ pages: FLOWEY_GONE, voice: "generic2" });
     };
 
     /** Where the song is, in seconds (falls back to the step clock if playback was blocked). */
