@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { asset as publicAsset, playSound, startVoice, type VoiceName } from "./audio";
+import { asgoreAudio, asset as publicAsset, playSound, silenceAllMusic, startVoice, type VoiceName } from "./audio";
 import { floweyFrames, floweyOverworldFrames, type FloweyFrame, type FloweyFrameName } from "./floweyFrames";
 import { flowey as floweyEvents } from "./floweyEvents";
 import { friskFrames, type FriskFrame } from "./friskFrames";
@@ -137,10 +137,10 @@ const FLOWEY_INTRO = [
   "* Tell ya what. Let's play a little game!",
 ];
 const FLOWEY_INTRO_PORTRAITS = ["nice", "nice", "wink"] as const;
-const FLOWEY_GONE = ["* (The flower is gone.)", "* (You get the feeling it'll be back.)"];
+const FLOWEY_GONE = ["* (The flower is gone.)", "* (Somewhere far away, a truck honks.)"];
 
 /* ── The fight ── */
-type Face = "nice" | "wink" | "sideUm" | "sassy" | "pissed" | "evil" | "grin";
+type Face = "nice" | "wink" | "sideUm" | "sassy" | "pissed" | "evil" | "grin" | "hurt" | "shock";
 const FACE_FRAMES: Record<Face, FloweyFrameName[]> = {
   nice: ["nice0", "nice1"],
   wink: ["wink", "wink"],
@@ -149,6 +149,8 @@ const FACE_FRAMES: Record<Face, FloweyFrameName[]> = {
   pissed: ["pissed0", "pissed1"],
   evil: ["evil0", "evil1"],
   grin: ["grin0", "grin1"],
+  hurt: ["hurt", "hurt"],
+  shock: ["shock", "shock"],
 };
 type Wave = { count: number; speed: number; volleys?: number; gap?: number; spread?: number };
 type Step =
@@ -156,12 +158,21 @@ type Step =
   | { kind: "wave"; wave: Wave }
   | { kind: "ring" }
   | { kind: "hurt" }
-  | { kind: "laugh" }
-  | { kind: "sink" }
+  | { kind: "asgore" }
   | { kind: "end" };
 
-// Each dodged wave makes him a little more annoyed. The last attack (ring)
-// closes in from every side, so it always lands.
+// THE ENDING: as the final ring closes in, a beer can flies in from the right
+// and bonks Flowey; then Asgore's truck turns up (see ASGORE_CUES).
+const ENDING: Step[] = [
+  { kind: "ring" }, // ends when the beer can hits him
+  { kind: "talk", face: "hurt", text: "Ow!" },
+  { kind: "talk", face: "shock", text: "Huh? What's this?" },
+  { kind: "asgore" },
+  { kind: "end" },
+];
+
+// Each dodged wave makes him a little more annoyed. Getting hit at any point
+// drops you to 1 HP and skips straight to the final ring (AFTER_HIT).
 const FIGHT: Step[] = [
   { kind: "talk", face: "nice", text: "See that heart? That's your SOUL!" },
   { kind: "talk", face: "nice", text: "You can move it around with the arrows." },
@@ -177,16 +188,32 @@ const FIGHT: Step[] = [
   { kind: "wave", wave: { count: 9, speed: 140, spread: 0.6 } },
   { kind: "talk", face: "evil", text: "...Heh. You figured it out, huh?" },
   { kind: "talk", face: "evil", text: "Then you're not going ANYWHERE." },
-  { kind: "ring" },
+  ...ENDING,
 ];
 const AFTER_HIT: Step[] = [
   { kind: "hurt" },
   { kind: "talk", face: "grin", text: "Hee hee hee..." },
   { kind: "talk", face: "grin", text: "In this portfolio, it's HIRE or be HIRED." },
-  { kind: "laugh" },
-  { kind: "sink" },
-  { kind: "end" },
+  ...ENDING,
 ];
+
+/* ── Asgore's entrance, timed to his song (seconds into the song file) ── */
+const ASGORE_CUES = {
+  songStartsAfter: 0.9, // the engine revs start first, then the song fades in under them
+  fadeInOver: 3.5,
+  bump: 4.0, // "Hey, that bump is shaped like a deer": screen dims, smug face cut-in
+  bumpEnds: 6.3,
+  dui: 7.75, // "D U I, how about you die!": the truck drives in and runs him over
+  songEnd: 14.0, // "...1000 miles per hour": song fades out, back to the room
+};
+const SONG_VOLUME = 0.5;
+const REVS_VOLUME = 0.9;
+const TRUCK_SPEED = 300; // px per second, driving left
+const TRUCK_W = 156;
+const TRUCK_H = 74;
+const TRUCK_TOP = 30; // wheels sit just in front of Flowey
+const FLOWEY_BASE = 98; // battle-screen Flowey stands on this line, centred at x 160
+const CAN_GRAVITY = 600;
 
 const BOX: Rect = { x0: 125, y0: 122, x1: 195, y1: 192 }; // inside of the white bullet box
 const SOUL_SPEED = 78;
@@ -208,6 +235,8 @@ type Pellet = {
   ringAngle?: number;
 };
 
+type BeerCan = { x: number; y: number; vx: number; vy: number; angle: number; spin: number; landed: boolean };
+
 type Battle = {
   steps: Step[];
   step: number;
@@ -223,6 +252,11 @@ type Battle = {
   fadeIn: number;
   fadeOut: number;
   hit: boolean;
+  can: BeerCan | null;
+  pelletFade: number | null; // seconds since the ring froze (pellets fade out)
+  song: HTMLAudioElement | null;
+  songStarted: boolean;
+  floweyGone: number | null; // seconds since the truck hit him (squash, then crumble)
 };
 
 const newBattle = (): Battle => ({
@@ -240,6 +274,11 @@ const newBattle = (): Battle => ({
   fadeIn: 1,
   fadeOut: 0,
   hit: false,
+  can: null,
+  pelletFade: null,
+  song: null,
+  songStarted: false,
+  floweyGone: null,
 });
 
 function spawnWave(wave: Wave): Pellet[] {
@@ -542,6 +581,9 @@ export function AboutGame() {
     const frisk = load("frisk.png");
     const floweyOverworld = load("flowey-overworld.png");
     const floweyBattle = load("flowey-battle.png");
+    const truck = load("truck.png");
+    const beerCan = load("beer-can.png");
+    const smugAsgore = load("asgore-smug.jpg");
 
     const drawFrame = (frame: FriskFrame, feetX: number, feetY: number) => {
       ctx.drawImage(
@@ -621,13 +663,25 @@ export function AboutGame() {
       if (step.kind === "ring") {
         b.face = "evil";
         b.pellets = spawnRing();
+        b.pelletFade = null;
       }
       if (step.kind === "hurt") {
         b.pellets = [];
         b.face = "grin";
         playSound("soulHurt");
       }
-      if (step.kind === "laugh") playSound("floweyLaugh");
+      if (step.kind === "asgore") {
+        // Every other piece of music stops; nothing restarts until the visitor presses play.
+        silenceAllMusic();
+        const revs = new Audio(asgoreAudio.revs);
+        revs.volume = REVS_VOLUME;
+        revs.play().catch(() => {});
+        const song = new Audio(asgoreAudio.song);
+        song.volume = 0;
+        song.preload = "auto";
+        b.song = song;
+        b.songStarted = false;
+      }
     };
     const nextStep = (b: Battle) => {
       b.step += 1;
@@ -635,15 +689,22 @@ export function AboutGame() {
     };
     const finishBattle = () => {
       const g = game.current;
+      g.battle?.song?.pause();
       g.battle = null;
-      g.flowey = "absent";
+      g.flowey = "absent"; // gone for the rest of this visit (no Save Files peek either)
       g.fade = 1;
       g.dir = "down";
       setBubble(null);
       setInBattle(false);
-      floweyEvents.emitGone();
       openDialog({ pages: FLOWEY_GONE, voice: "typewriter" });
     };
+
+    /** Where the song is, in seconds (falls back to the step clock if playback was blocked). */
+    const songTime = (b: Battle) => {
+      if (b.song && b.songStarted && !b.song.paused) return b.song.currentTime;
+      return Math.max(0, b.t - ASGORE_CUES.songStartsAfter);
+    };
+    const truckX = (b: Battle) => W + 4 - (songTime(b) - ASGORE_CUES.dui) * TRUCK_SPEED; // left edge
 
     const updateBattle = (b: Battle, dt: number, g: typeof game.current) => {
       if (b.t === 0 && b.step === 0 && b.fadeIn === 1) enterStep(b);
@@ -651,7 +712,7 @@ export function AboutGame() {
       b.fadeIn = Math.max(0, b.fadeIn - dt * 2.5);
 
       // SOUL movement (allowed while he talks, like the real game)
-      if (b.steps[b.step]?.kind !== "hurt" && b.steps !== AFTER_HIT) {
+      if (b.steps[b.step]?.kind !== "hurt") {
         let dx = 0;
         let dy = 0;
         if (g.held.has("left")) dx -= 1;
@@ -665,6 +726,44 @@ export function AboutGame() {
 
       const step = b.steps[b.step];
       if (!step) return;
+
+      // The beer can: flies in, bonks Flowey, drops and bounces in front of him.
+      const can = b.can;
+      if (can) {
+        can.vy += CAN_GRAVITY * dt;
+        can.x += can.vx * dt;
+        can.y += can.vy * dt;
+        can.angle += can.spin * dt;
+        if (!can.landed && can.vx < 0 && can.x <= 176) {
+          // hit him on the head
+          playSound("canClink");
+          can.vx = 18; // pops up off his head and drops right in front of him
+          can.vy = -130;
+          can.spin = 6;
+          can.landed = true; // from now on it only falls and bounces
+          b.pelletFade = 0;
+          if (step.kind === "ring") nextStep(b); // "Ow!"
+        }
+        const floor = 112;
+        if (can.landed && can.y > floor) {
+          can.y = floor;
+          if (Math.abs(can.vy) > 40) {
+            can.vy = -can.vy * 0.35;
+            can.vx *= 0.5;
+            can.spin *= 0.4;
+            playSound("canClink");
+          } else {
+            can.vy = 0;
+            can.vx = 0;
+            can.spin = 0;
+            can.angle = Math.PI / 2; // lying on its side
+          }
+        }
+      }
+      if (b.pelletFade !== null) {
+        b.pelletFade += dt;
+        if (b.pelletFade > 0.8) b.pellets = [];
+      }
 
       // Pellets
       if (step.kind === "wave" || step.kind === "ring") {
@@ -686,9 +785,14 @@ export function AboutGame() {
             p.x += p.vx * dt;
             p.y += p.vy * dt;
           }
-          if (Math.hypot(p.x - b.soulX, p.y - b.soulY) < HIT_DISTANCE) b.hit = true;
+          // The final ring is all threat: Asgore's can always gets there first.
+          if (step.kind === "wave" && Math.hypot(p.x - b.soulX, p.y - b.soulY) < HIT_DISTANCE) b.hit = true;
+        }
+        if (step.kind === "ring" && !b.can && b.t > 0.6) {
+          b.can = { x: W + 12, y: 30, vx: -285, vy: -100, angle: 0, spin: -14, landed: false };
         }
         if (b.hit) {
+          b.hit = false;
           b.steps = AFTER_HIT;
           b.step = 0;
           enterStep(b);
@@ -711,13 +815,26 @@ export function AboutGame() {
       } else if (step.kind === "hurt") {
         b.hp = Math.max(1, Math.round(20 - 19 * Math.min(1, b.t / 0.5)));
         if (b.t > 1.1) nextStep(b);
-      } else if (step.kind === "laugh") {
-        b.sprite = Math.floor(b.t * 8) % 2 ? "laugh1" : "laugh0";
-        if (b.t > 2.8) nextStep(b);
-      } else if (step.kind === "sink") {
-        const frame = 8 - Math.floor(b.t * 10);
-        b.sprite = frame >= 0 ? (`rise${frame}` as FloweyFrameName) : null;
-        if (b.t > 1.3) nextStep(b);
+      } else if (step.kind === "asgore") {
+        b.face = "shock"; // blinded by the headlights
+        const song = b.song;
+        if (song && !b.songStarted && b.t >= ASGORE_CUES.songStartsAfter) {
+          b.songStarted = true;
+          song.play().catch(() => {});
+        }
+        const st = songTime(b);
+        if (song && b.songStarted) {
+          const fadeIn = Math.min(1, st / ASGORE_CUES.fadeInOver);
+          const fadeOut = Math.min(1, Math.max(0, (ASGORE_CUES.songEnd - st) / 1.2));
+          song.volume = SONG_VOLUME * (0.08 + 0.92 * fadeIn * fadeIn) * fadeOut;
+        }
+        // squashed the moment the truck's front reaches him, then he crumbles
+        if (b.floweyGone === null && st >= ASGORE_CUES.dui && truckX(b) <= 172) b.floweyGone = 0;
+        if (b.floweyGone !== null) b.floweyGone += dt;
+        if (st >= ASGORE_CUES.songEnd) {
+          song?.pause();
+          nextStep(b);
+        }
       } else if (step.kind === "end") {
         b.fadeOut = Math.min(1, b.t / 0.5);
         if (b.t > 0.6) finishBattle();
@@ -730,15 +847,35 @@ export function AboutGame() {
       const step = b.steps[b.step];
       const shake = step?.kind === "hurt" && b.t < 0.4 ? Math.round(Math.sin(b.t * 80) * 2) : 0;
 
-      // Flowey
+      const asgoreScene = step?.kind === "asgore";
+      const st = asgoreScene ? songTime(b) : 0;
+
+      // Flowey (squashed flat by the truck, then crumbling to dust)
       if (floweyBattle.complete) {
-        const sinking = step?.kind === "sink" || step?.kind === "end";
-        let name: FloweyFrameName | null = b.sprite;
-        if (!name && !sinking) {
-          const talking = step?.kind === "talk" && bubbleTypedRef.current < (bubbleRef.current ?? "").length;
-          name = FACE_FRAMES[b.face][talking ? Math.floor(b.t * 8) % 2 : 0];
+        if (b.floweyGone === null) {
+          let name: FloweyFrameName | null = b.sprite;
+          if (!name) {
+            const talking = step?.kind === "talk" && bubbleTypedRef.current < (bubbleRef.current ?? "").length;
+            name = FACE_FRAMES[b.face][talking ? Math.floor(b.t * 8) % 2 : 0];
+          }
+          drawBattleSprite(floweyFrames[name], 160 + shake, FLOWEY_BASE);
+        } else if (b.floweyGone < 0.35) {
+          const f = floweyFrames.hurt;
+          const h = Math.max(4, Math.round(f.h * 0.22));
+          ctx.drawImage(floweyBattle, f.x, f.y, f.w, f.h, 160 - Math.round(f.w * 0.65), FLOWEY_BASE - h, Math.round(f.w * 1.3), h);
+        } else {
+          const frame = Math.floor((b.floweyGone - 0.35) * 9);
+          if (frame < 8) drawBattleSprite(floweyFrames[`dust${frame}` as FloweyFrameName], 160, FLOWEY_BASE);
         }
-        if (name) drawBattleSprite(floweyFrames[name], 160 + shake, 98);
+      }
+
+      // Beer can
+      if (b.can && beerCan.complete) {
+        ctx.save();
+        ctx.translate(Math.round(b.can.x), Math.round(b.can.y));
+        ctx.rotate(b.can.angle);
+        ctx.drawImage(beerCan, -Math.round(beerCan.width / 2), -Math.round(beerCan.height / 2));
+        ctx.restore();
       }
 
       // Bullet box
@@ -748,13 +885,15 @@ export function AboutGame() {
       ctx.fillRect(BOX.x0 - 3 + shake, BOX.y0 - 3, 2, BOX.y1 - BOX.y0 + 6);
       ctx.fillRect(BOX.x1 + 1 + shake, BOX.y0 - 3, 2, BOX.y1 - BOX.y0 + 6);
 
-      // Pellets
+      // Pellets (fade out once the can freezes the ring)
       if (floweyBattle.complete) {
+        ctx.globalAlpha = b.pelletFade === null ? 1 : Math.max(0, 1 - b.pelletFade / 0.8);
         for (const p of b.pellets) {
           if (b.t < p.spawnAt) continue;
           const spin = Math.floor((b.t + p.spawnAt) * 10) % 2 ? floweyFrames.pellet1 : floweyFrames.pellet0;
           ctx.drawImage(floweyBattle, spin.x, spin.y, spin.w, spin.h, Math.round(p.x - 6), Math.round(p.y - 6), spin.w, spin.h);
         }
+        ctx.globalAlpha = 1;
       }
 
       // SOUL (blinks after being hit)
@@ -773,6 +912,68 @@ export function AboutGame() {
       ctx.fillRect(180, 209, Math.round((24 * b.hp) / 20), 10);
       ctx.fillStyle = "#fff";
       ctx.fillText(`${String(b.hp).padStart(2, " ")} / 20`, 212, 210);
+
+      if (asgoreScene) {
+        const tx = truckX(b);
+        const truckOn = st >= ASGORE_CUES.dui && tx > -TRUCK_W - 4;
+        const overFlowey = tx < 176 && tx + TRUCK_W > 144;
+        const bumpY = overFlowey && b.floweyGone !== null && b.floweyGone < 0.25 ? -3 : 0;
+
+        // Headlights: off-screen to the right at first, growing brighter on Flowey
+        // (squared ramp), then riding along with the truck until it's gone.
+        const lightOn = Math.min(1, b.t / 5);
+        const intensity = truckOn ? 1 : st < ASGORE_CUES.dui ? lightOn * lightOn : 0;
+        if (intensity > 0) {
+          const ox = truckOn ? tx + 2 : W + 6;
+          const oy = TRUCK_TOP + 38 + bumpY;
+          ctx.save();
+          ctx.globalCompositeOperation = "lighter";
+          const beam = ctx.createLinearGradient(ox, oy, ox - 260, oy);
+          beam.addColorStop(0, `rgba(255,248,200,${0.55 * intensity})`);
+          beam.addColorStop(1, "rgba(255,248,200,0)");
+          ctx.fillStyle = beam;
+          ctx.beginPath();
+          ctx.moveTo(ox, oy - 4);
+          ctx.lineTo(ox - 260, oy - 60);
+          ctx.lineTo(ox - 260, oy + 75);
+          ctx.lineTo(ox, oy + 4);
+          ctx.closePath();
+          ctx.fill();
+          if (!truckOn) {
+            const glow = ctx.createRadialGradient(160, 76, 4, 160, 76, 58);
+            glow.addColorStop(0, `rgba(255,255,230,${0.45 * intensity})`);
+            glow.addColorStop(1, "rgba(255,255,230,0)");
+            ctx.fillStyle = glow;
+            ctx.fillRect(80, 10, 160, 140);
+          }
+          ctx.restore();
+        }
+
+        if (truckOn && truck.complete) ctx.drawImage(truck, Math.round(tx), TRUCK_TOP + bumpY);
+
+        // "Hey, that bump is shaped like a deer": everything dims, smug Asgore cut-in
+        const inBump = st >= ASGORE_CUES.bump && st < ASGORE_CUES.bumpEnds;
+        const dimIn = Math.min(1, Math.max(0, (st - ASGORE_CUES.bump) / 0.3));
+        const dimOut = Math.min(1, Math.max(0, (ASGORE_CUES.bumpEnds - st) / 0.4));
+        const dim = inBump ? 0.72 * Math.min(dimIn, dimOut) : 0;
+        if (dim > 0) {
+          ctx.fillStyle = `rgba(0,0,0,${dim})`;
+          ctx.fillRect(0, 0, W, H);
+          if (smugAsgore.complete) {
+            const slideIn = Math.min(1, (st - ASGORE_CUES.bump - 0.05) / 0.25);
+            const slideOut = Math.min(1, Math.max(0, (ASGORE_CUES.bumpEnds - 0.3 - st) / 0.25));
+            const shown = Math.max(0, Math.min(slideIn, slideOut));
+            const size = 96;
+            const x = Math.round(W + 6 - (W + 6 - 196) * (1 - (1 - shown) * (1 - shown)));
+            const y = 34;
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(x - 3, y - 3, size + 6, size + 6);
+            ctx.imageSmoothingEnabled = true;
+            ctx.drawImage(smugAsgore, x, y, size, size);
+            ctx.imageSmoothingEnabled = false;
+          }
+        }
+      }
 
       const cover = Math.max(b.fadeIn, b.fadeOut);
       if (cover > 0) {

@@ -69,6 +69,14 @@ export const soundEffects = {
     synth: synthBlip,
   },
 
+  canClink: {
+    label: "Beer can clink",
+    usedIn: "About game: Asgore's beer can bonks Flowey and hits the floor",
+    src: null,
+    volume: 0.5,
+    synth: synthClink,
+  },
+
   soulHurt: {
     label: "SOUL hit",
     usedIn: "About game: a friendliness pellet hits the heart",
@@ -355,18 +363,19 @@ export type Track = {
 
 /** Every song the gramophone can play. Order here doesn't matter: it's shuffled on each page load. */
 const songs: Track[] = [
-  { title: "YOUR BEST FRIEND", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/your-best-friend.mp3"), volume: 0.5 },
-  { title: "HOME", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/home.mp3"), volume: 0.5 },
-  { title: "FALLEN DOWN (REPRISE)", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/fallen-down-reprise.mp3"), volume: 0.5 },
-  { title: "SANS.", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/sans.mp3"), volume: 0.5 },
-  { title: "RUINS", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/ruins.mp3"), volume: 0.5 },
-  { title: "MY CASTLE TOWN", credit: "TOBY FOX / DELTARUNE CH. 2", src: asset("audio/music/my-castle-town.mp3"), volume: 0.5 },
-  { title: "SHOP", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/shop.mp3"), volume: 0.5 },
-  { title: "SPOOKTUNE", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/spooktune.mp3"), volume: 0.5 },
+  { title: "YOUR BEST FRIEND", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/your-best-friend.mp3"), volume: 0.42 },
+  { title: "HOME", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/home.mp3"), volume: 0.54 },
+  { title: "FALLEN DOWN (REPRISE)", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/fallen-down-reprise.mp3"), volume: 0.49 },
+  { title: "SANS.", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/sans.mp3"), volume: 0.53 },
+  { title: "RUINS", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/ruins.mp3"), volume: 0.42 },
+  { title: "MY CASTLE TOWN", credit: "TOBY FOX / DELTARUNE CH. 2", src: asset("audio/music/my-castle-town.mp3"), volume: 0.54 },
+  { title: "SHOP", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/shop.mp3"), volume: 0.53 },
+  { title: "SPOOKTUNE", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/spooktune.mp3"), volume: 0.52 },
   { title: "UWA!! SO TEMPERATE", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/uwa-so-temperate.mp3"), volume: 0.5 },
-  { title: "IT'S RAINING SOMEWHERE ELSE", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/its-raining-somewhere-else.mp3"), volume: 0.5 },
-  { title: "REUNITED", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/reunited.mp3"), volume: 0.5 },
-  { title: "ALPHYS", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/alphys.mp3"), volume: 0.5 },
+  { title: "IT'S RAINING SOMEWHERE ELSE", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/its-raining-somewhere-else.mp3"), volume: 0.47 },
+  { title: "REUNITED", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/reunited.mp3"), volume: 0.53 },
+  { title: "ALPHYS", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/alphys.mp3"), volume: 0.48 },
+  { title: "ONCE UPON A TIME", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/once-upon-a-time.mp3"), volume: 0.52 },
 
   // ── Add more songs. Copy this template: ──────────────────────────────────
   // { title: "SONG TITLE", credit: "ARTIST", src: asset("audio/music/file.mp3"), volume: 0.5 },
@@ -393,7 +402,7 @@ export const dogsong: Track = {
   title: "DOGSONG",
   credit: "TOBY FOX / UNDERTALE",
   src: asset("audio/music/dogsong.mp3"),
-  volume: 0.5,
+  volume: 0.48,
 };
 
 /**
@@ -404,11 +413,32 @@ export const dogsong: Track = {
  * Files: public/audio/covers/ (loudness-matched to the music, 128 kbps).
  */
 export const aiCovers: Track[] = [
-  { title: "NOTION", credit: "THE RARE OCCASIONS", src: asset("audio/covers/notion.mp3"), volume: 0.4 },
-  { title: "FROM THE START", credit: "LAUFEY", src: asset("audio/covers/from-the-start.mp3"), volume: 0.4 },
-  { title: "505", credit: "ARCTIC MONKEYS", src: asset("audio/covers/505.mp3"), volume: 0.4 },
-  { title: "KARMA POLICE", credit: "RADIOHEAD", src: asset("audio/covers/karma-police.mp3"), volume: 0.4 },
+  { title: "NOTION", credit: "THE RARE OCCASIONS", src: asset("audio/covers/notion.mp3"), volume: 0.5 },
+  { title: "FROM THE START", credit: "LAUFEY", src: asset("audio/covers/from-the-start.mp3"), volume: 0.5 },
+  { title: "505", credit: "ARCTIC MONKEYS", src: asset("audio/covers/505.mp3"), volume: 0.5 },
+  { title: "KARMA POLICE", credit: "RADIOHEAD", src: asset("audio/covers/karma-police.mp3"), volume: 0.5 },
 ];
+
+/**
+ * ASGORE ENDING of the Flowey fight (AboutGame.tsx): his song and the engine
+ * revs (rev 1, then rev 2 twice). Lyric cue times live in AboutGame (ASGORE_CUES).
+ */
+export const asgoreAudio = {
+  song: asset("audio/asgore/asgore-runs-over-dess.mp3"),
+  revs: asset("audio/asgore/engine-revs.mp3"),
+};
+
+/* Anything that wants every piece of site music to stop (the Asgore ending)
+   calls silenceAllMusic(); App.tsx listens and stops the playlist, Dogsong and
+   any AI cover. Nothing restarts on its own: the visitor has to press play. */
+const silenceListeners = new Set<() => void>();
+export function onSilenceAllMusic(listener: () => void) {
+  silenceListeners.add(listener);
+  return () => void silenceListeners.delete(listener);
+}
+export function silenceAllMusic() {
+  silenceListeners.forEach((listener) => listener());
+}
 
 /** Plays one track at a time from the playlist. Used by the gramophone in App.tsx. */
 export class MusicPlayer {
@@ -506,6 +536,26 @@ function synthNoiseBurst(context: AudioContext, destination: AudioNode) {
   source.connect(filter).connect(gain).connect(destination);
   source.start();
   source.stop(context.currentTime + duration);
+}
+
+/** Two quick metallic pings. Placeholder for a can hitting something. */
+function synthClink(context: AudioContext, destination: AudioNode) {
+  const now = context.currentTime;
+  for (const [delay, freq] of [
+    [0, 2350],
+    [0.05, 3120],
+  ] as const) {
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = "triangle";
+    oscillator.frequency.setValueAtTime(freq, now + delay);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.setValueAtTime(0.35, now + delay);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.18);
+    oscillator.connect(gain).connect(destination);
+    oscillator.start(now + delay);
+    oscillator.stop(now + delay + 0.2);
+  }
 }
 
 /** Short square-wave blip. Placeholder for menu moves, clicks, selects. */

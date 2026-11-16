@@ -31,6 +31,14 @@ export const floweyFrames = {
   rise8: { x: 1153, y: 0, w: 41, h: 49 },
   pellet0: { x: 1195, y: 0, w: 12, h: 12 },
   pellet1: { x: 1208, y: 0, w: 12, h: 12 },
+  dust0: { x: 1221, y: 0, w: 42, h: 44 },
+  dust1: { x: 1264, y: 0, w: 42, h: 44 },
+  dust2: { x: 1307, y: 0, w: 42, h: 44 },
+  dust3: { x: 1350, y: 0, w: 42, h: 44 },
+  dust4: { x: 1393, y: 0, w: 42, h: 44 },
+  dust5: { x: 1436, y: 0, w: 42, h: 44 },
+  dust6: { x: 1479, y: 0, w: 42, h: 44 },
+  dust7: { x: 1522, y: 0, w: 42, h: 44 },
 } satisfies Record<string, FloweyFrame>;
 export type FloweyFrameName = keyof typeof floweyFrames;
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { MusicPlayer, aiCovers, dogsong, playSound, playlist, type Track } from "./audio";
+import { MusicPlayer, aiCovers, dogsong, onSilenceAllMusic, playSound, playlist, type Track } from "./audio";
 import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
 import { SansToggle } from "./SansToggle";
@@ -426,6 +426,17 @@ function App() {
     if (wasDogsong) endDogsong();
     goToTrack(trackIndexRef.current - 1, musicPlaying || wasDogsong);
   };
+
+  /* ── Everything goes quiet for the Asgore ending (AboutGame) ── */
+  const silenceRef = useRef<() => void>(() => {});
+  silenceRef.current = () => {
+    if (dogsongOn) endDogsong();
+    if (coverRef.current && !coverRef.current.paused) stopCover(false);
+    musicPausedForCover.current = false;
+    musicRef.current?.stop();
+    setMusicPlaying(false);
+  };
+  useEffect(() => onSilenceAllMusic(() => silenceRef.current()), []);
 
   /* ── AI covers ── */
   // Leaving the AI Voice Conversion card stops its cover (its controls go with it)
