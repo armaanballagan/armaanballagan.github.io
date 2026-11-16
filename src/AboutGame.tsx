@@ -200,7 +200,7 @@ const AFTER_HIT: Step[] = [
 /* ── Asgore's entrance, timed to his song (seconds into the song file) ── */
 const ASGORE_CUES = {
   songStartsAfter: 0.9, // the engine revs start first, then the song fades in under them
-  fadeInOver: 1.5,
+  fadeInOver: 3.5,
   bump: 4.0, // "Hey, that bump is shaped like a deer": screen dims, smug face cut-in
   bumpEnds: 6.3,
   dui: 7.75, // "D U I, how about you die!": the truck drives in and runs him over
@@ -827,7 +827,7 @@ export function AboutGame() {
         if (song && b.songStarted) {
           const fadeIn = Math.min(1, st / ASGORE_CUES.fadeInOver);
           const fadeOut = Math.min(1, Math.max(0, (ASGORE_CUES.songEnd + FADE_OUT - st) / FADE_OUT));
-          song.volume = SONG_VOLUME * (0.15 + 0.85 * fadeIn) * fadeOut;
+          song.volume = SONG_VOLUME * (0.08 + 0.92 * fadeIn * fadeIn) * fadeOut;
         }
         // squashed the moment the truck's front reaches him, then he crumbles
         if (b.floweyGone === null && st >= ASGORE_CUES.dui && truckX(b) <= 172) b.floweyGone = 0;
