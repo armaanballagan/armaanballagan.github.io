@@ -299,11 +299,35 @@ export function onTextVoiceMuteChange(listener: (muted: boolean) => void) {
 }
 const voiceUsers: Partial<Record<VoiceName, number>> = {};
 
+/* Browsers refuse to play sound until the visitor first clicks, taps or presses a key.
+   A voice that was refused is retried on that first interaction, if its text is still typing. */
+const retryOnUnlock = new Set<VoiceName>();
+let unlockListening = false;
+function retryVoiceOnFirstInteraction(name: VoiceName) {
+  retryOnUnlock.add(name);
+  if (unlockListening) return;
+  unlockListening = true;
+  const events = ["pointerdown", "keydown", "touchend"] as const;
+  const unlock = () => {
+    events.forEach((type) => window.removeEventListener(type, unlock, true));
+    unlockListening = false;
+    const names = [...retryOnUnlock];
+    retryOnUnlock.clear();
+    for (const voiceName of names) {
+      const element = voiceElements[voiceName];
+      if (!element || textVoiceMuted || !(voiceUsers[voiceName] ?? 0) || !element.paused) continue;
+      element.play().catch(() => undefined);
+    }
+  };
+  events.forEach((type) => window.addEventListener(type, unlock, true));
+}
+
 /**
  * Start a dialogue voice. Returns a function that stops it.
  * Several text boxes can share one voice; it stops when the last one finishes.
- * Note: browsers block sound until the visitor has clicked or tapped the page,
- * so text that types out on first load may be silent until then.
+ * Note: browsers block sound until the visitor has clicked, tapped or pressed a key,
+ * so text that types out on first load is silent until then (the voice kicks in on
+ * that first interaction if the text is still typing).
  */
 export function startVoice(name: VoiceName): () => void {
   if (textVoiceMuted) return () => undefined;
@@ -323,7 +347,9 @@ export function startVoice(name: VoiceName): () => void {
     element.playbackRate = voice.rate;
     if (element.paused) {
       element.currentTime = 0;
-      element.play().catch(() => undefined);
+      element.play().catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "NotAllowedError") retryVoiceOnFirstInteraction(name);
+      });
     }
   } else {
     blipTimer = window.setInterval(() => {
