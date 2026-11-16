@@ -204,9 +204,10 @@ const ASGORE_CUES = {
   bump: 4.0, // "Hey, that bump is shaped like a deer": screen dims, smug face cut-in
   bumpEnds: 6.3,
   dui: 7.75, // "D U I, how about you die!": the truck drives in and runs him over
-  songEnd: 14.0, // "...1000 miles per hour": song fades out, back to the room
+  songEnd: 15.2, // just after "I'll go 100 miles an hour": song fades out (over FADE_OUT), back to the room
 };
 const SONG_VOLUME = 0.5;
+const FADE_OUT = 1.0; // seconds the song takes to fade after songEnd
 const REVS_VOLUME = 0.9;
 const TRUCK_SPEED = 300; // px per second, driving left
 const TRUCK_W = 156;
@@ -825,13 +826,13 @@ export function AboutGame() {
         const st = songTime(b);
         if (song && b.songStarted) {
           const fadeIn = Math.min(1, st / ASGORE_CUES.fadeInOver);
-          const fadeOut = Math.min(1, Math.max(0, (ASGORE_CUES.songEnd - st) / 1.2));
+          const fadeOut = Math.min(1, Math.max(0, (ASGORE_CUES.songEnd + FADE_OUT - st) / FADE_OUT));
           song.volume = SONG_VOLUME * (0.08 + 0.92 * fadeIn * fadeIn) * fadeOut;
         }
         // squashed the moment the truck's front reaches him, then he crumbles
         if (b.floweyGone === null && st >= ASGORE_CUES.dui && truckX(b) <= 172) b.floweyGone = 0;
         if (b.floweyGone !== null) b.floweyGone += dt;
-        if (st >= ASGORE_CUES.songEnd) {
+        if (st >= ASGORE_CUES.songEnd + FADE_OUT) {
           song?.pause();
           nextStep(b);
         }
