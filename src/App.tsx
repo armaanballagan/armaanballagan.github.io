@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { MusicPlayer, aiCovers, dogsong, onSilenceAllMusic, playSound, playlist, type Track } from "./audio";
+import { MUSIC_MASTER_VOLUME, MusicPlayer, aiCovers, dogsong, onSilenceAllMusic, playSound, playlist, type Track } from "./audio";
 import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
 import { SansToggle } from "./SansToggle";
@@ -350,7 +350,7 @@ function App() {
     }
     const audio = dogsongRef.current;
     if (audio) {
-      audio.volume = dogsong.volume;
+      audio.volume = dogsong.volume * MUSIC_MASTER_VOLUME;
       audio.currentTime = 0;
       audio.play().catch(() => endDogsong());
     }

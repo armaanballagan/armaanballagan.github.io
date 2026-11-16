@@ -475,6 +475,9 @@ export function silenceAllMusic() {
 }
 
 /** Plays one track at a time from the playlist. Used by the gramophone in App.tsx. */
+/** Turns every music-player song (and Dogsong) up or down together. 1 = each track's own `volume`. */
+export const MUSIC_MASTER_VOLUME = 0.6;
+
 export class MusicPlayer {
   private context: AudioContext | null = null;
   private master: GainNode | null = null;
@@ -491,7 +494,7 @@ export class MusicPlayer {
 
     if (track.src) {
       const element = new Audio(track.src);
-      element.volume = track.volume;
+      element.volume = track.volume * MUSIC_MASTER_VOLUME;
       element.loop = playlist.length === 1;
       element.addEventListener("ended", () => this.onTrackEnd?.());
       element.play().catch(() => this.onError?.(track));
@@ -502,7 +505,7 @@ export class MusicPlayer {
     if (track.synth) {
       const context = new AudioContext();
       const master = context.createGain();
-      master.gain.value = track.volume;
+      master.gain.value = track.volume * MUSIC_MASTER_VOLUME;
       master.connect(context.destination);
       track.synth.schedule(context, master);
       this.timer = window.setInterval(
