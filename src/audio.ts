@@ -409,7 +409,6 @@ const songs: Track[] = [
   { title: "REUNITED", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/reunited.mp3"), volume: 0.53 },
   { title: "ALPHYS", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/alphys.mp3"), volume: 0.48 },
   { title: "ONCE UPON A TIME", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/once-upon-a-time.mp3"), volume: 0.52 },
-  { title: "GHOST FIGHT", credit: "TOBY FOX / UNDERTALE", src: asset("audio/music/ghost-fight.mp3"), volume: 0.43 },
 
   // ── Add more songs. Copy this template: ──────────────────────────────────
   // { title: "SONG TITLE", credit: "ARTIST", src: asset("audio/music/file.mp3"), volume: 0.5 },
