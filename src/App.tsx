@@ -4,6 +4,7 @@ import { Typewriter } from "./Typewriter";
 import { Gallery } from "./Gallery";
 import { SansToggle } from "./SansToggle";
 import { NameIntro } from "./NameIntro";
+import { TitleScreen } from "./TitleScreen";
 import { FloweyPeek } from "./FloweyPeek";
 import { AboutGame } from "./AboutGame";
 
@@ -228,6 +229,8 @@ function App() {
   const [missingImages, setMissingImages] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
+  // Title screen dismissed: the first click / key press unlocks sound, then the hero plays.
+  const [siteStarted, setSiteStarted] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
   const musicRef = useRef<MusicPlayer | null>(null);
   const trackIndexRef = useRef(0);
@@ -587,6 +590,13 @@ function App() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-black text-white">
+      <TitleScreen
+        onStart={() => {
+          setSiteStarted(true);
+          // Runs inside the click / key press, so the browser lets the music start.
+          if (!musicPlaying && !dogsongOn) toggleMusic();
+        }}
+      />
       <header className="fixed inset-x-0 top-0 z-50 border-b-4 border-white bg-black">
         <div className="mx-auto flex h-20 max-w-[896px] items-center justify-between px-5 md:px-8">
           <a href="#top" className="flex items-center gap-3 text-sm tracking-widest">
@@ -643,11 +653,12 @@ function App() {
               <p className="mb-7 text-xs leading-loose text-[#ff0]">
                 * A SOFTWARE ENGINEER APPEARED.
               </p>
-              <NameIntro />
+              <NameIntro play={siteStarted} />
               <div className="dialog-box mt-10 max-w-2xl">
                 <p className="flex text-base leading-[1.9] sm:text-xl">
                   <span className="mr-3 shrink-0">*</span>
                   <Typewriter
+                    paused={!siteStarted}
                     parts={[
                       "CS student at UBC who builds software for fun and keeps finding ",
                       { text: "new things to learn", className: "text-[#ff0]" },

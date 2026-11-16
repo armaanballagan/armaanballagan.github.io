@@ -11,6 +11,8 @@ type TypewriterProps = {
   /** Milliseconds per character. */
   speed?: number;
   className?: string;
+  /** While true, it waits (used to hold the hero text until the title screen is dismissed). */
+  paused?: boolean;
 };
 
 const PAUSE_AFTER = /[.,!?;:—]/;
@@ -22,7 +24,7 @@ const PAUSE_AFTER = /[.,!?;:—]/;
  * - Click anywhere on it to finish instantly.
  * - The full text reserves its space up front, so the layout never jumps.
  */
-export function Typewriter({ parts, voice = "typewriter", speed = 22, className }: TypewriterProps) {
+export function Typewriter({ parts, voice = "typewriter", speed = 22, className, paused = false }: TypewriterProps) {
   const fullText = parts.map((part) => (typeof part === "string" ? part : part.text)).join("");
   const reduceMotion =
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -36,7 +38,7 @@ export function Typewriter({ parts, voice = "typewriter", speed = 22, className 
 
   // Start when visible.
   useEffect(() => {
-    if (reduceMotion || started) return;
+    if (reduceMotion || started || paused) return;
     const element = containerRef.current;
     if (!element) return;
     const observer = new IntersectionObserver(
@@ -50,7 +52,7 @@ export function Typewriter({ parts, voice = "typewriter", speed = 22, className 
     );
     observer.observe(element);
     return () => observer.disconnect();
-  }, [reduceMotion, started]);
+  }, [reduceMotion, started, paused]);
 
   // Voice on while typing.
   useEffect(() => {

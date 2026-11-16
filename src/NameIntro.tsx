@@ -12,6 +12,7 @@ import { mkFrames, type MkFrame } from "./monsterKidFrames";
 
    Positions below are in the name image's own pixels (name-logo.png is 990×429).
    Click the name to skip. Visitors with "reduce motion" on just see the name.
+   Waits for `play` (App sets it when the title screen is dismissed).
 ============================================================================= */
 
 const LOGO_W = 990;
@@ -36,7 +37,7 @@ type Phase = "walkRight" | "walkDown" | "walkLeft" | "trip" | "runLeft" | "done"
 const SPRITE_URL = `${import.meta.env.BASE_URL}undertale/monster-kid.png`;
 const LOGO_URL = `${import.meta.env.BASE_URL}name-logo.png`;
 
-export function NameIntro() {
+export function NameIntro({ play = true }: { play?: boolean }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLImageElement>(null);
   const bottomRef = useRef<HTMLImageElement>(null);
@@ -75,6 +76,7 @@ export function NameIntro() {
       return;
     }
     setReveal(0, LOGO_W); // hide the name until she walks past
+    if (!play) return; // waiting for the title screen
 
     const sprite = new Image();
     sprite.src = SPRITE_URL;
@@ -225,7 +227,7 @@ export function NameIntro() {
       window.clearTimeout(delay);
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [play]);
 
   return (
     <h1>

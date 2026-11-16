@@ -1000,3 +1000,69 @@
   height: 100%;
   background: #ff0;
 }
+
+/* ── Title screen ("press any key", unlocks sound) ── src/TitleScreen.tsx */
+.title-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.4rem;
+  width: 100%;
+  border: 0;
+  background: #000;
+  color: #fff;
+  font-family: "Press Start 2P", monospace;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.title-screen:focus {
+  outline: none;
+}
+.title-screen-name {
+  font-size: clamp(1rem, 4.2vw, 2.4rem);
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+.title-screen-prompt {
+  font-size: clamp(0.65rem, 1.8vw, 0.95rem);
+  color: #8c8c8c;
+  animation: blink 1100ms steps(1) infinite;
+}
+.title-screen-note {
+  position: absolute;
+  bottom: 2rem;
+  font-size: 0.6rem;
+  color: #555;
+  letter-spacing: 0.2em;
+}
+.title-screen.is-leaving {
+  pointer-events: none;
+  animation: title-screen-out 420ms steps(4) forwards;
+}
+@keyframes title-screen-out {
+  to {
+    opacity: 0;
+  }
+}
+.title-prompt-touch {
+  display: none;
+}
+@media (pointer: coarse) {
+  .title-prompt-desktop {
+    display: none;
+  }
+  .title-prompt-touch {
+    display: inline;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-screen-prompt {
+    animation: none;
+  }
+}
