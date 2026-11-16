@@ -88,6 +88,7 @@ export function FloweyPeek() {
           className="flowey-peek"
           aria-label="A flower is peeking out from behind the save files"
           onClick={() => {
+            window.getSelection()?.removeAllRanges(); // no leftover yellow highlight behind the dialogue
             setLine(0);
             setTyped(0);
           }}
@@ -97,7 +98,14 @@ export function FloweyPeek() {
       )}
 
       {line !== null && (
-        <div className="flowey-blackout" role="dialog" aria-modal="true" aria-label="Flowey" onClick={advance}>
+        <div
+          className="flowey-blackout"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Flowey"
+          onClick={advance}
+          onMouseDown={(event) => event.preventDefault()}
+        >
           <div className="flowey-dialog">
             <img src={portraitSrc[LINES[line].portrait]} alt="" className="flowey-dialog-portrait" />
             <p className="whitespace-pre-line">{text.slice(0, typed)}</p>

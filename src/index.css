@@ -886,6 +886,15 @@
   background: #000;
   animation: flowey-blackout-in 450ms steps(4) both;
   cursor: pointer;
+  /* clicking to advance must never select (and yellow-highlight) the text */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.flowey-blackout *::selection {
+  color: inherit;
+  background: transparent;
 }
 
 @keyframes flowey-blackout-in {
