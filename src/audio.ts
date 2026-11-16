@@ -242,7 +242,7 @@ export const dialogueVoices = {
     label: "Generic 2 voice",
     usedIn: "About game: the narrator text (signs, and the line after the Asgore ending)",
     src: asset("audio/sfx/voices/generic-2.mp3"),
-    volume: 1, // the file is much quieter than the others; at 1 it matches Flowey's voice
+    volume: 0.3, // file boosted +20 dB (the original cut was nearly inaudible under the music)
     rate: 1.3,
   },
   gaster: {
