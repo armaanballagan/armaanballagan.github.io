@@ -208,7 +208,7 @@ const ASGORE_CUES = {
 };
 const SONG_VOLUME = 0.5;
 const FADE_OUT = 1.0; // seconds the song takes to fade after songEnd
-const REVS_VOLUME = 0.9;
+const REVS_VOLUME = 1; // full volume from the first rev (the file itself is mastered loud)
 const TRUCK_SPEED = 300; // px per second, driving left
 const TRUCK_W = 156;
 const TRUCK_H = 74;
