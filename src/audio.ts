@@ -69,11 +69,18 @@ export const soundEffects = {
     synth: synthBlip,
   },
 
-  canClink: {
-    label: "Beer can clink",
-    usedIn: "About game: Asgore's beer can bonks Flowey and hits the floor",
-    src: null,
-    volume: 0.5,
+  canHit: {
+    label: "Beer can bonk",
+    usedIn: "About game: Asgore's beer can bonks Flowey on the head (first impact of the can-fall recording)",
+    src: asset("audio/sfx/can-hit.mp3"),
+    volume: 0.55,
+    synth: synthClink,
+  },
+  canFall: {
+    label: "Beer can hitting the ground",
+    usedIn: "About game: the can lands and rattles in front of Flowey (plays once, on its first bounce)",
+    src: asset("audio/sfx/can-fall.mp3"),
+    volume: 0.55,
     synth: synthClink,
   },
 

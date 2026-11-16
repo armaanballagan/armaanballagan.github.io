@@ -236,7 +236,7 @@ type Pellet = {
   ringAngle?: number;
 };
 
-type BeerCan = { x: number; y: number; vx: number; vy: number; angle: number; spin: number; landed: boolean };
+type BeerCan = { x: number; y: number; vx: number; vy: number; angle: number; spin: number; landed: boolean; hitFloor: boolean };
 
 type Battle = {
   steps: Step[];
@@ -737,7 +737,7 @@ export function AboutGame() {
         can.angle += can.spin * dt;
         if (!can.landed && can.vx < 0 && can.x <= 176) {
           // hit him on the head
-          playSound("canClink");
+          playSound("canHit");
           can.vx = 18; // pops up off his head and drops right in front of him
           can.vy = -130;
           can.spin = 6;
@@ -748,11 +748,13 @@ export function AboutGame() {
         const floor = 112;
         if (can.landed && can.y > floor) {
           can.y = floor;
+          // one recording covers the whole fall: every bounce and the rattle
+          if (!can.hitFloor) playSound("canFall");
+          can.hitFloor = true;
           if (Math.abs(can.vy) > 40) {
             can.vy = -can.vy * 0.35;
             can.vx *= 0.5;
             can.spin *= 0.4;
-            playSound("canClink");
           } else {
             can.vy = 0;
             can.vx = 0;
@@ -790,7 +792,7 @@ export function AboutGame() {
           if (step.kind === "wave" && Math.hypot(p.x - b.soulX, p.y - b.soulY) < HIT_DISTANCE) b.hit = true;
         }
         if (step.kind === "ring" && !b.can && b.t > 0.6) {
-          b.can = { x: W + 12, y: 30, vx: -285, vy: -100, angle: 0, spin: -14, landed: false };
+          b.can = { x: W + 12, y: 30, vx: -285, vy: -100, angle: 0, spin: -14, landed: false, hitFloor: false };
         }
         if (b.hit) {
           b.hit = false;
